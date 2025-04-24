@@ -1,0 +1,313 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from flaskext.mysql import MySQL
+from flask_mail import Mail, Message
+from dotenv import load_dotenv
+import os
+
+from models.ModelUser import ModelUser
+from models.ModelRoles import ModelRoles
+from models.ModelOrganizacion import ModelOrganizacion
+from models.ModelPaciente import ModelPaciente
+
+
+app = Flask(__name__)
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Configuración de la base de datos MySQL
+app.config['MYSQL_DATABASE_HOST'] = os.getenv('MYSQL_DB_HOST')
+app.config['MYSQL_DATABASE_USER'] = os.getenv('MYSQL_DB_USER')
+app.config['MYSQL_DATABASE_PASSWORD'] = os.getenv('MYSQL_DB_PASSWORD')
+app.config['MYSQL_DATABASE_DB'] = os.getenv('MYSQL_DB_NAME')
+
+# Configuración de la conexión al servidor de mail
+app.config['MAIL_SERVER']= os.getenv('MAIL_HOST')
+app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] =  os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+mail = Mail(app)
+
+# Configuración de CORS
+CORS(app)
+
+# Inicializar MySQL
+mysql = MySQL()
+mysql.init_app(app)
+
+
+# Variables globales
+FRONTEND_API_URL = os.getenv('FRONTEND_API_URL')
+MAIL_SENDER = os.getenv('MAIL_SENDER')
+
+
+    # ------------------- LOG IN -------------------  #
+@app.route('/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    
+    try:
+        usuario = ModelUser.login(mysql,email,password)
+        
+        return jsonify({'message': 'Login exitoso', 'usuario': usuario}), 200
+    except Exception as e:
+        return jsonify({'error': 'Email o contraseña incorrectos'}), 401
+
+
+    # ------------------- USUARIOS ------------------- #
+
+@app.route('/crearUsuario', methods=['POST'])
+def crear_usuario():
+    data = request.get_json()
+    nombre = data.get('nombre')
+    email = data.get('email')
+    password = data.get('password')
+    organizacion = data.get('organizacion')
+    rol = data.get('rol')
+        
+    
+    try:        
+        usuario = ModelUser.createUser(mysql, nombre, email, password, organizacion['id'], rol)
+        
+        return jsonify({'message':'Usuario creado correctamente.', 'usuario':usuario}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido crear el usuario.'}), 400
+
+@app.route('/getUsuarios', methods=['GET'])
+def get_usuarios():
+    organizacion = request.args.get('org')
+    
+    try:
+        usuarios = ModelUser.getAllUsers(mysql, organizacion)
+        return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
+
+@app.route('/getUsuario', methods=['GET'])
+def get_usuario():
+    usuarioId = request.args.get('id')
+    
+    try:
+        usuario = ModelUser.getUsuario(mysql, usuarioId)
+        
+        return jsonify({'message': 'Usuario obtenidos', 'usuario':usuario}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido obtener el usuario'}), 400
+
+@app.route('/eliminarUsuario', methods=['POST'])
+def eliminar_usuario():
+    data = request.get_json()
+    usuarioId = data.get('usuarioId')
+    
+    try:
+        
+        ModelUser.deleteUser(mysql, usuarioId)
+        
+        return jsonify({'message': 'Usuario eliminado'}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido eliminar el usuario'}), 400
+    
+    
+@app.route('/modificarUsuario', methods=['PUT'])
+def modificar_usuario():
+    data = request.get_json()
+    usuario = data.get('mostrarUsuario')
+    usuarioId = usuario['id']
+    nombre = usuario['name']
+    email = usuario['email']
+    idOrganizacion = usuario['idOrganizacion']
+    roles = usuario['roles']
+    
+    try:
+        usuario = ModelUser.updateDataUser(mysql, usuarioId, nombre, email, idOrganizacion, roles)
+        
+        return jsonify({'message': 'Usuario modificado correctamente', 'usuario':usuario}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido modificar el usuario'}), 400
+    
+@app.route('/modificarPassword', methods=['PUT'])
+def modificar_password():
+    data = request.get_json()
+    usuarioId = data.get('id')
+    newPassword = data.get('newPassword')
+    password = newPassword['nuevaContraseña']
+    
+    try:        
+        ModelUser.updatePassword(mysql, usuarioId, password)
+        return jsonify({'message': 'Contraseña modificada correctamente.'}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido modificar la contraseña.'}), 400
+    
+@app.route('/recuperarPassword', methods=['POST'])
+def recuperar_password():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('newPassword')
+    print('entra')
+    try:
+        usuarioId = ModelUser.getUserByEmail(mysql, email)
+        print(usuarioId)
+        if not usuarioId:
+            return jsonify({'error': 'No se ha encontrado el usuario'}), 404
+        
+        ModelUser.updatePassword(mysql, usuarioId, password)
+        return jsonify({'message': 'Contraseña recuperada correctamente.'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido recuperar la contraseña.'}), 400
+    
+    
+    
+    
+    
+    
+    # ------------------- PACIENTES ------------------- #
+    
+@app.route('/getPacientes', methods=['GET'])
+def get_pacientes():
+    idOrganizacion = request.args.get('idOrganizacion')
+    
+    try:
+        pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
+        if not pacientes:
+            return jsonify({'error': 'No se han encontrado pacientes'}), 404
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
+    except:
+        return jsonify({'error':'Error al obtener los pacientes.'}), 400
+
+@app.route('/getPaciente', methods=['GET'])
+def get_paciente():
+    pacienteId = request.args.get('id')
+    
+    paciente = ModelPaciente.getPaciente(mysql, pacienteId)
+    
+    return jsonify({'message': 'Usuario obtenidos', 'paciente':paciente}), 200
+
+@app.route('/crearPaciente', methods=['POST'])
+def crear_paciente():
+    data = request.get_json()
+    nombre = data.get('nombre')
+    primerApellido = data.get('primerApellido')
+    segundoApellido = data.get('segundoApellido')
+    alias = data.get('alias')
+    fechaNacimiento = data.get('fechaNacimiento')
+    direccion = data.get('direccion')
+    localidad = data.get('localidad')
+    nacionalidad = data.get('nacionalidad')
+    genero = data.get('genero')
+    estadoCivil = data.get('estadoCivil')
+    imgPerfil = data.get('imgPerfil')
+    idOrganizacion = data.get('idOrganizacion')
+    
+    try:
+        pacienteId = ModelPaciente.createPaciente(mysql,nombre,primerApellido,segundoApellido,alias,fechaNacimiento,direccion,localidad,nacionalidad,genero,estadoCivil,imgPerfil,idOrganizacion)
+        return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al añadir el paciente.'}), 400
+
+@app.route('/eliminarPaciente', methods=['POST'])
+def eliminar_pacientes():
+    data = request.get_json()
+    pacienteId = data.get('pacienteId')
+    
+    ModelPaciente.deletePaciente(mysql, pacienteId)  
+        
+    return jsonify({'message':'Paciente eliminado correctamente.'}), 200
+    
+    # ------------------- ORGANIZACIONES ------------------- #
+    
+@app.route('/getOrganizacion', methods=['GET'])
+def get_organizacion():
+    organizacionId = request.args.get('org')
+    
+    try:
+        organizacion = ModelOrganizacion.getOrganizacion(mysql, organizacionId)
+        
+        return jsonify({'message': 'Organizacion obtenida', 'organizacion':organizacion}), 200
+    
+    except Exception as e:
+        return jsonify({'error': 'error'}), 401
+    
+    
+    # ------------------- ROLES ------------------- #
+
+@app.route('/getRoles', methods=['GET'])
+def get_roles():
+    
+    try:
+        roles = ModelRoles.getAllRoles(mysql)
+        if roles:
+            return jsonify({'message':'ok', 'roles':roles}), 200
+        else:
+            return jsonify({'error': 'error'}), 401
+    except Exception as e:
+        return jsonify({'error':'error'}), 400
+    
+    
+    # ------------------- IMAGENES ------------------- #
+    
+@app.route('/getImagenesPaciente', methods=['GET'])
+def get_imagenes_paciente():
+    
+            
+    return jsonify({'message': 'Imagenes obtenidas'}), 200
+    
+     # ------------------- EMAILS ------------------- #
+     
+@app.route('/sendMailInvitacion', methods=['POST'])
+def sendMailInvitacion():
+    data = request.get_json()
+    email = data.get('email')
+    organizacion = data.get('organizacion')
+    rol = data.get('rol')
+    
+    try:
+        msg = Message(
+            'Invitación a Cuidatiavita',
+            recipients=[email],
+            sender=('Cuidatia Vita', MAIL_SENDER),
+        )
+        
+        msg.html = f"""
+            <p>Hola,</p>
+            <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
+            <a href="{FRONTEND_API_URL}usuarios/create?m={email}&r={rol}&o={organizacion}">Aceptar invitación</a>
+        """
+        
+        mail.send(msg)
+        return jsonify({'message': 'Email enviado correctamente'}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido enviar el email'}), 400
+    
+@app.route('/sendMailRecuperacion', methods=['POST'])
+def sendMailRecuperar():
+    data = request.get_json()
+    email = data.get('email')
+    
+    try:
+        msg = Message(
+            'Recuperación de contraseña',
+            recipients=[email],
+            sender=('Cuidatia Vita', MAIL_SENDER),
+        ) 
+        
+        msg.html = f"""
+            <p>Hola,</p>
+            <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
+            <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
+        """
+        
+        mail.send(msg) 
+        return jsonify({'message': 'Email enviado correctamente'}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido enviar el email'}), 400
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
