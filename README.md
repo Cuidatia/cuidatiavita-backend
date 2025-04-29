@@ -70,6 +70,18 @@ El servidor se ejecutará por defecto en `http://localhost:5000`.
 
 ---
 
+
+
+## 🗃️ Base de datos
+
+El proyecto incluye un script SQL para crear la estructura inicial de la base de datos MySQL. Se encuentra en la carpeta `SQL/`:
+
+📂 `SQL/cuidatiavitadb.sql`
+
+---
+
+
+
 ## 🔐 Variables de entorno
 
 Ejemplo de archivo `.env`:

@@ -85,3 +85,49 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+            
+    @classmethod
+    def getPacientesReferencia(cls, mysql, user):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                           select * from pacientes 
+                           inner join paciente_personalReferencia on pacientes.id = paciente_personalReferencia.idPaciente
+                           inner join usuarios on usuarios.id = paciente_personalReferencia.idUsuario
+                           where usuarios.id = %s
+                           """, (user))
+            rows = cursor.fetchall()
+            pacientes= []
+            
+            for row in rows:
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12])
+                pacientes.append(paciente.to_dict())
+                
+            return pacientes
+        except Exception as e:
+            return jsonify({'error':'Error al obtener los pacientes.'})
+        finally:
+            cursor.close()
+            conn.close()
+            
+    @classmethod
+    def asignarPersonaReferencia(cls, mysql, pacienteId, usuarioId):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                           insert into paciente_personalReferencia (idPaciente, idUsuario) 
+                           values (%s, %s)
+                           """, (pacienteId, usuarioId))
+            
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()

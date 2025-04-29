@@ -50,7 +50,6 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    
     try:
         usuario = ModelUser.login(mysql,email,password)
         
@@ -218,6 +217,45 @@ def eliminar_pacientes():
     ModelPaciente.deletePaciente(mysql, pacienteId)  
         
     return jsonify({'message':'Paciente eliminado correctamente.'}), 200
+    
+    
+    # ------------------- PERSONAS DE REFERENCIA | FAMILIARES ------------------- #
+    
+@app.route('/getPacientesReferencia', methods=['GET'])
+def get_pacientes_referencia():
+    user = request.args.get('user')
+    
+    try:
+        pacientes = ModelPaciente.getPacientesReferencia(mysql, user)
+        if not pacientes:
+            return jsonify({'message': 'No tiene asignado a ningún paciente'}), 200
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los pacientes.'}), 400
+    
+@app.route('/getUsuariosReferencia', methods=['GET'])
+def get_usuarios_referencia():
+    pacienteId = request.args.get('id')
+    
+    try:
+        usuarios = ModelUser.getPersonalReferencia(mysql, pacienteId)
+        if not usuarios:
+            return jsonify({'message': 'No tiene asignado a ningún usuario'}), 200
+        return jsonify({'message': 'Pacientes obtenidos', 'usuarios':usuarios}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los pacientes.'}), 400
+    
+@app.route('/asignarPersonaReferencia', methods=['POST'])
+def asignar_persona_referencia():
+    data = request.get_json()
+    pacienteId = data.get('pacienteId')
+    usuarioId = data.get('usuarioId')
+    
+    try:
+        ModelPaciente.asignarPersonaReferencia(mysql, pacienteId, usuarioId)
+        return jsonify({'message': 'Persona de referencia asignada correctamente'}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al asignar la persona de referencia.'}), 400
     
     # ------------------- ORGANIZACIONES ------------------- #
     

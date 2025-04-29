@@ -209,3 +209,30 @@ class ModelUser():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def getPersonalReferencia(cls,mysql,pacienteId):
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            print('entra')
+            cursor.execute("""
+                           select usuarios.nombre from usuarios 
+                           inner join paciente_personalReferencia on usuarios.id = paciente_personalReferencia.idUsuario
+                           inner join pacientes on pacientes.id = paciente_personalReferencia.idPaciente
+                           where pacientes.id = %s
+                           """, (pacienteId))
+            
+            usuarios = cursor.fetchall()
+            users= []
+            
+            for usuario in usuarios:
+                user = Usuario("",usuario[0],"",True,"","")
+                users.append(user.to_dict())
+                
+            return users
+        except Exception as e:
+            return jsonify({'error':e}), 400
+        finally:
+            cursor.close()
+            conn.close()
