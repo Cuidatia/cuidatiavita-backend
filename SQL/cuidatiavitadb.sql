@@ -39,22 +39,22 @@ create table usuario_roles(
 
 create table pacientes (
 	`id` int not null auto_increment,
+    `idOrganizacion` int not null,
     `name` varchar(100) not null,
     `firstSurname` varchar(100) not null,
     `secondSurname` varchar(100) not null,
     `alias` varchar(50) not null,
     `birthDate` date not null,
     `age` int not null,
-    `birdPlace` varchar(100) not null,
+    `birdPlace` varchar(100),
     `nacionality` varchar(50) not null,
     `gender` enum('M','F','O') not null,
     `address` varchar(100) not null,
     `maritalStatus` enum('ST','C', 'V', 'S', 'D') not null,
     `language` varchar(20) not null,
-    `otherLanguages` varchar(50) not null,
-    `culturalHeritage` varchar(255) not null,
-    `faith` varchar(100) not null,
-    `idOrganizacion` int not null,
+    `otherLanguages` varchar(50),
+    `culturalHeritage` varchar(255),
+    `faith` varchar(100),
     primary key (`id`),
     constraint FK_PacienteOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`)
 		on delete cascade

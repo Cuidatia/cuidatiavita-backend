@@ -40,7 +40,7 @@ class ModelPaciente():
             
             for row in rows:
                 paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],
-                                    row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21])
+                                    row[11],row[12],row[13],row[14],row[15],row[16])
                 pacientes.append(paciente.to_dict())
                 
             return pacientes
@@ -53,16 +53,16 @@ class ModelPaciente():
         
     @classmethod
     def createPaciente(cls,mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,
-                       address,maritalStatus,language,otherLanguages,culturalHeritage,faith,lifeStory,personality,contactData,sanitary,images):
+                       address,maritalStatus,language,otherLanguages,culturalHeritage,faith):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            insert into pacientes (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,
-                           address,maritalStatus,language,otherLanguages.culturalHeritage,faith,lifeStory,personality,contactData,sanitary,images)
-                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                           address,maritalStatus,language,otherLanguages.culturalHeritage,faith)
+                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,
-                                 address,maritalStatus,language,otherLanguages,culturalHeritage,faith,lifeStory,personality,contactData,sanitary,images) )
+                                 address,maritalStatus,language,otherLanguages,culturalHeritage,faith))
             
             conn.commit()
             usuario_id = cursor.lastrowid
