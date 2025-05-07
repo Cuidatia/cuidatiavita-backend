@@ -63,32 +63,32 @@ create table pacientes (
 
 create table lifeStory(
 	`id` int not null auto_increment,
+    `idPaciente` int not null,
     `idChilhood` int,
     `idYouth` int,
     `idAdulthood` int,
     `idMaturity` int,
-    `idPaciente` int,
 	primary key (`id`),
     constraint FK_PacienteLifeStory foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
         on update cascade
 );
 
-create table chilhood(
+create table childhood(
     `id` int not null auto_increment,
-    `chilhoodStudy` varchar(100),
-    `chilhoodSchool` varchar(100),
-    `chilhoodMotivations`varchar(100),
-    `chilhoodFamilyCore` varchar(100),
-    `chilhoodFriendsGroup` varchar(100),
-    `chilhoodTravels` varchar(100),
-    `chilhoodFavouritePlace` varchar(100),
-    `chilhoodPositiveExperiences` varchar(255),
-    `chilhoodNegativeExperiences` varchar(255),
-    `chilhoodAddress` varchar(100),
-    `chilhoodLikes` varchar(100),
-    `chilhoodAfraids` varchar(100),
-    `idLifeStory` int,
+    `idLifeStory` int not null,
+    `childhoodStudy` varchar(100),
+    `childhoodSchool` varchar(100),
+    `childhoodMotivations`varchar(100),
+    `childhoodFamilyCore` varchar(100),
+    `childhoodFriendsGroup` varchar(100),
+    `childhoodTravels` varchar(100),
+    `childhoodFavouritePlace` varchar(100),
+    `childhoodPositiveExperiences` varchar(255),
+    `childhoodNegativeExperiences` varchar(255),
+    `childhoodAddress` varchar(100),
+    `childhoodLikes` varchar(100),
+    `childhoodAfraids` varchar(100),
     primary key (`id`),
     constraint FK_LifeStoryChilhood foreign key (`idLifestory`) references lifeStory(`id`)
 		on delete cascade
@@ -97,6 +97,7 @@ create table chilhood(
 
 create table youth (
     `id` int not null auto_increment,
+    `idLifeStory` int not null,
     `youthStudy` varchar(100),
     `youthSchool` varchar(100),
     `youthWorkplace` varchar(100),
@@ -116,7 +117,7 @@ create table youth (
     `youthUncompletedProjects` varchar(100),
     `youthIllness` varchar(100),
     `youthPersonalCrisis` varchar(100),
-    `idLifeStory` int,
+
     primary key (`id`),
     constraint FK_LifeStoryYouth foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -125,6 +126,7 @@ create table youth (
 
 create table adulthood (
     `id` int not null auto_increment,
+    `idLifeStory` int not null,
     `sentimentalCoupleAdulthood` varchar(100),
     `childrenAdulthood` varchar(100),
     `adulthoodStudy` varchar(100),
@@ -144,7 +146,6 @@ create table adulthood (
     `adulthoodUncompletedProjects` varchar(100),
     `adulthoodIllness` varchar(100),
     `adulthoodPersonalCrisis` varchar(100),
-    `idLifeStory` int,
     primary key (`id`),
     constraint FK_LifeStoryAdulthood foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -153,6 +154,7 @@ create table adulthood (
 
 create table maturity (
     `id` int not null auto_increment,
+    `idLifeStory` int not null,
     `grandchildrenMaturity` varchar(100),
     `maturityWorkplace` varchar(100),
     `maturityWorkRole` varchar(100),
@@ -170,7 +172,6 @@ create table maturity (
     `maturityUncompletedProjects` varchar(100),
     `maturityIllness` varchar(100),
     `maturityPersonalCrisis` varchar(100),
-    `idLifeStory` int,
     primary key (`id`),
     constraint FK_LifeStoryMaturity foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -179,6 +180,7 @@ create table maturity (
 
 create table personality (
     `id` int not null auto_increment,
+    `idPaciente` int not null,
     `nature` varchar(100),
     `habits` varchar(100),
     `likes` varchar(255),
@@ -188,7 +190,6 @@ create table personality (
     `hobby` varchar(255),
     `tecnologyLevel` varchar(100),
     `goals` varchar(255),
-    `idPaciente` int not null,
     primary key (`id`),
     constraint FK_PacientePersonality foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -197,13 +198,13 @@ create table personality (
 
 create table contactData (
     `id` int not null auto_increment,
+    `idPaciente` int not null,
     `contactName` varchar(100),
     `contactFirstSurname` varchar(100),
     `contactSecondSurname` varchar(100),
     `contactAddress` varchar(100),
     `contactEmail` varchar(100),
     `contactTelecom` varchar(20),
-    `idPaciente` int not null,
     primary key (`id`),
     constraint FK_PacienteContact foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -212,10 +213,10 @@ create table contactData (
 
 create table mainSanitaryData (
     `id` int not null auto_increment,
+    `idPaciente` int not null,
     `mainIllness` varchar(255),
     `allergies` varchar(255),
     `otherIllnesses` varchar(255),
-    `idPaciente` int not null,
     primary key (`id`),
     constraint FK_PacienteSanitary foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -224,11 +225,11 @@ create table mainSanitaryData (
 
 create table pharmacy (
     `id` int not null auto_increment,
+    `idSanitary` int not null,
     `treatment` varchar(255),
     `regularPharmacy` varchar(255),
     `visitFrequency` varchar(100),
     `paymentMethod` enum('S','P','D'),
-    `idSanitary` int not null,
     primary key (`id`),
     constraint FK_PharmacySanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -237,6 +238,7 @@ create table pharmacy (
 
 create table nursingMedicine (
     `id` int not null auto_increment,
+    `idSanitary` int not null,
     `weight` int,
     `heigth` int,
     `nutritionalSituation` varchar(255),
@@ -244,7 +246,6 @@ create table nursingMedicine (
     `fallRisks` varchar(255),
     `mobilityNeeds` varchar(255),
     `healthPreferences` varchar(255),
-    `idSanitary` int not null,
     primary key (`id`),
     constraint FK_NursingSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -253,10 +254,10 @@ create table nursingMedicine (
 
 create table socialEducationOccupationalTherapy (
     `id` int not null auto_increment,
+    `idSanitary` int not null,
     `cognitiveAbilities` varchar(255),
     `affectiveCapacity` varchar(255),
     `behaviorCapacity` varchar(255),
-    `idSanitary` int not null,
     primary key (`id`),
     constraint FK_SocialEduSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -265,6 +266,7 @@ create table socialEducationOccupationalTherapy (
 
 create table socialWork (
     `id` int not null auto_increment,
+    `idSanitary` int not null,
     `residentAndRelationship` varchar(255),
     `petNameAndBreedPet` varchar(255),
     `collaborationLevel` varchar(255),
@@ -272,7 +274,6 @@ create table socialWork (
     `groupParticipation` varchar(255),
     `resources` varchar(255),
     `legalSupport` varchar(255),
-    `idSanitary` int not null,
     primary key (`id`),
     constraint FK_SocialWorkSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -281,12 +282,12 @@ create table socialWork (
 
 create table kitchenHygiene (
     `id` int not null auto_increment,
+    `idSanitary` int not null,
     `favouriteFood` varchar(255),
     `dietaryRestrictions` varchar(255),
     `confortAdvices` varchar(255),
     `routine` varchar(255),
     `carePlan` varchar(255),
-    `idSanitary` int not null,
     primary key (`id`),
     constraint FK_KitchenSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -295,8 +296,8 @@ create table kitchenHygiene (
 
 create table otherData (
     `id` int not null auto_increment,
-    `professionalNotes` text,
     `idSanitary` int not null,
+    `professionalNotes` text,
     primary key (`id`),
     constraint FK_OthersSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -305,8 +306,8 @@ create table otherData (
 
 create table images(
     `id` int not null auto_increment,
-    `photoReferences` varchar(255) not null,
     `idPaciente` int not null,
+    `photoReferences` varchar(255) not null,
     primary key (`id`),
     constraint FK_ImagenPaciente foreign key (`idPaciente`) references pacientes(`id`)
         on delete cascade

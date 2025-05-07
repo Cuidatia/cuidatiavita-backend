@@ -2,8 +2,7 @@ import datetime
 class Paciente():
     def __init__(self, id: int, idOrganizacion: int, 
                  name: str, firstSurname: str, secondSurname: str, alias: str, birthDate: str, age : str, birthPlace: str, gender: str,
-                 address: str, nationality: str, maritalStatus: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str,
-                 lifeStory = None, personality = None, contactData = None, sanitary = None, images = None):
+                 address: str, nationality: str, maritalStatus: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
             self.id = id
             self.idOrganizacion = idOrganizacion
             self.name = name
@@ -21,11 +20,6 @@ class Paciente():
             self.otherLanguages = otherLanguages
             self.culturalHeritage = culturalHeritage
             self.faith = faith
-            self.lifeStory = lifeStory
-            self.personality = personality
-            self.contactData = contactData
-            self.sanitary = sanitary
-            self.images = images
     def to_dict(self): 
         return {
             'id' : self.id,
@@ -44,31 +38,25 @@ class Paciente():
             'language': self.language,
             'otherLanguages' : self.otherLanguages,
             'culturalHeritage': self.culturalHeritage,
-            'faith': self.faith,
-            'lifeStory' : self.lifeStory.to_dict() if self.lifeStory else None,
-            'personality' : self.personality.to_dict() if self.personality else None,
-            'contactData' : self.contactData.to_dict() if self.contactData else None,
-            'sanitary' : self.sanitary.to_dict() if self.sanitary else None,
-            'images' : self.images.to_dict() if self.images else None
+            'faith': self.faith
         }
 
 class LifeStory():
-     def __init__(self, id : int, idPaciente : int,
-                  childhood = None, youth = None, adulthood = None, maturity = None):
+     def __init__(self, id : int, idPaciente : int, idChildhood : int, idYouth : int, idAdulthood : int, idMaturity : int):
           self.id = id
           self.idPaciente = idPaciente
-          self.childhood = childhood
-          self.youth = youth
-          self.adulthood = adulthood
-          self.maturity = maturity
+          self.idChildhood = idChildhood
+          self.idYouth = idYouth
+          self.idAdulthood = idAdulthood
+          self.idMaturity = idMaturity
      def to_dict(self): 
         return {
             'id' : self.id,
             'idPaciente' : self.idPaciente,
-            'childhood' : self.childhood.to_dict() if self.childhood else None,
-            'youth' : self.youth.to_dict() if self.youth else None,
-            'adulthood' : self.adulthood.to_dict() if self.adulthood else None,
-            'maturity' : self.maturity.to_dict() if self.maturity else None
+            'idChildhood' : self.idChildhood,
+            'idYouth' : self.idYouth,
+            'idAdulthood' : self.idAdulthood,
+            'idMaturity' : self.idMaturity
         }
 
 class Childhood():
@@ -317,33 +305,19 @@ class ContactData():
      
 class MainSanitaryData():
      def __init__(self, id : int, idPaciente : int, 
-                  mainIllness : str, allergies : str, otherIllness : str,
-                  pharmacy = None, nursing = None, socialEdu = None, socialWork = None, kitchen = None, other = None):
+                  mainIllness : str, allergies : str, otherIllness : str):
           self.id = id
           self.idPaciente = idPaciente
           self.mainIllness = mainIllness
           self.allergies = allergies
           self.otherIllness = otherIllness
-          self.pharmacy = pharmacy
-          self.nursing = nursing
-          self.socialEdu = socialEdu
-          self.socialWork = socialWork
-          self.kitchen = kitchen
-          self.other = other
-
      def to_dict(self): 
         return {
             'id' : self.id,
             'idPaciente' : self.idPaciente,
             'mainIllness' : self.mainIllness,
             'allergies' : self.allergies,
-            'otherIllness' : self.otherIllness,
-            'pharmacy' : self.pharmacy.to_dict() if self.pharmacy else None,
-            'nursing' : self.nursing.to_dict() if self.nursing else None,
-            'socialEdu' : self.socialEdu.to_dict() if self.socialEdu else None,
-            'socialWork' : self.socialWork.to_dict() if self.socialWork else None,
-            'kitchen' : self.kitchen.to_dict() if self.kitchen else None,
-            'other' : self.other.to_dict() if self.other else None
+            'otherIllness' : self.otherIllness
         }
      
 class Pharmacy():
