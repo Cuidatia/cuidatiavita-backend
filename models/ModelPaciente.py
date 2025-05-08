@@ -44,13 +44,32 @@ class ModelPaciente():
         try:
             cursor.execute("""
                            insert into pacientes (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                           nationality,gender,address,maritalStatus,language,otherLanguages.culturalHeritage,faith)
+                           nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
                                  nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updatePaciente(cls,mysql,idPaciente,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
+                       nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update pacientes set idOrganizacion = %s, name = %s, firstSurname = %s, secondSurname = %s, alias = %s,
+                           birthDate = %s, age = %s, birthPlace = %s, nationality = %s, gender = %s, address = %s, maritalStatus = %s,
+                           language = %s, otherLanguages = %s, culturalHeritage = %s, faith =%s where id = %s
+                           """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,
+                                 gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith, idPaciente))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -102,6 +121,21 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateLifeStoryPaciente(cls,mysql,idPaciente,idChildhood,idYouth,idAdulthood,idMaturity):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update lifestory set idChildhood = %s, idYouth = %s, idAdulthood = %s, idMaturity = %s where idPaciente = %s
+                           """, (idChildhood,idYouth,idAdulthood,idMaturity,idPaciente))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteLifeStoryPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -130,7 +164,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSanitaryPaciente(cls,mysql,idPaciente,mainIllness,allergies,otherIllness):
+    def createSanitaryDataPaciente(cls,mysql,idPaciente,mainIllness,allergies,otherIllness):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
@@ -141,6 +175,21 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateSanitaryDataPaciente(cls,mysql,idPaciente,mainIllness,allergies,otherIllness):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update mainsanitarydata set mainIllness = %s, allergies = %s, otherIllness = %s where idPaciente = %s
+                           """, (mainIllness,allergies,otherIllness,idPaciente))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -192,6 +241,22 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updatePersonalityPaciente(cls,mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update personality set nature = %s, habits = %s, likes = %s, dislikes = %s, calmMethods = %s,
+                           disturbMethods = %s, hobby = %s, tecnologyLevel = %s, goals = %s where idPaciente = %s
+                           """, (nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals,idPaciente))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deletePersonalityPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -231,6 +296,22 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update contactdata set contactName = %s, contactFirstSurname = %s, contactSecondSurname = %s, contactAddress = %s, 
+                           contactEmail = %s, contactTelecom = %s where idPaciente = %s
+                           """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, idPaciente))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -282,6 +363,21 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateImagesPaciente(cls,mysql,idPaciente,photoReferences):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update images set photoReferences = %s where idPaciente = %s
+                           """, (photoReferences,idPaciente))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteImagesPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -321,6 +417,21 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updatePharmacyPaciente(cls,mysql,idSanitary, treatment, regularPharmacy, visitFrequency, paymentMethod):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update pharmacy set treatment = %s, regularPharmacy = %s, visitFrequency = %s, paymentMethod = %s where idSanitary = %s
+                           """, (treatment, regularPharmacy, visitFrequency, paymentMethod,idSanitary))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -372,6 +483,22 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateNursingPaciente(cls,mysql,idSanitary,weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update nursingmedicine set weight = %s, height = %s, nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
+                           healthPreferences = %s where idSanitary = %s
+                           """, (weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences,idSanitary))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteNursingPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -411,6 +538,21 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update socialeducationoccupationaltherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s where idSanitary = %s
+                           """, (cognitiveAbilities, affectiveCapacity, behaviorCapacity,idSanitary))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -465,6 +607,22 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, collaborationLevel, autonomyLevel, groupParticipation, resources, legalSupport):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update socialwork set residentAndRelationship = %s, petNameAndBreetPet = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s,
+                           resources = %s, legalSupport = %s where idSanitary = %s
+                           """, (residentAndRelationship,petNameAndBreetPet,collaborationLevel,autonomyLevel,groupParticipation,resources,legalSupport,idSanitary))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteSocialWorkPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -510,6 +668,21 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateKitchenPaciente(cls,mysql,idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update kitchenhygiene set favouriteFood = %s, dietaryRestrictions = %s, confortAdvices = %s, routine = %s, carePlan = %s where idSanitary = %s
+                           """, (favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan,idSanitary))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteKitchenPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -549,6 +722,21 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateOtherDataPaciente(cls,mysql,idSanitary,professionalNotes):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update otherdata set professionalNotes = %s where idSanitary = %s
+                           """, (professionalNotes,idSanitary))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -607,6 +795,27 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateChildhoodPaciente(cls,mysql,idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                                childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
+                                childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodDislikes):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update childhood set childhoodStudy = %s, childhoodSchool = %s, childhoodMotivations = %s, childhoodFamilyCore = %s, childhoodFriendsGroup = %s,
+                           childhoodFavouritePlace = %s, childhoodPositiveExperiences = %s, childhoodNegativeExperiences = %s, childhoodAddress = %s, childhoodLikes = %s,
+                           childhoodDislikes = %s where idLifeStory = %s
+                           """, (childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,childhoodFriendsGroup,childhoodTravels,
+                                 childhoodFavouritePlace, childhoodPositiveExperiences,childhoodNegativeExperiences, childhoodAddress, 
+                                 childhoodLikes, childhoodDislikes,idLifeStory))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteChildhoodPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -654,10 +863,31 @@ class ModelPaciente():
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
                                 youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis))
-            
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateYouthPaciente(cls,mysql,idLifeStory,youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,
+                                youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
+                                youthUncompletedProjects, youthIllness, youthPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update youth set youthStudy = %s, youthSchool = %s, youthWorkplace = %s, youthWorkRole = %s, youthFamilyCore = %s, youthFriendsGroup = %s,
+                           youthTravels = %s, youthFavouritePlace = %s, youthRoutine = %s, youthPositiveExperiences = %s, youthNegativeExperiences = %s, youthAddress = %s,
+                           youthLikes = %s,youthAfraids = %s,youthProjects = %s,youthUncompletedProjects = %s,youthIllness = %s,youthPersonalCrisis = %s where idLifeStory = %s
+                           """, (youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,
+                                youthPositiveExperiences,youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects, youthUncompletedProjects, youthIllness,
+                                youthPersonalCrisis,idLifeStory))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
@@ -719,6 +949,30 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def updateAdulthoodPaciente(cls,mysql,idLifeStory,sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+                                adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
+                                adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
+                                adulthoodIllness, adulthoodPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update adulthood set sentimentalCoupleAdulthood = %s, childrenAdulthood = %s, adulthoodStudy = %s, adulthoodWorkplace = %s, adulthoodWorkRole = %s,
+                           adulthoodFamilyCore = %s, adulthoodFriendsGroup = %s, adulthoodWorkGroup = %s, adulthoodTravels = %s, adulthoodFavouritePlace = %s, adulthoodRoutine = %s,
+                           adulthoodPositiveExperiences = %s, adulthoodNegativeExperiences = %s, adulthoodAddress = %s,adulthoodEconomicSituation = %s,adulthoodProjects = %s,
+                           adulthoodUncompletedProjects = %s,adulthoodIllness = %s,adulthoodPersonalCrisis = %s where idLifeStory = %s
+                           """, (sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+                                adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
+                                adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
+                                adulthoodIllness, adulthoodPersonalCrisis,idLifeStory))
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deleteAdulthoodPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -768,6 +1022,30 @@ class ModelPaciente():
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
+        except Exception as e:
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def updateMaturityPaciente(cls,mysql,idLifeStory,grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+                                maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
+                                maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
+                                maturityIllness,maturityPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                           update maturity set grandchildrenMaturity = %s, maturityWorkplace = %s, maturityWorkRole = %s, maturityFamilyCore = %s, maturityFriendsGroup = %s,
+                           maturityWorkGroup = %s, maturityTravels = %s, maturityFavouritePlace = %s, maturityRoutine = %s, maturityPositiveExperiences = %s, 
+                           maturityNegativeExperiences = %s, maturityRetirement = %s, maturityWills = %s, maturityProjects = %s,maturityUncompletedProjects = %s,
+                           maturityIllness = %s,maturityPersonalCrisis = %s where idLifeStory = %s
+                           """, (grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+                                maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
+                                maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
+                                maturityIllness,maturityPersonalCrisis,idLifeStory))
+            conn.commit()
+            return True
         except Exception as e:
             return e
         finally:
