@@ -215,7 +215,6 @@ class ModelUser():
         try:
             conn = mysql.connect()
             cursor = conn.cursor()
-            print('entra')
             cursor.execute("""
                            select usuarios.nombre from usuarios 
                            inner join paciente_personalReferencia on usuarios.id = paciente_personalReferencia.idUsuario

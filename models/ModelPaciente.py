@@ -45,7 +45,7 @@ class ModelPaciente():
             cursor.execute("""
                            insert into pacientes (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
                            nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith)
-                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
                                  nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith))
             conn.commit()
@@ -216,22 +216,24 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from personality where idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return jsonify({'error':'No se ha encontrado la personalidad del paciente.'})
             personality= Personality(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
             return personality.to_dict()
-        except:
+        except Exception as e:
             return jsonify({'error':'Error al obtener _personality_ del paciente.'})
         finally:
             cursor.close()
             conn.close()
     @classmethod
-    def createPersonalityPaciente(cls,mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals):
+    def createPersonalityPaciente(cls,mysql, pacienteId, nature, habits, likes, dislikes, calmMethods,disturbMethods,hobbies,technologyLevel,goals):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            insert into personality (idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals))
+                           """, (pacienteId,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -757,11 +759,12 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getChildhoodPaciente(cls,mysql,idLifeStory):
+    def getChildhoodPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from childhood where idLifeStory = %s """, (idLifeStory))
+            cursor.execute(""" select * from childhood 
+                           inner join lifeStory on lifeStory.id = childhood.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             childhood = Childhood(row[0],row[1],row[2],row[3],row[4],row[5],row[6],
                                   row[7],row[8],row[9],row[10],row[11],row[12],row[13])
@@ -770,18 +773,26 @@ class ModelPaciente():
             return jsonify({'error':'Error al obtener _childhood_ del paciente.'})
         finally:
             cursor.close()
-            conn.close()        
+            conn.close() 
+                   
     @classmethod
-    def createChildhoodPaciente(cls,mysql,idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+    def createChildhoodPaciente(cls,mysql,idPaciente,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodDislikes):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
+                           insert into lifestory (idPaciente) values(%s)
+                           """, (idPaciente))
+            
+            conn.commit()
+            idLifeStory = cursor.lastrowid
+            
+            cursor.execute("""
                            insert into childhood (idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
-                                childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodDislikes)
+                                childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
@@ -794,6 +805,7 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
     @classmethod
     def updateChildhoodPaciente(cls,mysql,idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
@@ -1081,7 +1093,7 @@ class ModelPaciente():
             pacientes= []
             
             for row in rows:
-                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12])
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16])
                 pacientes.append(paciente.to_dict())
                 
             return pacientes

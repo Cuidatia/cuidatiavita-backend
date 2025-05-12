@@ -147,17 +147,14 @@ def recuperar_password():
     data = request.get_json()
     email = data.get('email')
     password = data.get('newPassword')
-    print('entra')
     try:
         usuarioId = ModelUser.getUserByEmail(mysql, email)
-        print(usuarioId)
         if not usuarioId:
             return jsonify({'error': 'No se ha encontrado el usuario'}), 404
         
         ModelUser.updatePassword(mysql, usuarioId, password)
         return jsonify({'message': 'Contraseña recuperada correctamente.'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido recuperar la contraseña.'}), 400
     
     
@@ -190,21 +187,27 @@ def get_paciente():
 @app.route('/crearPaciente', methods=['POST'])
 def crear_paciente():
     data = request.get_json()
-    nombre = data.get('nombre')
-    primerApellido = data.get('primerApellido')
-    segundoApellido = data.get('segundoApellido')
+    name = data.get('nombre')
+    firstSurname = data.get('primerApellido')
+    secondSurname = data.get('segundoApellido')
     alias = data.get('alias')
-    fechaNacimiento = data.get('fechaNacimiento')
-    direccion = data.get('direccion')
-    localidad = data.get('localidad')
-    nacionalidad = data.get('nacionalidad')
-    genero = data.get('genero')
-    estadoCivil = data.get('estadoCivil')
+    birthDate = data.get('fechaNacimiento')
+    age = data.get('edad')
+    birthPlace = data.get('lugarNacimiento')
+    address = data.get('direccion')
+    nationality = data.get('nacionalidad')
+    gender = data.get('genero')
+    maritalStatus = data.get('estadoCivil')
+    language = data.get('idioma')
+    otherLanguages = data.get('otrosIdiomas')
+    culturalHeritage = data.get('origenCultural')
+    faith = data.get('creencias')
     imgPerfil = data.get('imgPerfil')
     idOrganizacion = data.get('idOrganizacion')
     
     try:
-        pacienteId = ModelPaciente.createPaciente(mysql,nombre,primerApellido,segundoApellido,alias,fechaNacimiento,direccion,localidad,nacionalidad,genero,estadoCivil,imgPerfil,idOrganizacion)
+        pacienteId = ModelPaciente.createPaciente(mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
+                       nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith)
         return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId}), 200
     except Exception as e:
         return jsonify({'error':'Error al añadir el paciente.'}), 400
@@ -217,6 +220,87 @@ def eliminar_pacientes():
     ModelPaciente.deletePaciente(mysql, pacienteId)  
         
     return jsonify({'message':'Paciente eliminado correctamente.'}), 200
+
+
+    # ------------------- PACIENTES | PERSONALIDAD ------------------- #
+    
+@app.route('/pacientePersonality', methods=['GET'])
+def get_paciente_personality():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacientePersonality = ModelPaciente.getPersonalityPaciente(mysql, pacienteId)
+        if not pacientePersonality:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos personales obtenidos', 'personality':pacientePersonality}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos personales.'}), 400
+    
+    
+@app.route('/pacientePersonality', methods=['POST'])
+def post_paciente_personality():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    nature = data.get('nature')
+    habits = data.get('habits')
+    likes = data.get('likes')
+    dislikes = data.get('dislikes')
+    calmMethods = data.get('calmMethods')
+    disturbMethods = data.get('disturbMethods')
+    hobbies = data.get('hobbies')
+    technologyLevel = data.get('technologyLevel')
+    goals = data.get('goals')
+    
+    try:
+        paciente = ModelPaciente.createPersonalityPaciente(mysql, pacienteId, nature, habits, likes, dislikes, calmMethods,disturbMethods,hobbies,technologyLevel,goals)
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos personales obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos personales.'}), 400
+    
+
+    # ------------------- PACIENTES | INFANCIA ------------------- #
+    
+@app.route('/pacienteInfancia', methods=['GET'])
+def get_paciente_infancia():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacienteInfancia = ModelPaciente.getChildhoodPaciente(mysql, pacienteId)
+        if not pacienteInfancia:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de infancia obtenidos', 'infancia':pacienteInfancia}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
+    
+@app.route('/pacienteInfancia', methods=['POST'])
+def post_paciente_infancia():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    childhood = data.get('childhood')
+    # childhoodStudy = data.get('childhoodStudy')
+    # childhoodSchool = data.get('childhoodSchool')
+    # childhoodMotivations = data.get('childhoodMotivations')
+    # familyCore = data.get('familyCore')
+    # friendsGroup = data.get('friendsGroup')
+    # childhoodTravels = data.get('childhoodTravels')
+    # favouritePlace = data.get('favouritePlace')
+    # childhoodPositiveExperiences = data.get('childhoodPositiveExperiences')
+    # childhoodNegativeExperiences = data.get('childhoodNegativeExperiences')
+    # childhoodAdress = data.get('childhoodAddress')
+    # childhoodLikes = data.get('childhoodLikes')
+    # childhoodAfraids = data.get('childhoodAfraids')
+    print(childhood['childhoodStudy'])
+    
+    try:
+        paciente = ModelPaciente.createChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudy"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de infancia obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
     
     
     # ------------------- PERSONAS DE REFERENCIA | FAMILIARES ------------------- #
@@ -314,7 +398,7 @@ def sendMailInvitacion():
         msg.html = f"""
             <p>Hola,</p>
             <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
-            <a href="{FRONTEND_API_URL}usuarios/create?m={email}&r={rol}&o={organizacion}">Aceptar invitación</a>
+            <a href="{FRONTEND_API_URL}personal/create?m={email}&r={rol}&o={organizacion}">Aceptar invitación</a>
         """
         
         mail.send(msg)

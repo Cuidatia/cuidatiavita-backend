@@ -21,7 +21,7 @@ create table usuarios(
 create table roles(
 	`id` int not null auto_increment,
     `nombre` varchar(50) not null,
-    `description` varchar(255) not null,
+    `description` varchar(255) null,
     primary key (`id`)
 );
 
@@ -46,8 +46,8 @@ create table pacientes (
     `alias` varchar(50) not null,
     `birthDate` date not null,
     `age` int not null,
-    `birdPlace` varchar(100),
-    `nacionality` varchar(50) not null,
+    `birthPlace` varchar(100),
+    `nationality` varchar(50) not null,
     `gender` enum('M','F','O') not null,
     `address` varchar(100) not null,
     `maritalStatus` enum('ST','C', 'V', 'S', 'D') not null,

@@ -1,8 +1,8 @@
 import datetime
 class Paciente():
     def __init__(self, id: int, idOrganizacion: int, 
-                 name: str, firstSurname: str, secondSurname: str, alias: str, birthDate: str, age : str, birthPlace: str, gender: str,
-                 address: str, nationality: str, maritalStatus: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
+                 name: str, firstSurname: str, secondSurname: str, alias: str, birthDate: str, age : str, birthPlace: str, nationality: str, gender: str,
+                 address: str, maritalStatus: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
             self.id = id
             self.idOrganizacion = idOrganizacion
             self.name = name
