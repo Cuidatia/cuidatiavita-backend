@@ -64,10 +64,6 @@ create table pacientes (
 create table lifeStory(
 	`id` int not null auto_increment,
     `idPaciente` int not null,
-    `idChilhood` int,
-    `idYouth` int,
-    `idAdulthood` int,
-    `idMaturity` int,
 	primary key (`id`),
     constraint FK_PacienteLifeStory foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -240,7 +236,7 @@ create table nursingMedicine (
     `id` int not null auto_increment,
     `idSanitary` int not null,
     `weight` int,
-    `heigth` int,
+    `height` int,
     `nutritionalSituation` varchar(255),
     `sleepQuality` varchar(255),
     `fallRisks` varchar(255),

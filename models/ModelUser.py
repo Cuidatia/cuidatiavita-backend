@@ -1,15 +1,17 @@
 from flask import jsonify
 import bcrypt
+import logging
 from models.entities.Usuario import Usuario
 
 class ModelUser():
     
     @classmethod
     def login(cls,mysql,email,password):
+        logger = logging.getLogger("LoginModule")
         try:
+            logger.info(f"Iniciado proceso login para:\n email = {email} password = {password}")
             con = mysql.connect()
             cursor = con.cursor()
-            
             cursor.execute(
                 'select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre, usuarios.password ' + 
                 'from usuarios ' +
@@ -18,17 +20,19 @@ class ModelUser():
                 'where usuarios.email = %s'
                 , (email)
             )
-            
             row = cursor.fetchone()
-            
+            logger.warning(f"Datos recuperados:\n id = {row[0]} nombre = {row[1]} email = {row[2]} organizacion = {row[3]} rol = {row[4]} password = {row[5]}")
             isValidPassword = bcrypt.checkpw(password.encode('utf-8'), row[5].encode('utf-8'))
-            
+            logger.warning(f"Validación = {isValidPassword}")
             if isValidPassword:
+                logger.info("Inicio de sesión correcto")
                 usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4])
                 return usuario.to_dict()
             else:
+                logger.warning("Email o contraseña incorrectos")
                 return jsonify({'error': 'Email o contraseña incorrectos'}), 401
         except Exception as e:
+            logger.error(f"Excepción: {e}")
             return jsonify({'error':e}), 400
         finally:
             cursor.close()

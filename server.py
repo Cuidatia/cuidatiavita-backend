@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flaskext.mysql import MySQL
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+import logging
+from flask_jwt_extended import jwt_required, JWTManager
 import os
 
 from models.ModelUser import ModelUser
@@ -34,6 +36,17 @@ mail = Mail(app)
 # Configuración de CORS
 CORS(app)
 
+#Configuración de JWT
+app.config['JWT_TOKEN_LOCATION'] = ['headers']
+jwt = JWTManager(app)
+
+#Configuración de Logger
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s - %(message)s',
+)
+logger = logging.getLogger("LoginModule")
+
 # Inicializar MySQL
 mysql = MySQL()
 mysql.init_app(app)
@@ -52,11 +65,9 @@ def login():
     password = data.get('password')
     try:
         usuario = ModelUser.login(mysql,email,password)
-        
         return jsonify({'message': 'Login exitoso', 'usuario': usuario}), 200
     except Exception as e:
         return jsonify({'error': 'Email o contraseña incorrectos'}), 401
-
 
     # ------------------- USUARIOS ------------------- #
 
@@ -67,17 +78,16 @@ def crear_usuario():
     email = data.get('email')
     password = data.get('password')
     organizacion = data.get('organizacion')
-    rol = data.get('rol')
-        
+    rol = data.get('rol')   
     
     try:        
         usuario = ModelUser.createUser(mysql, nombre, email, password, organizacion['id'], rol)
-        
         return jsonify({'message':'Usuario creado correctamente.', 'usuario':usuario}), 200
     except Exception as e:
         return jsonify({'error': 'No se ha podido crear el usuario.'}), 400
 
 @app.route('/getUsuarios', methods=['GET'])
+@jwt_required()
 def get_usuarios():
     organizacion = request.args.get('org')
     
@@ -88,6 +98,7 @@ def get_usuarios():
         return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
 
 @app.route('/getUsuario', methods=['GET'])
+@jwt_required()
 def get_usuario():
     usuarioId = request.args.get('id')
     
@@ -99,6 +110,7 @@ def get_usuario():
         return jsonify({'message': 'No se ha podido obtener el usuario'}), 400
 
 @app.route('/eliminarUsuario', methods=['POST'])
+@jwt_required()
 def eliminar_usuario():
     data = request.get_json()
     usuarioId = data.get('usuarioId')
@@ -113,6 +125,7 @@ def eliminar_usuario():
     
     
 @app.route('/modificarUsuario', methods=['PUT'])
+@jwt_required()
 def modificar_usuario():
     data = request.get_json()
     usuario = data.get('mostrarUsuario')
@@ -130,6 +143,7 @@ def modificar_usuario():
         return jsonify({'error': 'No se ha podido modificar el usuario'}), 400
     
 @app.route('/modificarPassword', methods=['PUT'])
+@jwt_required()
 def modificar_password():
     data = request.get_json()
     usuarioId = data.get('id')
@@ -157,14 +171,10 @@ def recuperar_password():
     except Exception as e:
         return jsonify({'error': 'No se ha podido recuperar la contraseña.'}), 400
     
-    
-    
-    
-    
-    
     # ------------------- PACIENTES ------------------- #
     
 @app.route('/getPacientes', methods=['GET'])
+@jwt_required()
 def get_pacientes():
     idOrganizacion = request.args.get('idOrganizacion')
     
@@ -177,6 +187,7 @@ def get_pacientes():
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
 @app.route('/getPaciente', methods=['GET'])
+@jwt_required()
 def get_paciente():
     pacienteId = request.args.get('id')
     
@@ -185,6 +196,7 @@ def get_paciente():
     return jsonify({'message': 'Usuario obtenidos', 'paciente':paciente}), 200
 
 @app.route('/crearPaciente', methods=['POST'])
+@jwt_required()
 def crear_paciente():
     data = request.get_json()
     name = data.get('nombre')
@@ -213,6 +225,7 @@ def crear_paciente():
         return jsonify({'error':'Error al añadir el paciente.'}), 400
 
 @app.route('/eliminarPaciente', methods=['POST'])
+@jwt_required()
 def eliminar_pacientes():
     data = request.get_json()
     pacienteId = data.get('pacienteId')
@@ -225,6 +238,7 @@ def eliminar_pacientes():
     # ------------------- PACIENTES | PERSONALIDAD ------------------- #
     
 @app.route('/pacientePersonality', methods=['GET'])
+@jwt_required()
 def get_paciente_personality():
     pacienteId = request.args.get('id')
     
@@ -238,6 +252,7 @@ def get_paciente_personality():
     
     
 @app.route('/pacientePersonality', methods=['POST'])
+@jwt_required()
 def post_paciente_personality():
     data = request.get_json()
     pacienteId = data.get('id')
@@ -318,9 +333,9 @@ def get_pacientes_referencia():
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
     
 @app.route('/getUsuariosReferencia', methods=['GET'])
+@jwt_required()
 def get_usuarios_referencia():
     pacienteId = request.args.get('id')
-    
     try:
         usuarios = ModelUser.getPersonalReferencia(mysql, pacienteId)
         if not usuarios:
@@ -330,6 +345,7 @@ def get_usuarios_referencia():
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
     
 @app.route('/asignarPersonaReferencia', methods=['POST'])
+@jwt_required()
 def asignar_persona_referencia():
     data = request.get_json()
     pacienteId = data.get('pacienteId')
@@ -344,6 +360,7 @@ def asignar_persona_referencia():
     # ------------------- ORGANIZACIONES ------------------- #
     
 @app.route('/getOrganizacion', methods=['GET'])
+@jwt_required()
 def get_organizacion():
     organizacionId = request.args.get('org')
     
@@ -359,6 +376,7 @@ def get_organizacion():
     # ------------------- ROLES ------------------- #
 
 @app.route('/getRoles', methods=['GET'])
+@jwt_required()
 def get_roles():
     
     try:
@@ -374,14 +392,14 @@ def get_roles():
     # ------------------- IMAGENES ------------------- #
     
 @app.route('/getImagenesPaciente', methods=['GET'])
+@jwt_required()
 def get_imagenes_paciente():
-    
-            
     return jsonify({'message': 'Imagenes obtenidas'}), 200
     
      # ------------------- EMAILS ------------------- #
      
 @app.route('/sendMailInvitacion', methods=['POST'])
+@jwt_required()
 def sendMailInvitacion():
     data = request.get_json()
     email = data.get('email')

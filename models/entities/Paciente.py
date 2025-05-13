@@ -42,21 +42,13 @@ class Paciente():
         }
 
 class LifeStory():
-     def __init__(self, id : int, idPaciente : int, idChildhood : int, idYouth : int, idAdulthood : int, idMaturity : int):
+     def __init__(self, id : int, idPaciente : int):
           self.id = id
           self.idPaciente = idPaciente
-          self.idChildhood = idChildhood
-          self.idYouth = idYouth
-          self.idAdulthood = idAdulthood
-          self.idMaturity = idMaturity
      def to_dict(self): 
         return {
             'id' : self.id,
-            'idPaciente' : self.idPaciente,
-            'idChildhood' : self.idChildhood,
-            'idYouth' : self.idYouth,
-            'idAdulthood' : self.idAdulthood,
-            'idMaturity' : self.idMaturity
+            'idPaciente' : self.idPaciente
         }
 
 class Childhood():
@@ -244,7 +236,7 @@ class Maturity():
             'maturityNegativeExperiences' : self.maturityNegativeExperiences,
             'maturityRetirement' : self.maturityRetirement,
             'maturityWills' : self.maturityWills,
-            'maturityUncompletedProjects' : self.maturityUncompletedProjects,
+            'maturityProjects' : self.maturityProjects,
             'maturityUncompletedProjects' : self.maturityUncompletedProjects,
             'maturityIllness' : self.maturityIllness,
             'maturityPersonalCrisis' : self.maturityPersonalCrisis
