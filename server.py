@@ -4,8 +4,10 @@ from flaskext.mysql import MySQL
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import logging
-from flask_jwt_extended import jwt_required, JWTManager
+from flask_jwt_extended import jwt_required, JWTManager, create_access_token
 import os
+import jwt
+from datetime import timedelta
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -17,6 +19,11 @@ app = Flask(__name__)
 
 # Cargar variables de entorno
 load_dotenv()
+
+# Variables globales
+FRONTEND_API_URL = os.getenv('FRONTEND_API_URL')
+MAIL_SENDER = os.getenv('MAIL_SENDER')
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 # Configuración de la base de datos MySQL
 app.config['MYSQL_DATABASE_HOST'] = os.getenv('MYSQL_DB_HOST')
@@ -38,6 +45,9 @@ CORS(app)
 
 #Configuración de JWT
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
+app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+
 jwt = JWTManager(app)
 
 #Configuración de Logger
@@ -52,11 +62,6 @@ mysql = MySQL()
 mysql.init_app(app)
 
 
-# Variables globales
-FRONTEND_API_URL = os.getenv('FRONTEND_API_URL')
-MAIL_SENDER = os.getenv('MAIL_SENDER')
-
-
     # ------------------- LOG IN -------------------  #
 @app.route('/auth/login', methods=['POST'])
 def login():
@@ -65,7 +70,9 @@ def login():
     password = data.get('password')
     try:
         usuario = ModelUser.login(mysql,email,password)
-        return jsonify({'message': 'Login exitoso', 'usuario': usuario}), 200
+        if isinstance(usuario, dict):
+            token = create_access_token(identity=usuario['id'])
+            return jsonify({'message': 'Login exitoso', 'usuario': usuario, 'token':token}), 200
     except Exception as e:
         return jsonify({'error': 'Email o contraseña incorrectos'}), 401
 
@@ -191,9 +198,12 @@ def get_pacientes():
 def get_paciente():
     pacienteId = request.args.get('id')
     
-    paciente = ModelPaciente.getPaciente(mysql, pacienteId)
-    
-    return jsonify({'message': 'Usuario obtenidos', 'paciente':paciente}), 200
+    try:
+        paciente = ModelPaciente.getPaciente(mysql, pacienteId)
+        
+        return jsonify({'message': 'Usuario obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error': 'Usuario no encontrado'})
 
 @app.route('/crearPaciente', methods=['POST'])
 @jwt_required()
@@ -294,19 +304,6 @@ def post_paciente_infancia():
     data = request.get_json()
     pacienteId = data.get('id')
     childhood = data.get('childhood')
-    # childhoodStudy = data.get('childhoodStudy')
-    # childhoodSchool = data.get('childhoodSchool')
-    # childhoodMotivations = data.get('childhoodMotivations')
-    # familyCore = data.get('familyCore')
-    # friendsGroup = data.get('friendsGroup')
-    # childhoodTravels = data.get('childhoodTravels')
-    # favouritePlace = data.get('favouritePlace')
-    # childhoodPositiveExperiences = data.get('childhoodPositiveExperiences')
-    # childhoodNegativeExperiences = data.get('childhoodNegativeExperiences')
-    # childhoodAdress = data.get('childhoodAddress')
-    # childhoodLikes = data.get('childhoodLikes')
-    # childhoodAfraids = data.get('childhoodAfraids')
-    print(childhood['childhoodStudy'])
     
     try:
         paciente = ModelPaciente.createChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudy"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
@@ -314,7 +311,6 @@ def post_paciente_infancia():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de infancia obtenidos', 'paciente':paciente}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
     
     
