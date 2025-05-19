@@ -776,7 +776,7 @@ class ModelPaciente():
             conn.close() 
                    
     @classmethod
-    def createChildhoodPaciente(cls,mysql,idPaciente,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+    def createChildhoodPaciente(cls,mysql,idPaciente,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids):
         conn = mysql.connect()
@@ -790,11 +790,11 @@ class ModelPaciente():
             idLifeStory = cursor.lastrowid
             
             cursor.execute("""
-                           insert into childhood (idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                           insert into childhood (idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                           """, (idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids))
             conn.commit()
@@ -807,17 +807,17 @@ class ModelPaciente():
             conn.close()
             
     @classmethod
-    def updateChildhoodPaciente(cls,mysql,idLifeStory,childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+    def updateChildhoodPaciente(cls,mysql,idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update childhood set childhoodStudy = %s, childhoodSchool = %s, childhoodMotivations = %s, childhoodFamilyCore = %s, childhoodFriendsGroup = %s,
+                           update childhood set childhoodStudies = %s, childhoodSchool = %s, childhoodMotivations = %s, childhoodFamilyCore = %s, childhoodFriendsGroup = %s,
                            childhoodFavouritePlace = %s, childhoodPositiveExperiences = %s, childhoodNegativeExperiences = %s, childhoodAddress = %s, childhoodLikes = %s,
                            childhoodAfraids = %s where idLifeStory = %s
-                           """, (childhoodStudy,childhoodSchool,childhoodMotivations,childhoodFamilyCore,childhoodFriendsGroup,childhoodTravels,
+                           """, (childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,childhoodFriendsGroup,childhoodTravels,
                                  childhoodFavouritePlace, childhoodPositiveExperiences,childhoodNegativeExperiences, childhoodAddress, 
                                  childhoodLikes, childhoodAfraids,idLifeStory))
             conn.commit()
@@ -858,23 +858,23 @@ class ModelPaciente():
             cursor.close()
             conn.close()     
     @classmethod
-    def createYouthPaciente(cls,mysql,idLifeStory,youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,
+    def createYouthPaciente(cls,mysql,idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
-                                youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis):
                                 
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into youth (idLifeStory,youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,
+                           insert into youth (idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
-                                youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idLifeStory,youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,
+                           """, (idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
-                                youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis))
             conn.commit()
             usuario_id = cursor.lastrowid
@@ -885,19 +885,20 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateYouthPaciente(cls,mysql,idLifeStory,youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,
+    def updateYouthPaciente(cls,mysql,idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
-                                youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update youth set youthStudy = %s, youthSchool = %s, youthWorkplace = %s, youthWorkRole = %s, youthFamilyCore = %s, youthFriendsGroup = %s,
+                           update youth set youthStudies = %s, youthSchool = %s, youthWorkPlace = %s, youthWorkRol = %s, youthFamilyCore = %s, youthFriendsGroup = %s,
                            youthTravels = %s, youthFavouritePlace = %s, youthRoutine = %s, youthPositiveExperiences = %s, youthNegativeExperiences = %s, youthAddress = %s,
-                           youthLikes = %s,youthAfraids = %s,youthProjects = %s,youthUncompletedProjects = %s,youthIllness = %s,youthPersonalCrisis = %s where idLifeStory = %s
-                           """, (youthStudy,youthSchool,youthWorkplace, youthWorkRole,youthFamilyCore,youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,
-                                youthPositiveExperiences,youthNegativeExperiences,youthAddress,youthLikes,youthAfraids,youthProjects, youthUncompletedProjects, youthIllness,
+                           youthLikes = %s,youthHobbies = %s,youthAfraids = %s,youthProjects = %s,youthUncompletedProjects = %s,youthIllness = %s,youthPersonalCrisis = %s 
+                           where idLifeStory = %s
+                           """, (youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,
+                                youthPositiveExperiences,youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects, youthUncompletedProjects, youthIllness,
                                 youthPersonalCrisis,idLifeStory))
             conn.commit()
             return True
@@ -937,7 +938,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()       
     @classmethod
-    def createAdulthoodPaciente(cls,mysql,idLifeStory,sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+    def createAdulthoodPaciente(cls,mysql,idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis):
@@ -945,12 +946,12 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into adulthood (idLifeStory,sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+                           insert into adulthood (idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idLifeStory,sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+                           """, (idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis))
@@ -963,7 +964,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateAdulthoodPaciente(cls,mysql,idLifeStory,sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+    def updateAdulthoodPaciente(cls,mysql,idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis):
@@ -971,11 +972,11 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update adulthood set sentimentalCoupleAdulthood = %s, childrenAdulthood = %s, adulthoodStudy = %s, adulthoodWorkplace = %s, adulthoodWorkRole = %s,
+                           update adulthood set adulthoodSentimentalCouple = %s, adulthoodChildren = %s, adulthoodStudies = %s, adulthoodWorkPlace = %s, adulthoodWorkRol = %s,
                            adulthoodFamilyCore = %s, adulthoodFriendsGroup = %s, adulthoodWorkGroup = %s, adulthoodTravels = %s, adulthoodFavouritePlace = %s, adulthoodRoutine = %s,
                            adulthoodPositiveExperiences = %s, adulthoodNegativeExperiences = %s, adulthoodAddress = %s,adulthoodEconomicSituation = %s,adulthoodProjects = %s,
                            adulthoodUncompletedProjects = %s,adulthoodIllness = %s,adulthoodPersonalCrisis = %s where idLifeStory = %s
-                           """, (sentimentalCoupleAdulthood,childrenAdulthood,adulthoodStudy,adulthoodWorkplace, adulthoodWorkRole,adulthoodFamilyCore,
+                           """, (adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis,idLifeStory))
@@ -1004,20 +1005,22 @@ class ModelPaciente():
     def getMaturityPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
+        print(idPaciente)
         try:
-            cursor.execute(""" select * from maturity 
+            cursor.execute (""" select * from maturity
             inner join lifeStory on lifeStory.id = maturity.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             maturity = Maturity(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],
                                row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
             return maturity.to_dict()
-        except:
+        except Exception as e:
+            print(e)
             return jsonify({'error':'Error al obtener _maturity_ del paciente.'})
         finally:
             cursor.close()
-            conn.close()    
+            conn.close()   
     @classmethod
-    def createMaturityPaciente(cls,mysql,idLifeStory,grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+    def createMaturityPaciente(cls,mysql,idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis):
@@ -1025,12 +1028,12 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into maturity (idLifeStory,grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+                           insert into maturity (idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idLifeStory,grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+                           """, (idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis))
@@ -1043,7 +1046,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateMaturityPaciente(cls,mysql,idLifeStory,grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+    def updateMaturityPaciente(cls,mysql,idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis):
@@ -1051,11 +1054,11 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update maturity set grandchildrenMaturity = %s, maturityWorkplace = %s, maturityWorkRole = %s, maturityFamilyCore = %s, maturityFriendsGroup = %s,
+                           update maturity set maturityGrandchildren = %s, maturityWorkPlace = %s, maturityWorkRol = %s, maturityFamilyCore = %s, maturityFriendsGroup = %s,
                            maturityWorkGroup = %s, maturityTravels = %s, maturityFavouritePlace = %s, maturityRoutine = %s, maturityPositiveExperiences = %s, 
                            maturityNegativeExperiences = %s, maturityRetirement = %s, maturityWills = %s, maturityProjects = %s,maturityUncompletedProjects = %s,
                            maturityIllness = %s,maturityPersonalCrisis = %s where idLifeStory = %s
-                           """, (grandchildrenMaturity,maturityWorkplace,maturityWorkRole,maturityFamilyCore,maturityFriendsGroup,
+                           """, (maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis,idLifeStory))

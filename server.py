@@ -284,6 +284,33 @@ def post_paciente_personality():
     except Exception as e:
         return jsonify({'error':'Error al obtener los datos personales.'}), 400
     
+    # ------------------- PACIENTES | DATOS DE CONTACTO ------------------- #
+    
+@app.route('/pacienteDatosContacto', methods=['GET'])
+def get_paciente_datoscontacto():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacienteDatosContacto = ModelPaciente.getContactDataPaciente(mysql, pacienteId)
+        if not pacienteDatosContacto:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de contacto obtenidos', 'contactdata':pacienteDatosContacto}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de contacto.'}), 400
+    
+@app.route('/pacienteDatosContacto', methods=['POST'])
+def post_paciente_datoscontacto():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    contactdata = data.get('contactdata')
+    
+    try:
+        paciente = ModelPaciente.createContactDataPaciente(mysql, pacienteId, contactdata["contactName"], contactdata['contactFirstSurname'], contactdata['contactSecondSurname'], contactdata['contactAddress'], contactdata['contactEmail'], contactdata['contactTelecom'])
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de contacto obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de contacto.'}), 400
 
     # ------------------- PACIENTES | INFANCIA ------------------- #
     
@@ -306,13 +333,97 @@ def post_paciente_infancia():
     childhood = data.get('childhood')
     
     try:
-        paciente = ModelPaciente.createChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudy"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
+        paciente = ModelPaciente.createChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de infancia obtenidos', 'paciente':paciente}), 200
     except Exception as e:
         return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
+
+    # ------------------- PACIENTES | JUVENTUD ------------------- #
     
+@app.route('/pacienteJuventud', methods=['GET'])
+def get_paciente_juventud():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacienteJuventud = ModelPaciente.getYouthPaciente(mysql, pacienteId)
+        if not pacienteJuventud:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de juventud obtenidos', 'juventud':pacienteJuventud}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de juventud.'}), 400
+    
+@app.route('/pacienteJuventud', methods=['POST'])
+def post_paciente_juventud():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    youth = data.get('youth')
+    
+
+    try:
+        paciente = ModelPaciente.createYouthPaciente(mysql, pacienteId, youth["youthStudies"], youth['youthSchool'], youth['youthWorkPlace'], youth['youthWorkRol'], youth['youthFamilyCore'], youth['youthFriendsGroup'], youth['youthTravels'], youth['youthFavouritePlace'], youth['youthRoutine'], youth['youthPositiveExperiences'], youth['youthNegativeExperiences'], youth['youthAddress'], youth['youthLikes'], youth['youthHobbies'], youth['youthAfraids'], youth['youthProjects'], youth['youthUncompletedProjects'], youth['youthIllness'], youth['youthPersonalCrisis'])
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de juventud obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de juventud.'}), 400
+        
+    # ------------------- PACIENTES | ADULTEZ ------------------- #
+    
+@app.route('/pacienteAdultez', methods=['GET'])
+def get_paciente_adultez():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacienteAdultez = ModelPaciente.getAdulthoodPaciente(mysql, pacienteId)
+        if not pacienteAdultez:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de adultez obtenidos', 'adultez':pacienteAdultez}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de adultez.'}), 400
+    
+@app.route('/pacienteAdultez', methods=['POST'])
+def post_paciente_adultez():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    adulthood = data.get('adulthood')
+
+    try:
+        paciente = ModelPaciente.createAdulthoodPaciente(mysql, pacienteId, adulthood["adulthoodSentimentalCouple"], adulthood['adulthoodChildren'], adulthood['adulthoodStudies'], adulthood['adulthoodWorkPlace'], adulthood['adulthoodWorkRol'], adulthood['adulthoodFamilyCore'], adulthood['adulthoodFriendsGroup'], adulthood['adulthoodWorkGroup'], adulthood['adulthoodTravels'], adulthood['adulthoodFavouritePlace'], adulthood['adulthoodRoutine'], adulthood['adulthoodPositiveExperiences'], adulthood['adulthoodNegativeExperiences'], adulthood['adulthoodAddress'], adulthood['adulthoodEconomicSituation'], adulthood['adulthoodProjects'], adulthood['adulthoodUncompletedProjects'], adulthood['adulthoodIllness'], adulthood['adulthoodPersonalCrisis'])
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de adultez obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de adultez.'}), 400
+    
+    # ------------------- PACIENTES | MADUREZ ------------------- #
+    
+@app.route('/pacienteMadurez', methods=['GET'])
+def get_paciente_madurez():
+    pacienteId = request.args.get('id')
+    
+    try:
+        pacienteMadurez = ModelPaciente.getMaturityPaciente(mysql, pacienteId)
+        if not pacienteMadurez:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de madurez obtenidos', 'madurez':pacienteMadurez}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de madurez.'}), 400
+    
+@app.route('/pacienteMadurez', methods=['POST'])
+def post_paciente_madurez():
+    data = request.get_json()
+    pacienteId = data.get('id')
+    maturity = data.get('maturity')
+
+    try:
+        paciente = ModelPaciente.createMaturityPaciente(mysql, pacienteId, maturity['maturityGrandchildren'], maturity['maturityWorkPlace'], maturity['maturityWorkRol'], maturity['maturityFamilyCore'], maturity['maturityFriendsGroup'], maturity['maturityWorkGroup'], maturity['maturityTravels'], maturity['maturityFavouritePlace'], maturity['maturityRoutine'], maturity['maturityPositiveExperiences'], maturity['maturityNegativeExperiences'], maturity['maturityRetirement'], maturity['maturityWills'], maturity['maturityProjects'], maturity['maturityUncompletedProjects'], maturity['maturityIllness'], maturity['maturityPersonalCrisis'])
+        if not paciente:
+            return jsonify({'error': 'No se ha encontrado el paciente'}), 404
+        return jsonify({'message': 'Datos de madurez obtenidos', 'paciente':paciente}), 200
+    except Exception as e:
+        return jsonify({'error':'Error al obtener los datos de madurez.'}), 400
     
     # ------------------- PERSONAS DE REFERENCIA | FAMILIARES ------------------- #
     

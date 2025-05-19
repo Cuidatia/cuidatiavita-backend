@@ -53,12 +53,12 @@ class LifeStory():
 
 class Childhood():
      def __init__(self, id : int, idLifeStory : int,
-                  childhoodStudy : str, childhoodSchool : str, childhoodMotivations : str, childhoodFamilyCore : str, childhoodFriendsGroup : str,
+                  childhoodStudies : str, childhoodSchool : str, childhoodMotivations : str, childhoodFamilyCore : str, childhoodFriendsGroup : str,
                   childhoodTravels : str, childhoodFavouritePlace : str, childhoodPositiveExperiences : str, childhoodNegativeExperiences : str,
                   childhoodAddress : str, childhoodLikes : str, childhoodAfraids : str):
           self.id = id
           self.idLifeStory = idLifeStory
-          self.childhoodStudy = childhoodStudy
+          self.childhoodStudies = childhoodStudies
           self.childhoodSchool = childhoodSchool
           self.childhoodMotivations = childhoodMotivations
           self.childhoodFamilyCore = childhoodFamilyCore
@@ -74,7 +74,7 @@ class Childhood():
         return {
             'id' : self.id,
             'idLifeStory' : self.idLifeStory,
-            'childhoodStudy' : self.childhoodStudy,
+            'childhoodStudies' : self.childhoodStudies,
             'childhoodSchool' : self.childhoodSchool,
             'childhoodMotivations' : self.childhoodMotivations,
             'childhoodFamilyCore' : self.childhoodFamilyCore,
@@ -90,16 +90,16 @@ class Childhood():
      
 class Youth():
      def __init__(self, id : int, idLifeStory : int,
-                  youthStudy : str, youthSchool : str, youthWorkplace : str, youthWorkRole : str, youthFamilyCore : str,
+                  youthStudies : str, youthSchool : str, youthWorkPlace : str, youthWorkRol : str, youthFamilyCore : str,
                   youthFriendsGroup : str, youthTravels : str, youthFavouritePlace : str, youthRoutine : str, youthPositiveExperiences : str, 
-                  youthNegativeExperiences : str, youthAddress : str, youthLikes : str, youthHobby : str, youthAfraids : str,
+                  youthNegativeExperiences : str, youthAddress : str, youthLikes : str, youthHobbies : str, youthAfraids : str,
                   youthProjects : str, youthUncompletedProjects : str, youthIllness : str, youthPersonalCrisis : str):
           self.id = id
           self.idLifeStory = idLifeStory
-          self.youthStudy = youthStudy
+          self.youthStudies = youthStudies
           self.youthSchool = youthSchool
-          self.youthWorkplace = youthWorkplace
-          self.youthWorkRole = youthWorkRole
+          self.youthWorkPlace = youthWorkPlace
+          self.youthWorkRol = youthWorkRol
           self.youthFamilyCore = youthFamilyCore
           self.youthFriendsGroup = youthFriendsGroup
           self.youthTravels = youthTravels
@@ -109,7 +109,7 @@ class Youth():
           self.youthNegativeExperiences = youthNegativeExperiences
           self.youthAddress = youthAddress
           self.youthLikes = youthLikes
-          self.youthHobby = youthHobby
+          self.youthHobbies = youthHobbies
           self.youthAfraids = youthAfraids
           self.youthProjects = youthProjects
           self.youthUncompletedProjects = youthUncompletedProjects
@@ -119,10 +119,10 @@ class Youth():
         return {
             'id' : self.id,
             'idLifeStory' : self.idLifeStory,
-            'youthStudy' : self.youthStudy,
+            'youthStudies' : self.youthStudies,
             'youthSchool' : self.youthSchool,
-            'youthWorkplace' : self.youthWorkplace,
-            'youthWorkRole' : self.youthWorkRole,
+            'youthWorkPlace' : self.youthWorkPlace,
+            'youthWorkRol' : self.youthWorkRol,
             'youthFamilyCore' : self.youthFamilyCore,
             'youthFriendsGroup' : self.youthFriendsGroup,
             'youthTravels' : self.youthTravels,
@@ -132,7 +132,7 @@ class Youth():
             'youthNegativeExperiences' : self.youthNegativeExperiences,
             'youthAddress' : self.youthAddress,
             'youthLikes' : self.youthLikes,
-            'youthHobby' : self.youthHobby,
+            'youthHobbies' : self.youthHobbies,
             'youthAfraids' : self.youthAfraids,
             'youthProjects' : self.youthProjects,
             'youthUncompletedProjects' : self.youthUncompletedProjects,
@@ -142,18 +142,18 @@ class Youth():
      
 class Adulthood():
      def __init__(self, id : int, idLifeStory : int,
-                  sentimentalCoupleAdulthood : str, childrenAdulthood : str, adulthoodStudy : str, adulthoodWorkplace : str,
-                  adulthoodWorkRole : str, adulthoodFamilyCore : str, adulthoodFriendsGroup : str, adulthoodWorkGroup : str,
+                  adulthoodSentimentalCouple : str, adulthoodChildren : str, adulthoodStudies : str, adulthoodWorkPlace : str,
+                  adulthoodWorkRol : str, adulthoodFamilyCore : str, adulthoodFriendsGroup : str, adulthoodWorkGroup : str,
                   adulthoodTravels : str, adulthoodFavouritePlace : str, adulthoodRoutine : str, adulthoodPositiveExperiences : str, 
                   adulthoodNegativeExperiences : str, adulthoodAddress : str, adulthoodEconomicSituation : str,
                   adulthoodProjects : str, adulthoodUncompletedProjects : str, adulthoodIllness : str, adulthoodPersonalCrisis : str):
           self.id = id
           self.idLifeStory = idLifeStory
-          self.sentimentalCoupleAdulthood = sentimentalCoupleAdulthood
-          self.childrenAdulthood = childrenAdulthood
-          self.adulthoodStudy = adulthoodStudy
-          self.adulthoodWorkplace = adulthoodWorkplace
-          self.adulthoodWorkRole = adulthoodWorkRole
+          self.adulthoodSentimentalCouple = adulthoodSentimentalCouple
+          self.adulthoodChildren = adulthoodChildren
+          self.adulthoodStudies = adulthoodStudies
+          self.adulthoodWorkPlace = adulthoodWorkPlace
+          self.adulthoodWorkRol = adulthoodWorkRol
           self.adulthoodFamilyCore = adulthoodFamilyCore
           self.adulthoodFriendsGroup = adulthoodFriendsGroup
           self.adulthoodWorkGroup = adulthoodWorkGroup
@@ -172,11 +172,11 @@ class Adulthood():
         return {
             'id' : self.id,
             'idLifeStory' : self.idLifeStory,
-            'sentimentalCoupleAdulthood' : self.sentimentalCoupleAdulthood,
-            'childrenAdulthood' : self.childrenAdulthood,
-            'adulthoodStudy' : self.adulthoodStudy,
-            'adulthoodWorkplace' : self.adulthoodWorkplace,
-            'adulthoodWorkRole' : self.adulthoodWorkRole,
+            'adulthoodSentimentalCouple' : self.adulthoodSentimentalCouple,
+            'adulthoodChildren' : self.adulthoodChildren,
+            'adulthoodStudies' : self.adulthoodStudies,
+            'adulthoodWorkPlace' : self.adulthoodWorkPlace,
+            'adulthoodWorkRol' : self.adulthoodWorkRol,
             'adulthoodFamilyCore' : self.adulthoodFamilyCore,
             'adulthoodFriendsGroup' : self.adulthoodFriendsGroup,
             'adulthoodWorkGroup' : self.adulthoodWorkGroup,
@@ -195,16 +195,16 @@ class Adulthood():
      
 class Maturity():
      def __init__(self, id : int, idLifeStory : int,
-                  grandchildrenMaturity : str, maturityWorkplace : str, maturityWorkRole : str, maturityFamilyCore : str,
+                  maturityGrandchildren : str, maturityWorkPlace : str, maturityWorkRol : str, maturityFamilyCore : str,
                   maturityFriendsGroup : str, maturityWorkGroup : str, maturityTravels : str, maturityFavouritePlace : str,
                   maturityRoutine : str, maturityPositiveExperiences : str, maturityNegativeExperiences : str,
                   maturityRetirement : str, maturityWills : str, maturityProjects : str, maturityUncompletedProjects : str,
                   maturityIllness : str, maturityPersonalCrisis : str):
           self.id = id
           self.idLifeStory = idLifeStory
-          self.grandchildrenMaturity = grandchildrenMaturity
-          self.maturityWorkplace = maturityWorkplace
-          self.maturityWorkRole = maturityWorkRole
+          self.maturityGrandchildren = maturityGrandchildren
+          self.maturityWorkPlace = maturityWorkPlace
+          self.maturityWorkRol = maturityWorkRol
           self.maturityFamilyCore = maturityFamilyCore
           self.maturityFriendsGroup = maturityFriendsGroup
           self.maturityWorkGroup = maturityWorkGroup
@@ -223,9 +223,9 @@ class Maturity():
         return {
             'id' : self.id,
             'idLifeStory' : self.idLifeStory,
-            'grandchildrenMaturity' : self.grandchildrenMaturity,
-            'maturityWorkplace' : self.maturityWorkplace,
-            'maturityWorkRole' : self.maturityWorkRole,
+            'maturityGrandchildren' : self.maturityGrandchildren,
+            'maturityWorkPlace' : self.maturityWorkPlace,
+            'maturityWorkRol' : self.maturityWorkRol,
             'maturityFamilyCore' : self.maturityFamilyCore,
             'maturityFriendsGroup' : self.maturityFriendsGroup,
             'maturityWorkGroup' : self.maturityWorkGroup,
