@@ -315,6 +315,7 @@ def post_paciente_datoscontacto():
     # ------------------- PACIENTES | INFANCIA ------------------- #
     
 @app.route('/pacienteInfancia', methods=['GET'])
+@jwt_required()
 def get_paciente_infancia():
     pacienteId = request.args.get('id')
     
@@ -327,6 +328,7 @@ def get_paciente_infancia():
         return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
     
 @app.route('/pacienteInfancia', methods=['POST'])
+@jwt_required()
 def post_paciente_infancia():
     data = request.get_json()
     pacienteId = data.get('id')
@@ -425,6 +427,90 @@ def post_paciente_madurez():
     except Exception as e:
         return jsonify({'error':'Error al obtener los datos de madurez.'}), 400
     
+    
+    # ------------------- PACIENTES | MAIN SANITARY DATA ------------------- #
+    
+@app.route('/pacienteMainSanitaryData', methods=['GET'])
+@jwt_required()
+def get_main_sanitary_data():
+    idPaciente = request.args.get('id')
+    try:
+        mainSanitaryData = ModelPaciente.getSanitaryDataPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'sanitaryData': mainSanitaryData})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'})
+    
+
+@app.route('/pacienteMainSanitaryData', methods=['POST'])
+@jwt_required()
+def post_main_sanitary_data():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    mainSanitaryData = data.get('mainSanitaryData')
+    try:
+        mainSanitaryData = ModelPaciente.createSanitaryDataPaciente(mysql,idPaciente, mainSanitaryData['mainIllness'], mainSanitaryData['allergies'], mainSanitaryData['otherIllness'])
+        return jsonify({'message': 'Información guardada correctamente'})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'})
+    
+
+# ------------------- PACIENTES | FARMACIA ------------------- #
+
+@app.route('/pacienteFarmacia', methods=['GET'])
+@jwt_required()
+def get_farmacia():
+    idPaciente = request.args.get('id')
+    try:
+        pharmacy = ModelPaciente.getPharmacyPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'pharmacy': pharmacy}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'}), 400
+
+
+@app.route('/pacienteFarmacia', methods=['POST'])
+@jwt_required()
+def post_farmacia():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    pharmacy = data.get('pharmacy')
+    
+    try:
+        pharmacy = ModelPaciente.createPharmacyPaciente(mysql, idPaciente, pharmacy['treatment'], pharmacy['regularPharmacy'], pharmacy['visitFrequency'], pharmacy['paymentMethod'])
+        
+        return jsonify({'message': 'Información guardada correctamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
+
+    
+    
+    # ------------------- PACIENTES | COCINA E HIGIENE ------------------- #
+
+@app.route('/pacienteCocinaHigiene', methods=['GET'])
+@jwt_required()
+def get_cocina_higiene():
+    idPaciente = request.args.get('id')
+    try:
+        kitchenHygiene = ModelPaciente.getKitchenPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'kitchenHygiene': kitchenHygiene})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'})
+
+
+@app.route('/pacienteCocinaHigiene', methods=['POST'])
+@jwt_required()
+def post_cocina_higiene():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    kitchenHygiene = data.get('kitchenHygiene')
+    try:
+        kitchenHygiene = ModelPaciente.createKitchenPaciente(mysql, idPaciente, kitchenHygiene['favouriteFood'], kitchenHygiene['dietaryRestrictions'], kitchenHygiene['confortAdvices'], kitchenHygiene['routine'], kitchenHygiene['carePlan'])
+        return jsonify({'message': 'Información guardada correctamente'})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'})
+
+
+
     # ------------------- PERSONAS DE REFERENCIA | FAMILIARES ------------------- #
     
 @app.route('/getPacientesReferencia', methods=['GET'])
