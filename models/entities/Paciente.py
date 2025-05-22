@@ -274,7 +274,7 @@ class Personality():
      
 class ContactData():
      def __init__(self, id : int, idPaciente : int,
-                  contactName : str, contactFirstName : str, contactSecondSurname : str, contactAddress : str, contactEmail : str, contactTelecom : str):
+                  contactName : str, contactFirstName : str, contactSecondSurname : str, contactAddress : str, contactEmail : str, contactTelecom : str, curatela : str, deFactoGuardian : str):
           self.id = id
           self.idPaciente = idPaciente
           self.contactName = contactName
@@ -283,6 +283,8 @@ class ContactData():
           self.contactAddress = contactAddress
           self.contactEmail = contactEmail
           self.contactTelecom = contactTelecom
+          self.curatela = curatela
+          self.deFactoGuardian = deFactoGuardian
      def to_dict(self): 
         return {
             'id' : self.id,
@@ -292,7 +294,9 @@ class ContactData():
             'contactSecondSurname' : self.contactSecondSurname,
             'contactAddress' : self.contactAddress,
             'contactEmail' : self.contactEmail,
-            'contactTelecom' : self.contactTelecom
+            'contactTelecom' : self.contactTelecom,
+            'curatela' : self.curatela,
+            'deFactoGuardian' : self.deFactoGuardian
         }
      
 class MainSanitaryData():
@@ -333,11 +337,9 @@ class Pharmacy():
      
 class NursingMedicine():
      def __init__(self, id : int, idSanitary: int,
-                  weight : int, height : int, nutritionalSituation : str, sleepQuality : str, fallRisks : str, mobilityNeeds : str, healthPreferences : str):
+                  nutritionalSituation : str, sleepQuality : str, fallRisks : str, mobilityNeeds : str, healthPreferences : str):
           self.id = id
           self.idSanitary = idSanitary
-          self.weight = weight
-          self.height = height
           self.nutritionalSituation = nutritionalSituation
           self.sleepQuality = sleepQuality
           self.fallRisks = fallRisks
@@ -347,8 +349,6 @@ class NursingMedicine():
         return {
             'id' : self.id,
             'idSanitary' : self.idSanitary,
-            'weight' : self.weight,
-            'height' : self.height,
             'nutritionalSituation' : self.nutritionalSituation,
             'sleepQuality' : self.sleepQuality,
             'fallRisks' : self.fallRisks,
@@ -358,31 +358,37 @@ class NursingMedicine():
      
 class SocialEducationOccupationalTherapy():
      def __init__(self, id : int, idSanitary: int,
-                  cognitiveAbilities : str, affectiveCapacity : str, behaviourCapacity : str):
+                  cognitiveAbilities : str, affectiveCapacity : str, behaviourCapacity : str, collaborationLevel : str, autonomyLevel : str, groupParticipation : str,):
           self.id = id
           self.idSanitary = idSanitary
           self.cognitiveAbilities = cognitiveAbilities
           self.affectiveCapacity = affectiveCapacity
           self.behaviourCapacity = behaviourCapacity
+          self.collaborationLevel = collaborationLevel
+          self.autonomyLevel = autonomyLevel
+          self.groupParticipation = groupParticipation
+          self.collaborationLevel = collaborationLevel
+          self.autonomyLevel = autonomyLevel
+          self.groupParticipation = groupParticipation
      def to_dict(self): 
         return {
             'id' : self.id,
             'idSanitary' : self.idSanitary,
             'cognitiveAbilities' : self.cognitiveAbilities,
             'affectiveCapacity' : self.affectiveCapacity,
-            'behaviourCapacity' : self.behaviourCapacity
+            'behaviourCapacity' : self.behaviourCapacity,
+            'collaborationLevel' : self.collaborationLevel,
+            'autonomyLevel' : self.autonomyLevel,
+            'groupParticipation' : self.groupParticipation
         }
 
 class SocialWork():
      def __init__(self, id : int, idSanitary: int,
-                  residentAndRelationship : str, petNameAndBreetPet : str, collaborationLevel : str, autonomyLevel : str, groupParticipation : str, resources : str, legalSupport : str):
+                  residentAndRelationship : str, petNameAndBreetPet : str, resources : str, legalSupport : str):
           self.id = id
           self.idSanitary = idSanitary
           self.residentAndRelationship = residentAndRelationship
           self.petNameAndBreetPet = petNameAndBreetPet
-          self.collaborationLevel = collaborationLevel
-          self.autonomyLevel = autonomyLevel
-          self.groupParticipation = groupParticipation
           self.resources = resources
           self.legalSupport = legalSupport
      def to_dict(self): 
@@ -391,9 +397,6 @@ class SocialWork():
             'idSanitary' : self.idSanitary,
             'residentAndRelationship' : self.residentAndRelationship,
             'petNameAndBreetPet' : self.petNameAndBreetPet,
-            'collaborationLevel' : self.collaborationLevel,
-            'autonomyLevel' : self.autonomyLevel,
-            'groupParticipation' : self.groupParticipation,
             'resources' : self.resources,
             'legalSupport' : self.legalSupport
         }

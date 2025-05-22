@@ -305,7 +305,7 @@ def post_paciente_datoscontacto():
     contactdata = data.get('contactdata')
     
     try:
-        paciente = ModelPaciente.createContactDataPaciente(mysql, pacienteId, contactdata["contactName"], contactdata['contactFirstSurname'], contactdata['contactSecondSurname'], contactdata['contactAddress'], contactdata['contactEmail'], contactdata['contactTelecom'])
+        paciente = ModelPaciente.createContactDataPaciente(mysql, pacienteId, contactdata["contactName"], contactdata['contactFirstSurname'], contactdata['contactSecondSurname'], contactdata['contactAddress'], contactdata['contactEmail'], contactdata['contactTelecom'], contactdata['curatela'], contactdata['deFactoGuardian'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de contacto obtenidos', 'paciente':paciente}), 200
@@ -452,7 +452,34 @@ def post_main_sanitary_data():
         return jsonify({'message': 'Información guardada correctamente'})
     except Exception as e:
         return jsonify({'error': 'No se ha podido guardar la información del usuario'})
+
+# ------------------- PACIENTES | NURSING ------------------- #
+
+@app.route('/pacienteMedicinaEnfermeria', methods=['GET'])
+@jwt_required()
+def get_medicina_enfermeria():
+    idPaciente = request.args.get('id')
+    try:
+        nursing = ModelPaciente.getNursingPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'nursing': nursing}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'}), 400
+
+
+@app.route('/pacienteMedicinaEnfermeria', methods=['POST'])
+@jwt_required()
+def post_medicina_enfermeria():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    nursing = data.get('nursing')
     
+    try:
+        nursing = ModelPaciente.createNursingPaciente(mysql, idPaciente, nursing['nutritionalSituation'], nursing['sleepQuality'], nursing['fallRisks'], nursing['mobilityNeeds'], nursing['healthPreferences'])
+        
+        return jsonify({'message': 'Información guardada correctamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
 
 # ------------------- PACIENTES | FARMACIA ------------------- #
 
@@ -476,6 +503,62 @@ def post_farmacia():
     
     try:
         pharmacy = ModelPaciente.createPharmacyPaciente(mysql, idPaciente, pharmacy['treatment'], pharmacy['regularPharmacy'], pharmacy['visitFrequency'], pharmacy['paymentMethod'])
+        
+        return jsonify({'message': 'Información guardada correctamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
+    
+# ------------------- PACIENTES | TOES ------------------- #
+
+@app.route('/pacienteTOES', methods=['GET'])
+@jwt_required()
+def get_toes():
+    idPaciente = request.args.get('id')
+    try:
+        socialedu = ModelPaciente.getSocialEdu(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'socialedu': socialedu}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'}), 400
+
+
+@app.route('/pacienteTOES', methods=['POST'])
+@jwt_required()
+def post_toes():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    socialedu = data.get('socialedu')
+    
+    try:
+        socialedu = ModelPaciente.createSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviorCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
+        
+        return jsonify({'message': 'Información guardada correctamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
+    
+# ------------------- PACIENTES | TRABAJO SOCIAL ------------------- #
+
+@app.route('/pacienteTrabajoSocial', methods=['GET'])
+@jwt_required()
+def get_trabajo_social():
+    idPaciente = request.args.get('id')
+    try:
+        socialwork = ModelPaciente.getSocialWorkPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'socialwork': socialwork}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'}), 400
+
+
+@app.route('/pacienteTrabajoSocial', methods=['POST'])
+@jwt_required()
+def post_trabajo_social():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    socialwork = data.get('socialwork')
+    
+    try:
+        socialwork = ModelPaciente.createSocialWorkPaciente(mysql, idPaciente, socialwork['residentAndRelationship'], socialwork['petNameAndBreedPet'], socialwork['resources'], socialwork['legalSupport'])
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:

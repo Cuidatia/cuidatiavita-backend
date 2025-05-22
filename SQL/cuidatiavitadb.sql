@@ -201,6 +201,8 @@ create table contactData (
     `contactAddress` varchar(100),
     `contactEmail` varchar(100),
     `contactTelecom` varchar(20),
+    `curatela` varchar(100),
+    `deFactoGuardian` varchar(100),
     primary key (`id`),
     constraint FK_PacienteContact foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -212,7 +214,7 @@ create table mainSanitaryData (
     `idPaciente` int not null,
     `mainIllness` varchar(255),
     `allergies` varchar(255),
-    `otherIllnesses` varchar(255),
+    `otherIllness` varchar(255),
     primary key (`id`),
     constraint FK_PacienteSanitary foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade
@@ -235,8 +237,6 @@ create table pharmacy (
 create table nursingMedicine (
     `id` int not null auto_increment,
     `idSanitary` int not null,
-    `weight` int,
-    `height` int,
     `nutritionalSituation` varchar(255),
     `sleepQuality` varchar(255),
     `fallRisks` varchar(255),
@@ -254,6 +254,9 @@ create table socialEducationOccupationalTherapy (
     `cognitiveAbilities` varchar(255),
     `affectiveCapacity` varchar(255),
     `behaviorCapacity` varchar(255),
+    `collaborationLevel` varchar(255),
+    `autonomyLevel` varchar(255),
+    `groupParticipation` varchar(255),
     primary key (`id`),
     constraint FK_SocialEduSanitary foreign key (`idSanitary`) references mainSanitaryData(`id`)
 		on delete cascade
@@ -265,9 +268,6 @@ create table socialWork (
     `idSanitary` int not null,
     `residentAndRelationship` varchar(255),
     `petNameAndBreedPet` varchar(255),
-    `collaborationLevel` varchar(255),
-    `autonomyLevel` varchar(255),
-    `groupParticipation` varchar(255),
     `resources` varchar(255),
     `legalSupport` varchar(255),
     primary key (`id`),

@@ -279,7 +279,7 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from contactdata where idPaciente = %s  """, (idPaciente))
             row = cursor.fetchone()
-            contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7])
+            contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7], row[8], row[9])
             return contactData.to_dict()
         except:
             return jsonify({'error':'Error al obtener _contactData_ del paciente.'})
@@ -287,14 +287,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom):
+    def createContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into contactdata (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom)
-                            values (%s,%s,%s,%s,%s,%s,%s)
-                           """, (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom))
+                           insert into contactdata (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                           """, (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -304,14 +304,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom):
+    def updateContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            update contactdata set contactName = %s, contactFirstSurname = %s, contactSecondSurname = %s, contactAddress = %s, 
-                           contactEmail = %s, contactTelecom = %s where idPaciente = %s
-                           """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, idPaciente))
+                           contactEmail = %s, contactTelecom = %s, curatela = %s, deFactoGuardian = %s where idPaciente = %s
+                           """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,curatela, deFactoGuardian, idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -460,7 +460,7 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from nursingmedicine where idSanitary = %s """, (idSanitary))
             row = cursor.fetchone()
-            nursing = NursingMedicine(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8])
+            nursing = NursingMedicine(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
             return nursing.to_dict()
         except:
             return jsonify({'error':'Error al obtener _nursingMedicine_ del paciente.'})
@@ -468,14 +468,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()      
     @classmethod
-    def createNursingPaciente(cls,mysql,idSanitary,weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+    def createNursingPaciente(cls,mysql,idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into nursingmedicine (idSanitary,weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
-                            values (%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idSanitary,weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences))
+                           insert into nursingmedicine (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
+                            values (%s,%s,%s,%s,%s,%s)
+                           """, (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -485,14 +485,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateNursingPaciente(cls,mysql,idSanitary,weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+    def updateNursingPaciente(cls,mysql,idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update nursingmedicine set weight = %s, height = %s, nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
+                           update nursingmedicine set nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
                            healthPreferences = %s where idSanitary = %s
-                           """, (weight, height, nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences,idSanitary))
+                           """, (nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences,idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -521,7 +521,7 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from socialeducationoccupationaltherapy where idSanitary = %s """, (idSanitary))
             row = cursor.fetchone()
-            socialEdu = SocialEducationOccupationalTherapy(row[0],row[1],row[2],row[3],row[4])
+            socialEdu = SocialEducationOccupationalTherapy(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7])
             return socialEdu.to_dict()
         except:
             return jsonify({'error':'Error al obtener _socialEdu_ del paciente.'})
@@ -529,14 +529,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity):
+    def createSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into socialeducationoccupationaltherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity)
-                            values (%s,%s,%s,%s)
-                           """, (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity))
+                           insert into socialeducationoccupationaltherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
+                            values (%s,%s,%s,%s, %s, %s, %s)
+                           """, (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -546,13 +546,13 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity):
+    def updateSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialeducationoccupationaltherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s where idSanitary = %s
-                           """, (cognitiveAbilities, affectiveCapacity, behaviorCapacity,idSanitary))
+                           update socialeducationoccupationaltherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s where idSanitary = %s
+                           """, (cognitiveAbilities, affectiveCapacity, behaviorCapacity,collaborationLevel, autonomyLevel, groupParticipation,idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -581,7 +581,7 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from socialwork where idSanitary = %s """, (idSanitary))
             row = cursor.fetchone()
-            socialWork= SocialWork(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8])
+            socialWork= SocialWork(row[0],row[1],row[2],row[3],row[4],row[5])
             return socialWork.to_dict()
         except:
             return jsonify({'error':'Error al obtener _socialWork_ del paciente.'})
@@ -589,17 +589,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, collaborationLevel,
-                                 autonomyLevel, groupParticipation, resources, legalSupport):
+    def createSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreetPet, collaborationLevel,
-                                 autonomyLevel, groupParticipation, resources, legalSupport)
-                            values (%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idSanitary, residentAndRelationship, petNameAndBreetPet, collaborationLevel,
-                                 autonomyLevel, groupParticipation, resources, legalSupport))
+                           insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport)
+                            values (%s,%s,%s,%s,%s)
+                           """, (idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -609,14 +606,13 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, collaborationLevel, autonomyLevel, groupParticipation, resources, legalSupport):
+    def updateSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialwork set residentAndRelationship = %s, petNameAndBreetPet = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s,
-                           resources = %s, legalSupport = %s where idSanitary = %s
-                           """, (residentAndRelationship,petNameAndBreetPet,collaborationLevel,autonomyLevel,groupParticipation,resources,legalSupport,idSanitary))
+                           update socialwork set residentAndRelationship = %s, petNameAndBreetPet = %s, resources = %s, legalSupport = %s where idSanitary = %s
+                           """, (residentAndRelationship,petNameAndBreetPet,resources,legalSupport,idSanitary))
             conn.commit()
             return True
         except Exception as e:
