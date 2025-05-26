@@ -327,16 +327,13 @@ insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('
 insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 2);
 
 insert into roles (`nombre`) values ('superadmin');
-insert into roles (`nombre`) values ('admin');
-insert into roles (`nombre`) values ('medico');
-insert into roles (`nombre`) values ('enfermero');
-insert into roles (`nombre`) values ('trabajador social');
-insert into roles (`nombre`) values ('terapeuta');
-insert into roles (`nombre`) values ('fisioterapeuta');
-insert into roles (`nombre`) values ('logopeda');
-insert into roles (`nombre`) values ('auxiliar');
-insert into roles (`nombre`) values ('profesional de referencia');
-insert into roles (`nombre`) values ('familiar');
+insert into roles (`nombre`, `description`) values ('administrador', 'Administrador de la organización; Visualiza todos los datos de la organización;  Añade, modifica y elimina usuarios de la organización; Añade, modifica y elimina pacientes de la organización; Accede a todos los datos de los pacientes de la organización;');
+insert into roles (`nombre`, `description`) values ('medico/enfermero', 'Personal sanitario; Añade, modifica y elimina pacientes de la organización; Añade, modifica y elimina los datos generales y los datos sanitarios correspondientes a las sección Medicina/Efermería de los pacientes de la organización;');
+insert into roles (`nombre`, `description`) values ('trabajador social', 'Añade, modifica y elimina pacientes de la organización; Añade, modifica y elimina los datos generales y los datos sanitarios correspondientes a las sección Trabajo Social de los pacientes de la organización;');
+insert into roles (`nombre`, `description`) values ('educador social/terapeuta ocupacional', 'Añade, modifica y elimina pacientes de la organización; Añade, modifica y elimina los datos generales y los datos sanitarios correspondientes a las sección Educación Social/Terapia Ocupacional de los pacientes de la organización;');
+insert into roles (`nombre`, `description`) values ('auxiliar', 'Visualiza los datos generales y los datos sanitarios correspondientes a las sección Cocina/Higiene de los pacientes de la organización;');
+insert into roles (`nombre`, `description`) values ('profesional de referencia', 'Acceso diecto a los pacientes de la organización que le han sido asignados');
+insert into roles (`nombre`, `description`) values ('familiar', 'Acceso diecto a los pacientes de la organización que le han sido asignados como familiar');
 
 insert into usuario_roles (`idUsuario`, `idRol`) values (1, 1); 
 insert into usuario_roles (`idUsuario`, `idRol`) values (2, 2); 

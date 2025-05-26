@@ -9,13 +9,13 @@ class ModelRoles():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("select * from roles")
+            cursor.execute("select * from roles where id != 1 and id != 7")
             
             rows = cursor.fetchall()
             rolesList= []
             
             for row in rows:
-                roles = Roles(row[0],row[1])
+                roles = Roles(row[0],row[1],row[2])
                 rolesList.append(roles.to_dict())
                 
             return rolesList

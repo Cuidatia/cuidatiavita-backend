@@ -266,18 +266,10 @@ def get_paciente_personality():
 def post_paciente_personality():
     data = request.get_json()
     pacienteId = data.get('id')
-    nature = data.get('nature')
-    habits = data.get('habits')
-    likes = data.get('likes')
-    dislikes = data.get('dislikes')
-    calmMethods = data.get('calmMethods')
-    disturbMethods = data.get('disturbMethods')
-    hobbies = data.get('hobbies')
-    technologyLevel = data.get('technologyLevel')
-    goals = data.get('goals')
+    personality = data.get('personality')
     
     try:
-        paciente = ModelPaciente.createPersonalityPaciente(mysql, pacienteId, nature, habits, likes, dislikes, calmMethods,disturbMethods,hobbies,technologyLevel,goals)
+        paciente = ModelPaciente.createPersonalityPaciente(mysql, pacienteId, personality['nature'], personality['habits'], personality['likes'], personality['dislikes'], personality['calmMethods'], personality['disturbMethods'], personality['hobbies'], personality['technologyLevel'], personality['goals'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos personales obtenidos', 'paciente':paciente}), 200
@@ -528,9 +520,9 @@ def post_toes():
     data = request.get_json()
     idPaciente = data.get('id')
     socialedu = data.get('socialedu')
-    
+    print(socialedu)
     try:
-        socialedu = ModelPaciente.createSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviorCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
+        socialedu = ModelPaciente.createSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviourCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
@@ -545,7 +537,7 @@ def get_trabajo_social():
     idPaciente = request.args.get('id')
     try:
         socialwork = ModelPaciente.getSocialWorkPaciente(mysql,idPaciente)
-        return jsonify({'message': 'Información del paciente obtenida', 'socialwork': socialwork}), 200
+        return jsonify({'message': 'Información del paciente obtenida', 'trabajoSocial': socialwork}), 200
     except Exception as e:
         return jsonify({'error': 'No se ha podido obtener la información del usuario'}), 400
 
@@ -554,6 +546,7 @@ def get_trabajo_social():
 @jwt_required()
 def post_trabajo_social():
     data = request.get_json()
+    print(data)
     idPaciente = data.get('id')
     socialwork = data.get('socialwork')
     
@@ -592,6 +585,32 @@ def post_cocina_higiene():
     except Exception as e:
         return jsonify({'error': 'No se ha podido guardar la información del usuario'})
 
+
+
+# ------------------- PACIENTES | OTROS ------------------- #
+
+@app.route('/pacienteOtherData', methods=['GET'])
+@jwt_required()
+def get_otros():
+    idPaciente = request.args.get('id')
+    try:
+        otherData = ModelPaciente.getOtherDataPaciente(mysql,idPaciente)
+        return jsonify({'message': 'Información del paciente obtenida', 'otherData': otherData})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido obtener la información del usuario'})
+
+
+@app.route('/pacienteOtherData', methods=['POST'])
+@jwt_required()
+def post_otros():
+    data = request.get_json()
+    idPaciente = data.get('id')
+    otherData = data.get('pacienteOtros')
+    try:
+        ModelPaciente.createOtherDataPaciente(mysql, idPaciente, otherData['professionalNotes'])
+        return jsonify({'message': 'Información guardada correctamente'})
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido guardar la información del usuario'})
 
 
     # ------------------- PERSONAS DE REFERENCIA | FAMILIARES ------------------- #
@@ -636,7 +655,6 @@ def asignar_persona_referencia():
     # ------------------- ORGANIZACIONES ------------------- #
     
 @app.route('/getOrganizacion', methods=['GET'])
-@jwt_required()
 def get_organizacion():
     organizacionId = request.args.get('org')
     
@@ -682,6 +700,8 @@ def sendMailInvitacion():
     organizacion = data.get('organizacion')
     rol = data.get('rol')
     
+    print(email, organizacion, rol)
+    
     try:
         msg = Message(
             'Invitación a Cuidatiavita',
@@ -698,6 +718,7 @@ def sendMailInvitacion():
         mail.send(msg)
         return jsonify({'message': 'Email enviado correctamente'}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
     
 @app.route('/sendMailRecuperacion', methods=['POST'])

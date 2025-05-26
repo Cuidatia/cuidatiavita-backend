@@ -169,7 +169,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into mainsanitarydata (idPaciente,mainIllness,allergies,otherIllness)
+                           insert into mainSanitaryData (idPaciente,mainIllness,allergies,otherIllness)
                             values (%s,%s,%s,%s)
                            """, (idPaciente,mainIllness,allergies,otherIllness))
             conn.commit()
@@ -394,11 +394,13 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getPharmacyPaciente(cls,mysql,idSanitary):
+    def getPharmacyPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from pharmacy where id = %s """, (idSanitary))
+            cursor.execute(""" select * from pharmacy
+                           inner join mainSanitaryData on mainSanitaryData.id = pharmacy.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             pharmacy= Pharmacy(row[0],row[1],row[2],row[3],row[4],row[5])
             return pharmacy.to_dict()
@@ -407,15 +409,23 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
     @classmethod
-    def createPharmacyPaciente(cls,mysql,idSanitary, treatment, regularPharmacy, visitFrequency, paymentMethod):
+    def createPharmacyPaciente(cls,mysql,idPaciente, treatment, regularPharmacy, visitFrequency, paymentMethod):
         conn = mysql.connect()
         cursor = conn.cursor()
+        try:
+            cursor.execute("select id from mainSanitaryData where idPaciente = %s",(idPaciente))
+            idSanitary = cursor.fetchone()
+        except Exception as e:
+            return e
+        
+        
         try:
             cursor.execute("""
                            insert into pharmacy (idSanitary, treatment, regularPharmacy, visitFrequency, paymentMethod)
                             values (%s,%s,%s,%s,%s)
-                           """, (idSanitary, treatment, regularPharmacy, visitFrequency, paymentMethod))
+                           """, (idSanitary, treatment, regularPharmacy, visitFrequency, 'S'))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -515,11 +525,13 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getSocialEdu(cls,mysql,idSanitary):
+    def getSocialEdu(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from socialeducationoccupationaltherapy where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" select socialeducationoccupationaltherapy.* from socialeducationoccupationaltherapy
+                           inner join mainSanitaryData on mainsanitaryData.id = socialeducationoccupationaltherapy.idSanitary
+                           where mainsanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             socialEdu = SocialEducationOccupationalTherapy(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7])
             return socialEdu.to_dict()
@@ -529,10 +541,16 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSocialEduPaciente(cls,mysql,idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation):
+    def createSocialEduPaciente(cls,mysql,idPaciente, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                           select id from mainSanitaryData where idPaciente = %s
+                           """, (idPaciente))
+            
+            idSanitary = cursor.fetchone()
+            
             cursor.execute("""
                            insert into socialeducationoccupationaltherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
                             values (%s,%s,%s,%s, %s, %s, %s)
@@ -575,11 +593,13 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getSocialWorkPaciente(cls,mysql,idSanitary):
+    def getSocialWorkPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from socialwork where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" select socialwork.* from socialwork
+                           inner join mainSanitaryData on mainsanitaryData.id = socialwork.idSanitary
+                           where mainsanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             socialWork= SocialWork(row[0],row[1],row[2],row[3],row[4],row[5])
             return socialWork.to_dict()
@@ -589,12 +609,18 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
+    def createSocialWorkPaciente(cls,mysql,idPaciente, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport)
+                           select id from mainSanitaryData where idPaciente = %s
+                           """, (idPaciente))
+            
+            idSanitary = cursor.fetchone()
+            
+            cursor.execute("""
+                           insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
                             values (%s,%s,%s,%s,%s)
                            """, (idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport))
             conn.commit()
@@ -635,11 +661,13 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getKitchenPaciente(cls,mysql,idSanitary):
+    def getKitchenPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from kitchenhygiene where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" select * from kitchenhygiene
+                           inner join mainSanitaryData on mainSanitaryData.id = kitchenHygiene.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             kitchen = KitchenHygiene(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
             return kitchen.to_dict()
@@ -649,10 +677,18 @@ class ModelPaciente():
             cursor.close()
             conn.close()      
     @classmethod
-    def createKitchenPaciente(cls,mysql,idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan):
+    def createKitchenPaciente(cls,mysql,idPaciente,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan):
         conn = mysql.connect()
         cursor = conn.cursor()
+        
         try:
+            cursor.execute("select id from mainSanitaryData where idPaciente = %s",(idPaciente))
+            idSanitary = cursor.fetchone()
+        except Exception as e:
+            return e
+        
+        try:
+            
             cursor.execute("""
                            insert into kitchenhygiene (idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan)
                             values (%s,%s,%s,%s,%s,%s)
@@ -661,6 +697,7 @@ class ModelPaciente():
             usuario_id = cursor.lastrowid
             return usuario_id
         except Exception as e:
+            print(e)
             return e
         finally:
             cursor.close()
@@ -709,9 +746,16 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createOtherDataPaciente(cls,mysql,idSanitary, professionalNotes):
+    def createOtherDataPaciente(cls,mysql,idPaciente, professionalNotes):
         conn = mysql.connect()
         cursor = conn.cursor()
+        
+        try:
+            cursor.execute("select id from mainsanitarydata where idPaciente = %s",(idPaciente))
+            idSanitary = cursor.fetchone()
+        except Exception as e:
+            return e
+        
         try:
             cursor.execute("""
                            insert into otherdata (idSanitary, professionalNotes)
@@ -779,7 +823,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into lifestory (idPaciente) values(%s)
+                           select id from lifestory where idPaciente = %s
                            """, (idPaciente))
             
             conn.commit()
