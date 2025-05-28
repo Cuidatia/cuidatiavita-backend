@@ -120,21 +120,6 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
-#    @classmethod
-#   def updateLifeStoryPaciente(cls,mysql,idPaciente):
-#        conn = mysql.connect()
-#        cursor = conn.cursor()
-#        try:
-#            cursor.execute("""
-#                           update lifestory set idChildhood = %s, idYouth = %s, idAdulthood = %s, idMaturity = %s where idPaciente = %s
-#                           """, (idPaciente))
-#            conn.commit()
-#            return True
-#        except Exception as e:
-#            return e
-#        finally:
-#            cursor.close()
-#            conn.close()
     @classmethod
     def deleteLifeStoryPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
@@ -217,8 +202,8 @@ class ModelPaciente():
             cursor.execute(""" select * from personality where idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
-                return jsonify({'error':'No se ha encontrado la personalidad del paciente.'})
-            personality= Personality(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])
+                return None
+            personality= Personality(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10], row[11], row[12])
             return personality.to_dict()
         except Exception as e:
             return jsonify({'error':'Error al obtener _personality_ del paciente.'})
@@ -226,31 +211,32 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createPersonalityPaciente(cls,mysql, pacienteId, nature, habits, likes, dislikes, calmMethods,disturbMethods,hobbies,technologyLevel,goals):
+    def createPersonalityPaciente(cls,mysql, pacienteId, nature, habits, likes, dislikes, calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into personality (idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals)
-                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (pacienteId,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals))
+                           insert into personality (idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes)
+                            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                           """, (pacienteId,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
         except Exception as e:
+            print(e)
             return e
         finally:
             cursor.close()
             conn.close()
     @classmethod
-    def updatePersonalityPaciente(cls,mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals):
+    def updatePersonalityPaciente(cls,mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            update personality set nature = %s, habits = %s, likes = %s, dislikes = %s, calmMethods = %s,
-                           disturbMethods = %s, hobby = %s, tecnologyLevel = %s, goals = %s where idPaciente = %s
-                           """, (nature,habits,likes,dislikes,calmMethods,disturbMethods,hobby,tecnologyLevel,goals,idPaciente))
+                           disturbMethods = %s, hobbies = %s, technologyLevel = %s, goals = %s, favouriteSongs = %s, clothes = %s where idPaciente = %s
+                           """, (nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes,idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -279,6 +265,8 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from contactdata where idPaciente = %s  """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7], row[8], row[9])
             return contactData.to_dict()
         except:
@@ -340,6 +328,8 @@ class ModelPaciente():
         try:
             cursor.execute(""" select * from images where idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             images= Images(row[0],row[1],row[2])
             return images.to_dict()
         except:
@@ -402,6 +392,8 @@ class ModelPaciente():
                            inner join mainSanitaryData on mainSanitaryData.id = pharmacy.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             pharmacy= Pharmacy(row[0],row[1],row[2],row[3],row[4],row[5])
             return pharmacy.to_dict()
         except:
@@ -464,12 +456,16 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getNursingPaciente(cls,mysql,idSanitary):
+    def getNursingPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from nursingmedicine where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" select * from  nursingmedicine
+                           inner join mainSanitaryData on mainSanitaryData.id = nursingmedicine.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             nursing = NursingMedicine(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
             return nursing.to_dict()
         except:
@@ -478,10 +474,17 @@ class ModelPaciente():
             cursor.close()
             conn.close()      
     @classmethod
-    def createNursingPaciente(cls,mysql,idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+    def createNursingPaciente(cls,mysql,idPaciente,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+
+            cursor.execute("""
+                           select id from mainSanitaryData where idPaciente = %s
+                           """, (idPaciente))
+            
+            idSanitary = cursor.fetchone()
+
             cursor.execute("""
                            insert into nursingmedicine (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
                             values (%s,%s,%s,%s,%s,%s)
@@ -495,10 +498,16 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateNursingPaciente(cls,mysql,idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+    def updateNursingPaciente(cls,mysql,idPaciente,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                           select id from mainSanitaryData where idPaciente = %s
+                           """, (idPaciente))
+            
+            idSanitary = cursor.fetchone()
+
             cursor.execute("""
                            update nursingmedicine set nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
                            healthPreferences = %s where idSanitary = %s
@@ -529,10 +538,12 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select socialeducationoccupationaltherapy.* from socialeducationoccupationaltherapy
+            cursor.execute(""" select * from socialeducationoccupationaltherapy
                            inner join mainSanitaryData on mainsanitaryData.id = socialeducationoccupationaltherapy.idSanitary
                            where mainsanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             socialEdu = SocialEducationOccupationalTherapy(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7])
             return socialEdu.to_dict()
         except:
@@ -559,6 +570,7 @@ class ModelPaciente():
             usuario_id = cursor.lastrowid
             return usuario_id
         except Exception as e:
+            print(e)
             return e
         finally:
             cursor.close()
@@ -601,6 +613,8 @@ class ModelPaciente():
                            inner join mainSanitaryData on mainsanitaryData.id = socialwork.idSanitary
                            where mainsanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             socialWork= SocialWork(row[0],row[1],row[2],row[3],row[4],row[5])
             return socialWork.to_dict()
         except:
@@ -609,7 +623,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createSocialWorkPaciente(cls,mysql,idPaciente, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
+    def createSocialWorkPaciente(cls,mysql,idPaciente, residentAndRelationship, petNameAndBreedPet, resources, legalSupport):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
@@ -622,7 +636,7 @@ class ModelPaciente():
             cursor.execute("""
                            insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
                             values (%s,%s,%s,%s,%s)
-                           """, (idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport))
+                           """, (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -632,13 +646,13 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreetPet, resources, legalSupport):
+    def updateSocialWorkPaciente(cls,mysql,idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialwork set residentAndRelationship = %s, petNameAndBreetPet = %s, resources = %s, legalSupport = %s where idSanitary = %s
-                           """, (residentAndRelationship,petNameAndBreetPet,resources,legalSupport,idSanitary))
+                           update socialwork set residentAndRelationship = %s, petNameAndBreedPet = %s, resources = %s, legalSupport = %s where idSanitary = %s
+                           """, (residentAndRelationship,petNameAndBreedPet,resources,legalSupport,idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -669,6 +683,8 @@ class ModelPaciente():
                            inner join mainSanitaryData on mainSanitaryData.id = kitchenHygiene.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             kitchen = KitchenHygiene(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
             return kitchen.to_dict()
         except:
@@ -732,12 +748,16 @@ class ModelPaciente():
             conn.close()
 #####################################################################################
     @classmethod
-    def getOtherDataPaciente(cls,mysql,idSanitary):
+    def getOtherDataPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from otherdata where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" select * from otherdata
+                           inner join mainSanitaryData on mainSanitaryData.id = otherdata.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             otherData = OtherData(row[0],row[1],row[2])
             return otherData.to_dict()
         except:
@@ -751,7 +771,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         
         try:
-            cursor.execute("select id from mainsanitarydata where idPaciente = %s",(idPaciente))
+            cursor.execute("select id from mainSanitaryData where idPaciente = %s",(idPaciente))
             idSanitary = cursor.fetchone()
         except Exception as e:
             return e
@@ -806,6 +826,8 @@ class ModelPaciente():
             cursor.execute(""" select * from childhood 
                            inner join lifeStory on lifeStory.id = childhood.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             childhood = Childhood(row[0],row[1],row[2],row[3],row[4],row[5],row[6],
                                   row[7],row[8],row[9],row[10],row[11],row[12],row[13])
             return childhood.to_dict()
@@ -826,8 +848,8 @@ class ModelPaciente():
                            select id from lifestory where idPaciente = %s
                            """, (idPaciente))
             
-            conn.commit()
-            idLifeStory = cursor.lastrowid
+            idLifeStory = cursor.fetchone()
+            print (idLifeStory)
             
             cursor.execute("""
                            insert into childhood (idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
@@ -841,7 +863,8 @@ class ModelPaciente():
             usuario_id = cursor.lastrowid
             return usuario_id
         except Exception as e:
-            return e
+            print (e)
+            raise e
         finally:
             cursor.close()
             conn.close()
@@ -889,6 +912,8 @@ class ModelPaciente():
             cursor.execute(""" select * from youth 
                            inner join lifeStory on lifeStory.id = youth.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             youth = Youth(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],
                         row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20])
             return youth.to_dict()
@@ -898,7 +923,7 @@ class ModelPaciente():
             cursor.close()
             conn.close()     
     @classmethod
-    def createYouthPaciente(cls,mysql,idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+    def createYouthPaciente(cls,mysql,idPaciente,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
                                 youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis):
@@ -906,6 +931,13 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+
+            cursor.execute("""
+                            select id from lifestory where idPaciente = %s
+                            """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+        
             cursor.execute("""
                            insert into youth (idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
@@ -925,13 +957,19 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateYouthPaciente(cls,mysql,idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+    def updateYouthPaciente(cls,mysql,idPaciente,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
                                 youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                            select id from lifestory where idPaciente = %s
+                            """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+
             cursor.execute("""
                            update youth set youthStudies = %s, youthSchool = %s, youthWorkPlace = %s, youthWorkRol = %s, youthFamilyCore = %s, youthFriendsGroup = %s,
                            youthTravels = %s, youthFavouritePlace = %s, youthRoutine = %s, youthPositiveExperiences = %s, youthNegativeExperiences = %s, youthAddress = %s,
@@ -969,6 +1007,8 @@ class ModelPaciente():
             cursor.execute (""" select * from adulthood
             inner join lifeStory on lifeStory.id = adulthood.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             adulthood = Adulthood(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],
                                row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20])
             return adulthood.to_dict()
@@ -978,13 +1018,20 @@ class ModelPaciente():
             cursor.close()
             conn.close()       
     @classmethod
-    def createAdulthoodPaciente(cls,mysql,idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+    def createAdulthoodPaciente(cls,mysql,idPaciente,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                           select id from lifestory where idPaciente = %s
+                           """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+            print (idLifeStory)
+
             cursor.execute("""
                            insert into adulthood (idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
@@ -1004,13 +1051,19 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateAdulthoodPaciente(cls,mysql,idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+    def updateAdulthoodPaciente(cls,mysql,idPaciente,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                            select id from lifestory where idPaciente = %s
+                            """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+
             cursor.execute("""
                            update adulthood set adulthoodSentimentalCouple = %s, adulthoodChildren = %s, adulthoodStudies = %s, adulthoodWorkPlace = %s, adulthoodWorkRol = %s,
                            adulthoodFamilyCore = %s, adulthoodFriendsGroup = %s, adulthoodWorkGroup = %s, adulthoodTravels = %s, adulthoodFavouritePlace = %s, adulthoodRoutine = %s,
@@ -1050,6 +1103,8 @@ class ModelPaciente():
             cursor.execute (""" select * from maturity
             inner join lifeStory on lifeStory.id = maturity.idLifeStory where lifeStory.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
+            if row is None:
+                return None
             maturity = Maturity(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],
                                row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
             return maturity.to_dict()
@@ -1060,13 +1115,19 @@ class ModelPaciente():
             cursor.close()
             conn.close()   
     @classmethod
-    def createMaturityPaciente(cls,mysql,idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
+    def createMaturityPaciente(cls,mysql,idPaciente,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                            select id from lifestory where idPaciente = %s
+                            """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+
             cursor.execute("""
                            insert into maturity (idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
@@ -1086,13 +1147,19 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateMaturityPaciente(cls,mysql,idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
+    def updateMaturityPaciente(cls,mysql,idPaciente,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
+            cursor.execute("""
+                            select id from lifestory where idPaciente = %s
+                            """, (idPaciente))
+            
+            idLifeStory = cursor.fetchone()
+
             cursor.execute("""
                            update maturity set maturityGrandchildren = %s, maturityWorkPlace = %s, maturityWorkRol = %s, maturityFamilyCore = %s, maturityFriendsGroup = %s,
                            maturityWorkGroup = %s, maturityTravels = %s, maturityFavouritePlace = %s, maturityRoutine = %s, maturityPositiveExperiences = %s, 

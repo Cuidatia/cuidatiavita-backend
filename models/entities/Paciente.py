@@ -244,8 +244,8 @@ class Maturity():
 
 class Personality():
      def __init__(self, id : int, idPaciente : int,
-                  nature : str, habits : str, likes : str, dislikes : str, calmMethods : str, disturbMethods : str, hobby : str,
-                  tecnologyLevel : str, goals : str):
+                  nature : str, habits : str, likes : str, dislikes : str, calmMethods : str, disturbMethods : str, hobbies : str,
+                  technologyLevel : str, goals : str, favouriteSongs : str, clothes: str):
           self.id = id
           self.idPaciente = idPaciente
           self.nature = nature
@@ -254,9 +254,11 @@ class Personality():
           self.dislikes = dislikes
           self.calmMethods = calmMethods
           self.disturbMethods = disturbMethods
-          self.hobby = hobby
-          self.tecnologyLevel = tecnologyLevel
+          self.hobbies = hobbies
+          self.technologyLevel = technologyLevel
           self.goals = goals
+          self.favouriteSongs = favouriteSongs
+          self.clothes = clothes
      def to_dict(self): 
         return {
           'id' : self.id,
@@ -267,9 +269,11 @@ class Personality():
           'dislikes' : self.dislikes,
           'calmMethods' : self.calmMethods,
           'disturbMethods' : self.disturbMethods,
-          'hobby' : self.hobby,
-          'tecnologyLevel' : self.tecnologyLevel,
-          'goals' : self.goals
+          'hobbies' : self.hobbies,
+          'technologyLevel' : self.technologyLevel,
+          'goals' : self.goals,
+          'favouriteSongs' : self.favouriteSongs,
+          'clothes' : self.clothes
         }
      
 class ContactData():
@@ -358,15 +362,12 @@ class NursingMedicine():
      
 class SocialEducationOccupationalTherapy():
      def __init__(self, id : int, idSanitary: int,
-                  cognitiveAbilities : str, affectiveCapacity : str, behaviourCapacity : str, collaborationLevel : str, autonomyLevel : str, groupParticipation : str,):
+                  cognitiveAbilities : str, affectiveCapacity : str, behaviorCapacity : str, collaborationLevel : str, autonomyLevel : str, groupParticipation : str,):
           self.id = id
           self.idSanitary = idSanitary
           self.cognitiveAbilities = cognitiveAbilities
           self.affectiveCapacity = affectiveCapacity
-          self.behaviourCapacity = behaviourCapacity
-          self.collaborationLevel = collaborationLevel
-          self.autonomyLevel = autonomyLevel
-          self.groupParticipation = groupParticipation
+          self.behaviorCapacity = behaviorCapacity
           self.collaborationLevel = collaborationLevel
           self.autonomyLevel = autonomyLevel
           self.groupParticipation = groupParticipation
@@ -376,7 +377,7 @@ class SocialEducationOccupationalTherapy():
             'idSanitary' : self.idSanitary,
             'cognitiveAbilities' : self.cognitiveAbilities,
             'affectiveCapacity' : self.affectiveCapacity,
-            'behaviourCapacity' : self.behaviourCapacity,
+            'behaviorCapacity' : self.behaviorCapacity,
             'collaborationLevel' : self.collaborationLevel,
             'autonomyLevel' : self.autonomyLevel,
             'groupParticipation' : self.groupParticipation
@@ -384,11 +385,11 @@ class SocialEducationOccupationalTherapy():
 
 class SocialWork():
      def __init__(self, id : int, idSanitary: int,
-                  residentAndRelationship : str, petNameAndBreetPet : str, resources : str, legalSupport : str):
+                  residentAndRelationship : str, petNameAndBreedPet : str, resources : str, legalSupport : str):
           self.id = id
           self.idSanitary = idSanitary
           self.residentAndRelationship = residentAndRelationship
-          self.petNameAndBreetPet = petNameAndBreetPet
+          self.petNameAndBreedPet = petNameAndBreedPet
           self.resources = resources
           self.legalSupport = legalSupport
      def to_dict(self): 
@@ -396,7 +397,7 @@ class SocialWork():
             'id' : self.id,
             'idSanitary' : self.idSanitary,
             'residentAndRelationship' : self.residentAndRelationship,
-            'petNameAndBreetPet' : self.petNameAndBreetPet,
+            'petNameAndBreedPet' : self.petNameAndBreedPet,
             'resources' : self.resources,
             'legalSupport' : self.legalSupport
         }

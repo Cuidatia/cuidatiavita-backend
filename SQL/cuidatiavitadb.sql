@@ -183,9 +183,11 @@ create table personality (
     `dislikes` varchar(255),
     `calmMethods` varchar(100),
     `disturbMethods` varchar(100),
-    `hobby` varchar(255),
-    `tecnologyLevel` varchar(100),
+    `hobbies` varchar(255),
+    `technologyLevel` varchar(100),
     `goals` varchar(255),
+    `favouriteSongs` varchar(255),
+    `clothes` varchar(255),
     primary key (`id`),
     constraint FK_PacientePersonality foreign key (`idPaciente`) references pacientes(`id`)
 		on delete cascade

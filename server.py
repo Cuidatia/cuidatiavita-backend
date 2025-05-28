@@ -230,7 +230,9 @@ def crear_paciente():
     try:
         pacienteId = ModelPaciente.createPaciente(mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
                        nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith)
-        return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId}), 200
+        pacienteLifeStory = ModelPaciente.createLifeStoryPaciente(mysql,pacienteId)
+        mainSanitaryData = ModelPaciente.createSanitaryDataPaciente(mysql,pacienteId, None, None, None)
+        return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId, 'lifestory':pacienteLifeStory}), 200
     except Exception as e:
         return jsonify({'error':'Error al añadir el paciente.'}), 400
 
@@ -254,10 +256,12 @@ def get_paciente_personality():
     
     try:
         pacientePersonality = ModelPaciente.getPersonalityPaciente(mysql, pacienteId)
+        print(pacientePersonality)
         if not pacientePersonality:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos personales obtenidos', 'personality':pacientePersonality}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error':'Error al obtener los datos personales.'}), 400
     
     
@@ -267,13 +271,15 @@ def post_paciente_personality():
     data = request.get_json()
     pacienteId = data.get('id')
     personality = data.get('personality')
+    print(data)
     
     try:
-        paciente = ModelPaciente.createPersonalityPaciente(mysql, pacienteId, personality['nature'], personality['habits'], personality['likes'], personality['dislikes'], personality['calmMethods'], personality['disturbMethods'], personality['hobbies'], personality['technologyLevel'], personality['goals'])
+        paciente = ModelPaciente.createPersonalityPaciente(mysql, pacienteId, personality['nature'], personality['habits'], personality['likes'], personality['dislikes'], personality['calmMethods'], personality['disturbMethods'], personality['hobbies'], personality['technologyLevel'], personality['goals'], personality['favouriteSongs'], personality['clothes'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos personales obtenidos', 'paciente':paciente}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error':'Error al obtener los datos personales.'}), 400
     
     # ------------------- PACIENTES | DATOS DE CONTACTO ------------------- #
@@ -310,7 +316,7 @@ def post_paciente_datoscontacto():
 @jwt_required()
 def get_paciente_infancia():
     pacienteId = request.args.get('id')
-    
+
     try:
         pacienteInfancia = ModelPaciente.getChildhoodPaciente(mysql, pacienteId)
         if not pacienteInfancia:
@@ -325,13 +331,14 @@ def post_paciente_infancia():
     data = request.get_json()
     pacienteId = data.get('id')
     childhood = data.get('childhood')
-    
+
     try:
         paciente = ModelPaciente.createChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de infancia obtenidos', 'paciente':paciente}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
 
     # ------------------- PACIENTES | JUVENTUD ------------------- #
@@ -389,6 +396,7 @@ def post_paciente_adultez():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de adultez obtenidos', 'paciente':paciente}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error':'Error al obtener los datos de adultez.'}), 400
     
     # ------------------- PACIENTES | MADUREZ ------------------- #
@@ -440,7 +448,7 @@ def post_main_sanitary_data():
     idPaciente = data.get('id')
     mainSanitaryData = data.get('mainSanitaryData')
     try:
-        mainSanitaryData = ModelPaciente.createSanitaryDataPaciente(mysql,idPaciente, mainSanitaryData['mainIllness'], mainSanitaryData['allergies'], mainSanitaryData['otherIllness'])
+        mainSanitaryData = ModelPaciente.updateSanitaryDataPaciente(mysql,idPaciente, mainSanitaryData['mainIllness'], mainSanitaryData['allergies'], mainSanitaryData['otherIllness'])
         return jsonify({'message': 'Información guardada correctamente'})
     except Exception as e:
         return jsonify({'error': 'No se ha podido guardar la información del usuario'})
@@ -522,7 +530,7 @@ def post_toes():
     socialedu = data.get('socialedu')
     print(socialedu)
     try:
-        socialedu = ModelPaciente.createSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviourCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
+        socialedu = ModelPaciente.createSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviorCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
@@ -607,7 +615,7 @@ def post_otros():
     idPaciente = data.get('id')
     otherData = data.get('pacienteOtros')
     try:
-        ModelPaciente.createOtherDataPaciente(mysql, idPaciente, otherData['professionalNotes'])
+        otherData = ModelPaciente.createOtherDataPaciente(mysql, idPaciente, otherData['professionalNotes'])
         return jsonify({'message': 'Información guardada correctamente'})
     except Exception as e:
         return jsonify({'error': 'No se ha podido guardar la información del usuario'})
