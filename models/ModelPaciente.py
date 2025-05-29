@@ -841,6 +841,7 @@ class ModelPaciente():
     def createChildhoodPaciente(cls,mysql,idPaciente,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                                 childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids):
+        
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
