@@ -269,7 +269,8 @@ class ModelPaciente():
                 return None
             contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7], row[8], row[9])
             return contactData.to_dict()
-        except:
+        except Exception as e:
+            print(e)
             return jsonify({'error':'Error al obtener _contactData_ del paciente.'})
         finally:
             cursor.close()
