@@ -754,4 +754,4 @@ def sendMailRecuperar():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='34.245.169.57',debug=True)
