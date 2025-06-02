@@ -263,7 +263,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from contactdata where idPaciente = %s  """, (idPaciente))
+            cursor.execute(""" select * from contactData where idPaciente = %s  """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -281,7 +281,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into contactdata (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+                           insert into contactData (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
                             values (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian))
             conn.commit()
