@@ -539,8 +539,8 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from socialEducationOccupationalTherapy
-                           inner join mainSanitaryData on mainsanitaryData.id = socialEducationOccupationalTherapy.idSanitary
+            cursor.execute(""" select * from  socialEducationOccupationalTherapy
+                           inner join mainSanitaryData on mainsanitaryData.id =  socialEducationOccupationalTherapy.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
@@ -564,7 +564,7 @@ class ModelPaciente():
             idSanitary = cursor.fetchone()
             
             cursor.execute("""
-                           insert into socialEducationOccupationalTherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
+                           insert into  socialEducationOccupationalTherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
                             values (%s,%s,%s,%s, %s, %s, %s)
                            """, (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation))
             conn.commit()
@@ -582,7 +582,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialEducationOccupationalTherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s where idSanitary = %s
+                           update  socialEducationOccupationalTherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s where idSanitary = %s
                            """, (cognitiveAbilities, affectiveCapacity, behaviorCapacity,collaborationLevel, autonomyLevel, groupParticipation,idSanitary))
             conn.commit()
             return True
@@ -596,7 +596,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from socialEducationOccupationalTherapy where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from  socialEducationOccupationalTherapy where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
