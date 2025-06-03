@@ -540,7 +540,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute(""" select * from  socialEducationOccupationalTherapy
-                           inner join mainSanitaryData on mainsanitaryData.id =  socialEducationOccupationalTherapy.idSanitary
+                           inner join mainSanitaryData on mainSanitaryData.id =  socialEducationOccupationalTherapy.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
