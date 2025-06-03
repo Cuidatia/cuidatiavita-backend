@@ -139,7 +139,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from mainsanitarydata where idPaciente = %s """, (idPaciente))
+            cursor.execute(""" select * from mainSanitaryData where idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             mainSanitaryData= MainSanitaryData(row[0],row[1],row[2],row[3],row[4])
             return mainSanitaryData.to_dict()
@@ -171,7 +171,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update mainsanitarydata set mainIllness = %s, allergies = %s, otherIllness = %s where idPaciente = %s
+                           update mainSanitaryData set mainIllness = %s, allergies = %s, otherIllness = %s where idPaciente = %s
                            """, (mainIllness,allergies,otherIllness,idPaciente))
             conn.commit()
             return True
@@ -185,7 +185,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from mainsanitarydata where idPaciente = %s """, (idPaciente))
+            cursor.execute(""" delete from mainSanitaryData where idPaciente = %s """, (idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -298,7 +298,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update contactdata set contactName = %s, contactFirstSurname = %s, contactSecondSurname = %s, contactAddress = %s, 
+                           update contactData set contactName = %s, contactFirstSurname = %s, contactSecondSurname = %s, contactAddress = %s, 
                            contactEmail = %s, contactTelecom = %s, curatela = %s, deFactoGuardian = %s where idPaciente = %s
                            """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,curatela, deFactoGuardian, idPaciente))
             conn.commit()
@@ -313,7 +313,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from contactdata where idPaciente = %s """, (idPaciente))
+            cursor.execute(""" delete from contactData where idPaciente = %s """, (idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -461,8 +461,8 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from  nursingmedicine
-                           inner join mainSanitaryData on mainSanitaryData.id = nursingmedicine.idSanitary
+            cursor.execute(""" select * from  nursingMedicine
+                           inner join mainSanitaryData on mainSanitaryData.id = nursingMedicine.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
@@ -487,7 +487,7 @@ class ModelPaciente():
             idSanitary = cursor.fetchone()
 
             cursor.execute("""
-                           insert into nursingmedicine (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
+                           insert into nursingMedicine (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
                             values (%s,%s,%s,%s,%s,%s)
                            """, (idSanitary,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences))
             conn.commit()
@@ -510,7 +510,7 @@ class ModelPaciente():
             idSanitary = cursor.fetchone()
 
             cursor.execute("""
-                           update nursingmedicine set nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
+                           update nursingMedicine set nutritionalSituation = %s, sleepQuality = %s, fallRisks = %s, mobilityNeeds = %s,
                            healthPreferences = %s where idSanitary = %s
                            """, (nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences,idSanitary))
             conn.commit()
@@ -525,7 +525,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from nursingmedicine where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from nursingMedicine where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -539,9 +539,9 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from socialeducationoccupationaltherapy
-                           inner join mainSanitaryData on mainsanitaryData.id = socialeducationoccupationaltherapy.idSanitary
-                           where mainsanitaryData.idPaciente = %s """, (idPaciente))
+            cursor.execute(""" select * from socialEducationOccupationalTherapy
+                           inner join mainSanitaryData on mainsanitaryData.id = socialEducationOccupationalTherapy.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -564,7 +564,7 @@ class ModelPaciente():
             idSanitary = cursor.fetchone()
             
             cursor.execute("""
-                           insert into socialeducationoccupationaltherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
+                           insert into socialEducationOccupationalTherapy (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
                             values (%s,%s,%s,%s, %s, %s, %s)
                            """, (idSanitary, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation))
             conn.commit()
@@ -582,7 +582,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialeducationoccupationaltherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s where idSanitary = %s
+                           update socialEducationOccupationalTherapy set cognitiveAbilities = %s, affectiveCapacity = %s, behaviorCapacity = %s, collaborationLevel = %s, autonomyLevel = %s, groupParticipation = %s where idSanitary = %s
                            """, (cognitiveAbilities, affectiveCapacity, behaviorCapacity,collaborationLevel, autonomyLevel, groupParticipation,idSanitary))
             conn.commit()
             return True
@@ -596,7 +596,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from socialeducationoccupationaltherapy where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from socialEducationOccupationalTherapy where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -610,9 +610,9 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select socialwork.* from socialwork
-                           inner join mainSanitaryData on mainsanitaryData.id = socialwork.idSanitary
-                           where mainsanitaryData.idPaciente = %s """, (idPaciente))
+            cursor.execute(""" select socialWork.* from socialWork
+                           inner join mainSanitaryData on mainSanitaryData.id = socialWork.idSanitary
+                           where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -635,7 +635,7 @@ class ModelPaciente():
             idSanitary = cursor.fetchone()
             
             cursor.execute("""
-                           insert into socialwork (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
+                           insert into socialWork (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
                             values (%s,%s,%s,%s,%s)
                            """, (idSanitary, residentAndRelationship, petNameAndBreedPet, resources, legalSupport))
             conn.commit()
@@ -652,7 +652,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update socialwork set residentAndRelationship = %s, petNameAndBreedPet = %s, resources = %s, legalSupport = %s where idSanitary = %s
+                           update socialWork set residentAndRelationship = %s, petNameAndBreedPet = %s, resources = %s, legalSupport = %s where idSanitary = %s
                            """, (residentAndRelationship,petNameAndBreedPet,resources,legalSupport,idSanitary))
             conn.commit()
             return True
@@ -666,7 +666,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from socialwork where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from socialWork where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -680,7 +680,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from kitchenhygiene
+            cursor.execute(""" select * from kitchenHygiene
                            inner join mainSanitaryData on mainSanitaryData.id = kitchenHygiene.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
@@ -707,7 +707,7 @@ class ModelPaciente():
         try:
             
             cursor.execute("""
-                           insert into kitchenhygiene (idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan)
+                           insert into kitchenHygiene (idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan)
                             values (%s,%s,%s,%s,%s,%s)
                            """, (idSanitary,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan))
             conn.commit()
@@ -725,7 +725,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update kitchenhygiene set favouriteFood = %s, dietaryRestrictions = %s, confortAdvices = %s, routine = %s, carePlan = %s where idSanitary = %s
+                           update kitchenHygiene set favouriteFood = %s, dietaryRestrictions = %s, confortAdvices = %s, routine = %s, carePlan = %s where idSanitary = %s
                            """, (favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan,idSanitary))
             conn.commit()
             return True
@@ -739,7 +739,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from kitchenhygiene where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from kitchenHygiene where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
@@ -753,8 +753,8 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" select * from otherdata
-                           inner join mainSanitaryData on mainSanitaryData.id = otherdata.idSanitary
+            cursor.execute(""" select * from otherData
+                           inner join mainSanitaryData on mainSanitaryData.id = otherData.idSanitary
                            where mainSanitaryData.idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             if row is None:
@@ -779,7 +779,7 @@ class ModelPaciente():
         
         try:
             cursor.execute("""
-                           insert into otherdata (idSanitary, professionalNotes)
+                           insert into otherData (idSanitary, professionalNotes)
                             values (%s,%s)
                            """, (idSanitary, professionalNotes))
             conn.commit()
@@ -796,7 +796,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update otherdata set professionalNotes = %s where idSanitary = %s
+                           update otherData set professionalNotes = %s where idSanitary = %s
                            """, (professionalNotes,idSanitary))
             conn.commit()
             return True
@@ -810,7 +810,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" delete from otherdata where idSanitary = %s """, (idSanitary))
+            cursor.execute(""" delete from otherData where idSanitary = %s """, (idSanitary))
             conn.commit()
             return True
         except Exception as e:
