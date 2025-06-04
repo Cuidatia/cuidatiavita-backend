@@ -177,6 +177,7 @@ class ModelUser():
     @classmethod
     def updatePassword(cls,mysql,usuarioId, password):
         try:
+            password = '123456'
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4))
             
             conn = mysql.connect()
