@@ -63,6 +63,31 @@ class ModelUser():
         finally:
             cursor.close()
             conn.close()
+
+    @classmethod
+    def getUsuariosPagina(cls,mysql, org, limit, offset):
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            
+            cursor.execute(""" select usuarios.id, usuarios.nombre, usuarios.email, roles.nombre  from usuarios 
+                inner join usuario_roles on usuarios.id = usuario_roles.idUsuario
+                inner join roles on usuario_roles.idRol = roles.id
+                where idOrganizacion = %s order by id ASC limit %s offset %s""", (org, limit, offset))
+            
+            usuarios = cursor.fetchall()
+            users= []
+            
+            for usuario in usuarios:
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,org,usuario[3])
+                users.append(user.to_dict())
+                
+            return users
+        except Exception as e:
+            return jsonify({'error':e}), 400
+        finally:
+            cursor.close()
+            conn.close()
             
     @classmethod
     def getUsuario(cls,mysql,usuarioId):
@@ -141,13 +166,17 @@ class ModelUser():
         try:
             conn = mysql.connect()
             cursor = conn.cursor()
-            
-            cursor.execute("delete from usuarios where id = %s", (usuarioId))
+            print("Eliminando usuario con ID:", usuarioId)
+            cursor.execute("DELETE FROM paciente_personalreferencia WHERE idUsuario = %s", (usuarioId,))
+            cursor.execute("DELETE FROM usuario_roles WHERE idUsuario = %s", (usuarioId,))
+            cursor.execute("DELETE FROM usuarios WHERE id = %s", (usuarioId,))
+            print("Filas afectadas:", cursor.rowcount)
             conn.commit()
-            
+            print("Commit ejecutado correctamente")
             return jsonify({'ok':'ok'}), 200
         except Exception as e:
-            return jsonify({'error':e}), 400
+            print(e)
+            return jsonify({'error': str(e)}), 400
         finally:
             cursor.close()
             conn.close()
@@ -177,7 +206,7 @@ class ModelUser():
     @classmethod
     def updatePassword(cls,mysql,usuarioId, password):
         try:
-            password = '123456'
+            #password = '123456'
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4))
             
             conn = mysql.connect()
@@ -221,9 +250,10 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.execute("""
-                           select usuarios.nombre from usuarios 
+                           select usuarios.nombre, roles.nombre from usuarios 
                            inner join paciente_personalReferencia on usuarios.id = paciente_personalReferencia.idUsuario
-                           inner join pacientes on pacientes.id = paciente_personalReferencia.idPaciente
+                           inner join pacientes on pacientes.id = paciente_personalReferencia.idPaciente inner join usuario_roles on usuarios.id = usuario_roles.idUsuario
+                           inner join roles on usuario_roles.idRol = roles.id
                            where pacientes.id = %s
                            """, (pacienteId))
             
@@ -231,7 +261,7 @@ class ModelUser():
             users= []
             
             for usuario in usuarios:
-                user = Usuario("",usuario[0],"",True,"","")
+                user = Usuario("",usuario[0],"",True,"",usuario[1])
                 users.append(user.to_dict())
                 
             return users

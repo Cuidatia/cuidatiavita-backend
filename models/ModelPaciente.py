@@ -19,11 +19,47 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def getPacienteName(cls, mysql, idPaciente):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""select name, firstSurname, secondSurname from pacientes where id = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            pacienteNombreCompleto = row[0] + ' ' + row[1] + ' ' + row[2]
+            if row:
+                return pacienteNombreCompleto
+            else:
+                return None
+        except Exception as e:
+            print(e)
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def getPacientes(cls,mysql,idOrganizacion):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute(""" select * from pacientes where idOrganizacion = %s """, (idOrganizacion))
+            rows = cursor.fetchall()
+            pacientes= []
+            for row in rows:
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],
+                                    row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16])
+                pacientes.append(paciente.to_dict())
+            return pacientes
+        except:
+            return jsonify({'error':'Error al obtener los pacientes.'})
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
+    def getPacientesPagina(cls,mysql,idOrganizacion,limit, offset):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(""" select * from pacientes where idOrganizacion = %s order by id asc limit %s offset %s""", (idOrganizacion, limit, offset))
             rows = cursor.fetchall()
             pacientes= []
             for row in rows:

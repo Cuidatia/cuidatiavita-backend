@@ -97,10 +97,16 @@ def crear_usuario():
 @jwt_required()
 def get_usuarios():
     organizacion = request.args.get('org')
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
     
     try:
-        usuarios = ModelUser.getAllUsers(mysql, organizacion)
-        return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios}), 200
+
+        total = len(ModelUser.getAllUsers(mysql, organizacion))
+        usuarios = ModelUser.getUsuariosPagina(mysql, organizacion, limit, offset)
+        return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios, 'totalUsuarios':total}), 200
     except Exception as e:
         return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
 
@@ -115,15 +121,47 @@ def get_usuario():
         return jsonify({'message': 'Usuario obtenidos', 'usuario':usuario}), 200
     except Exception as e:
         return jsonify({'message': 'No se ha podido obtener el usuario'}), 400
+    
+@app.route('/searchUsuario', methods=['GET'])
+@jwt_required()
+def buscar_usuarios():
+    nombre = request.args.get('nombre', '').lower()
+    idOrganizacion = request.args.get('idOrganizacion')
+
+    try:
+        usuarios = ModelUser.getAllUsers(mysql, idOrganizacion)
+        usuarios_filtrados = [
+            usuario for usuario in usuarios
+            if nombre in usuario['nombre'].lower()
+        ]
+        return jsonify({'message': 'Usuarios filtrados', 'usuarios': usuarios_filtrados}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error al buscar usuarios'}), 400
+
+@app.route('/getPersonalName', methods=['GET'])
+@jwt_required()
+def get_personal_name():
+    usuarioId = request.args.get('id') 
+    print(usuarioId)
+    try:
+        usuario = ModelUser.getUsuario(mysql, usuarioId)
+        personalNombreCompleto = usuario['nombre']
+        print(personalNombreCompleto)
+        if personalNombreCompleto:
+            return jsonify({'message': 'Usuario obtenido', 'personalNombreCompleto': personalNombreCompleto}), 200
+        else:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+    except Exception as e:
+        return jsonify({'error': 'Error al obtener el paciente'}), 500
 
 @app.route('/eliminarUsuario', methods=['POST'])
 @jwt_required()
 def eliminar_usuario():
     data = request.get_json()
     usuarioId = data.get('usuarioId')
-    
+    print("ID recibido:", usuarioId)
     try:
-        
+        print("Datos recibidos:", data)
         ModelUser.deleteUser(mysql, usuarioId)
         
         return jsonify({'message': 'Usuario eliminado'}), 200
@@ -179,17 +217,35 @@ def recuperar_password():
         return jsonify({'error': 'No se ha podido recuperar la contraseña.'}), 400
     
     # ------------------- PACIENTES ------------------- #
-    
-@app.route('/getPacientes', methods=['GET'])
+@app.route('/getAllPacientes', methods=['GET'])
 @jwt_required()
-def get_pacientes():
+def get_all_pacientes():
     idOrganizacion = request.args.get('idOrganizacion')
-    
+
     try:
         pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
         if not pacientes:
             return jsonify({'error': 'No se han encontrado pacientes'}), 404
         return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
+    except:
+        return jsonify({'error':'Error al obtener los pacientes.'}), 400
+
+
+@app.route('/getPacientes', methods=['GET'])
+@jwt_required()
+def get_pacientes():
+    idOrganizacion = request.args.get('idOrganizacion')
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
+
+    try:
+        total = len(ModelPaciente.getPacientes(mysql, idOrganizacion))
+        pacientes = ModelPaciente.getPacientesPagina(mysql, idOrganizacion, limit, offset)
+        if not pacientes:
+            return jsonify({'error': 'No se han encontrado pacientes'}), 404
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes, 'totalPacientes':total}), 200
     except:
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
@@ -204,6 +260,38 @@ def get_paciente():
         return jsonify({'message': 'Usuario obtenidos', 'paciente':paciente}), 200
     except Exception as e:
         return jsonify({'error': 'Usuario no encontrado'})
+    
+@app.route('/getPacienteName', methods=['GET'])
+@jwt_required()
+def get_paciente_name():
+    pacienteId = request.args.get('id') 
+    print(pacienteId)
+    try:
+        paciente = ModelPaciente.getPaciente(mysql, pacienteId)
+        pacienteNombreCompleto = paciente['name'] + ' ' + paciente['firstSurname'] + ' ' + paciente['secondSurname']
+        print(pacienteNombreCompleto)
+        if pacienteNombreCompleto:
+            return jsonify({'message': 'Usuario obtenido', 'pacienteNombreCompleto': pacienteNombreCompleto}), 200
+        else:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+    except Exception as e:
+        return jsonify({'error': 'Error al obtener el paciente'}), 500
+    
+@app.route('/searchPaciente', methods=['GET'])
+@jwt_required()
+def buscar_pacientes():
+    nombre = request.args.get('nombre', '').lower()
+    idOrganizacion = request.args.get('idOrganizacion')
+
+    try:
+        pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
+        pacientes_filtrados = [
+            paciente for paciente in pacientes
+            if nombre in paciente['name'].lower()
+        ]
+        return jsonify({'message': 'Pacientes filtrados', 'pacientes': pacientes_filtrados}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error al buscar pacientes'}), 400
 
 @app.route('/crearPaciente', methods=['POST'])
 @jwt_required()
@@ -671,6 +759,20 @@ def get_organizacion():
         return jsonify({'message': 'Organizacion obtenida', 'organizacion':organizacion}), 200
     
     except Exception as e:
+        return jsonify({'error': 'error'}), 401
+
+@app.route('/getResumenOrganizacion', methods=['GET'])
+@jwt_required()
+def get_resumen_organizacion():
+    organizacionId = request.args.get('org')
+
+    try:
+        resumen = ModelOrganizacion.getResumenOrganizacion(mysql, organizacionId)
+    
+        return jsonify({'message': 'Resumen organizacion obtenida', 'resumen':resumen}), 200
+    
+    except Exception as e:
+        print(e)
         return jsonify({'error': 'error'}), 401
     
     
