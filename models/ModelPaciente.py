@@ -71,7 +71,8 @@ class ModelPaciente():
             return jsonify({'error':'Error al obtener los pacientes.'})
         finally:
             cursor.close()
-            conn.close()
+            conn.close()                               
+    
     @classmethod
     def createPaciente(cls,mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
                        nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith):
@@ -111,6 +112,29 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertPaciente(cls,mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
+                       nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith,paciente_id):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM pacientes WHERE id = %s""", (paciente_id,))
+
+            row = cursor.fetchone()
+            if row is None:
+                print('Create',row)
+                # Create new paciente
+            else:
+                cls.updatePaciente(mysql,paciente_id,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith)
+                
+            return jsonify({'okey': 'okey'}), 200
+        except Exception as e:
+            return jsonify({"error": "Error al buscar el paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    
     @classmethod
     def deletePaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
@@ -281,6 +305,22 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
+    def upsertPersonalityPaciente(cls,mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM personality WHERE idPaciente = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createPersonalityPaciente(mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes)
+            else:
+                return cls.updatePersonalityPaciente(mysql,idPaciente,nature,habits,likes,dislikes,calmMethods,disturbMethods,hobbies,technologyLevel,goals,favouriteSongs,clothes)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la personalidad del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    @classmethod
     def deletePersonalityPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -341,6 +381,23 @@ class ModelPaciente():
             return True
         except Exception as e:
             return e
+        finally:
+            cursor.close()
+            conn.close()
+            
+    @classmethod
+    def upsertContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM contactData WHERE idPaciente = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+            else:
+                return cls.updateContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar los datos de contacto del paciente."}), 400
         finally:
             cursor.close()
             conn.close()
@@ -478,6 +535,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertPharmacyPaciente(cls,mysql,idPaciente, treatment, regularPharmacy, visitFrequency, paymentMethod):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM pharmacy WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createPharmacyPaciente(mysql,idPaciente, treatment, regularPharmacy, visitFrequency, paymentMethod)
+            else:
+                return cls.updatePharmacyPaciente(mysql,idPaciente, treatment, regularPharmacy, visitFrequency, paymentMethod)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la farmacia del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    
     @classmethod
     def deletePharmacyPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -556,6 +631,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertNursingPaciente(cls,mysql,idPaciente,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM nursingMedicine WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createNursingPaciente(mysql,idPaciente,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
+            else:
+                return cls.updateNursingPaciente(mysql,idPaciente,nutritionalSituation, sleepQuality, fallRisks, mobilityNeeds, healthPreferences)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la enfermería del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    
     @classmethod
     def deleteNursingPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -627,6 +720,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertSocialEduPaciente(cls,mysql,idPaciente, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM socialEducationOccupationalTherapy WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createSocialEduPaciente(mysql,idPaciente, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
+            else:
+                return cls.updateSocialEduPaciente(mysql,idPaciente, cognitiveAbilities, affectiveCapacity, behaviorCapacity, collaborationLevel, autonomyLevel, groupParticipation)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la educación social del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    
     @classmethod
     def deleteSocialEduPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -697,6 +808,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertSocialWorkPaciente(cls,mysql,idPaciente, residentAndRelationship, petNameAndBreedPet, resources, legalSupport):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM socialWork WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createSocialWorkPaciente(mysql,idPaciente, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
+            else:
+                return cls.updateSocialWorkPaciente(mysql,idPaciente, residentAndRelationship, petNameAndBreedPet, resources, legalSupport)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar el trabajo social del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()
+    
     @classmethod
     def deleteSocialWorkPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -770,6 +899,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertKitchenPaciente(cls,mysql,idPaciente,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM kitchenHygiene WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createKitchenPaciente(mysql,idPaciente,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan)
+            else:
+                return cls.updateKitchenPaciente(mysql,idPaciente,favouriteFood, dietaryRestrictions, confortAdvices, routine, carePlan)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la cocina del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()        
+            
     @classmethod
     def deleteKitchenPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -841,6 +988,24 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertOtherDataPaciente(cls,mysql,idPaciente,professionalNotes):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM otherData WHERE idSanitary = %s""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createOtherDataPaciente(mysql,idPaciente,professionalNotes)
+            else:
+                return cls.updateOtherDataPaciente(mysql,idPaciente,professionalNotes)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar los otros datos del paciente."}), 400
+        finally:
+            cursor.close()
+            conn.close()        
+            
     @classmethod
     def deleteOtherDataPaciente(cls,mysql,idSanitary):
         conn = mysql.connect()
@@ -915,7 +1080,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update childhood set childhoodStudies = %s, childhoodSchool = %s, childhoodMotivations = %s, childhoodFamilyCore = %s, childhoodFriendsGroup = %s,
+                           update childhood set childhoodStudies = %s, childhoodSchool = %s, childhoodMotivations = %s, childhoodFamilyCore = %s, childhoodFriendsGroup = %s, childhoodTravels = %s,
                            childhoodFavouritePlace = %s, childhoodPositiveExperiences = %s, childhoodNegativeExperiences = %s, childhoodAddress = %s, childhoodLikes = %s,
                            childhoodAfraids = %s where idLifeStory = %s
                            """, (childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,childhoodFriendsGroup,childhoodTravels,
@@ -928,6 +1093,30 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertChildhoodPaciente(cls,mysql,idPaciente,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                                childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
+                                childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        # try:
+        cursor.execute("""SELECT COUNT(id) FROM childhood WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+        row = cursor.fetchone()
+        if row[0] == 0:
+            return cls.createChildhoodPaciente(mysql,idPaciente,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                            childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
+                            childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids)
+        else:
+            cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+            idLifeStory = cursor.fetchone()
+            
+            return cls.updateChildhoodPaciente(mysql,idLifeStory[0],childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+                            childhoodFriendsGroup,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
+                            childhoodNegativeExperiences, childhoodAddress, childhoodLikes, childhoodAfraids)
+        # except Exception as e:
+        #     return jsonify({"error": "Error al buscar la infancia del paciente."}), 400
+            
     @classmethod
     def deleteChildhoodPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
@@ -1023,6 +1212,33 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertYouthPaciente(cls,mysql,idPaciente,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+                                youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
+                                youthUncompletedProjects, youthIllness, youthPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM youth WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createYouthPaciente(mysql,idPaciente,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+                                youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
+                                youthUncompletedProjects, youthIllness, youthPersonalCrisis)
+            else:
+                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                idLifeStory = cursor.fetchone()
+                
+                return cls.updateYouthPaciente(mysql,idLifeStory[0],youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+                                youthFriendsGroup,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
+                                youthNegativeExperiences,youthAddress,youthLikes,youthHobbies,youthAfraids,youthProjects,
+                                youthUncompletedProjects, youthIllness, youthPersonalCrisis)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la juventud del paciente."}), 400
+    
     @classmethod
     def deleteYouthPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
@@ -1118,6 +1334,33 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertAdulthoodPaciente(cls,mysql,idPaciente,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+                                adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
+                                adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
+                                adulthoodIllness, adulthoodPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM adulthood WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createAdulthoodPaciente(mysql,idPaciente,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+                                adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
+                                adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
+                                adulthoodIllness, adulthoodPersonalCrisis)
+            else:
+                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                idLifeStory = cursor.fetchone()
+                
+                return cls.updateAdulthoodPaciente(mysql,idLifeStory[0],adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+                                adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
+                                adulthoodNegativeExperiences,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
+                                adulthoodIllness, adulthoodPersonalCrisis)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la adultez del paciente."}), 400
+            
     @classmethod
     def deleteAdulthoodPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
@@ -1214,6 +1457,33 @@ class ModelPaciente():
         finally:
             cursor.close()
             conn.close()
+            
+    @classmethod
+    def upsertMaturityPaciente(cls,mysql,idPaciente,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
+                                maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
+                                maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
+                                maturityIllness,maturityPersonalCrisis):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT COUNT(id) FROM maturity WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            row = cursor.fetchone()
+            if row[0] == 0:
+                return cls.createMaturityPaciente(mysql,idPaciente,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
+                                maturityWorkGroup,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
+                                maturityNegativeExperiences,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
+                                maturityIllness,maturityPersonalCrisis)
+            else:
+                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                idLifeStory = cursor.fetchone()
+                
+                return cls.updateMaturityPaciente(mysql,idLifeStory[0],maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,
+                                maturityFriendsGroup, maturityWorkGroup, maturityTravels, maturityFavouritePlace, maturityRoutine, 
+                                maturityPositiveExperiences, maturityNegativeExperiences, maturityRetirement, maturityWills, 
+                                maturityProjects, maturityUncompletedProjects, maturityIllness, maturityPersonalCrisis)
+        except Exception as e:
+            return jsonify({"error": "Error al buscar la madurez del paciente."}), 400
+    
     @classmethod
     def deleteMaturityPaciente(cls,mysql,idLifeStory):
         conn = mysql.connect()
