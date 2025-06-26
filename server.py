@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, make_response
+import pdfkit
 from flask_cors import CORS
 from flaskext.mysql import MySQL
 from flask_mail import Mail, Message
@@ -7,7 +8,7 @@ import logging
 from flask_jwt_extended import jwt_required, JWTManager, create_access_token
 import os
 import jwt
-from datetime import timedelta
+from datetime import timedelta, date
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -868,7 +869,25 @@ def sendMailRecuperar():
     except Exception as e:
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
 
+@app.route('/exportarInforme', methods=['POST'])
+@jwt_required()
+def exportar_informe():
+    data = request.get_json()
+    dataPaciente = data.get('dataPaciente')
 
+    today = date.today()
+    fecha = today.strftime('%d %B, %Y')
+    
+    html = render_template('pdf.html', fecha=fecha, contenido=dataPaciente)
+
+    # Convertir HTML a PDF con pdfkit
+    pdf = pdfkit.from_string(html, False)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=informe.pdf'
+    
+    return response
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
