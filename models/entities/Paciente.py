@@ -2,7 +2,7 @@ import datetime
 class Paciente():
     def __init__(self, id: int, idOrganizacion: int, 
                  name: str, firstSurname: str, secondSurname: str, alias: str, birthDate: str, age : str, birthPlace: str, nationality: str, gender: str,
-                 address: str, maritalStatus: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
+                 address: str, maritalStatus: str, sentimentalCouple: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
             self.id = id
             self.idOrganizacion = idOrganizacion
             self.name = name
@@ -16,6 +16,7 @@ class Paciente():
             self.gender = gender
             self.address = address
             self.maritalStatus = maritalStatus
+            self.sentimentalCouple = sentimentalCouple
             self.language = language
             self.otherLanguages = otherLanguages
             self.culturalHeritage = culturalHeritage
@@ -35,6 +36,7 @@ class Paciente():
             'gender' : self.gender,
             'address': self.address,
             'maritalStatus' : self.maritalStatus,
+            'sentimentalCouple' : self.sentimentalCouple,
             'language': self.language,
             'otherLanguages' : self.otherLanguages,
             'culturalHeritage': self.culturalHeritage,
@@ -53,8 +55,8 @@ class LifeStory():
 
 class Childhood():
      def __init__(self, id : int, idLifeStory : int,
-                  childhoodStudies : str, childhoodSchool : str, childhoodMotivations : str, childhoodFamilyCore : str, childhoodFriendsGroup : str,
-                  childhoodTravels : str, childhoodFavouritePlace : str, childhoodPositiveExperiences : str, childhoodNegativeExperiences : str,
+                  childhoodStudies : str, childhoodSchool : str, childhoodMotivations : str, childhoodFamilyCore : str, childhoodFriendsGroup : str, childhoodImportantPerson: str, 
+                  childhoodTravels : str, childhoodFavouritePlace : str, childhoodPositiveExperiences : str, childhoodNegativeExperiences : str, childhoodResponsabilities: str,
                   childhoodAddress : str, childhoodLikes : str, childhoodAfraids : str):
           self.id = id
           self.idLifeStory = idLifeStory
@@ -63,10 +65,12 @@ class Childhood():
           self.childhoodMotivations = childhoodMotivations
           self.childhoodFamilyCore = childhoodFamilyCore
           self.childhoodFriendsGroup = childhoodFriendsGroup
+          self.childhoodImportantPerson = childhoodImportantPerson
           self.childhoodTravels = childhoodTravels
           self.childhoodFavouritePlace = childhoodFavouritePlace
           self.childhoodPositiveExperiences = childhoodPositiveExperiences
           self.childhoodNegativeExperiences = childhoodNegativeExperiences
+          self.childhoodResponsabilities = childhoodResponsabilities
           self.childhoodAddress = childhoodAddress
           self.childhoodLikes = childhoodLikes
           self.childhoodAfraids = childhoodAfraids
@@ -79,10 +83,12 @@ class Childhood():
             'childhoodMotivations' : self.childhoodMotivations,
             'childhoodFamilyCore' : self.childhoodFamilyCore,
             'childhoodFriendsGroup' : self.childhoodFriendsGroup,
+            'childhoodImportantPerson' : self.childhoodImportantPerson,
             'childhoodTravels' : self.childhoodTravels,
             'childhoodFavouritePlace' : self.childhoodFavouritePlace,
             'childhoodPositiveExperiences' : self.childhoodPositiveExperiences,
             'childhoodNegativeExperiences' : self.childhoodNegativeExperiences,
+            'childhoodResponsabilities' : self.childhoodResponsabilities,
             'childhoodAddress' : self.childhoodAddress,
             'childhoodLikes' : self.childhoodLikes,
             'childhoodAfraids' : self.childhoodAfraids
@@ -91,8 +97,8 @@ class Childhood():
 class Youth():
      def __init__(self, id : int, idLifeStory : int,
                   youthStudies : str, youthSchool : str, youthWorkPlace : str, youthWorkRol : str, youthFamilyCore : str,
-                  youthFriendsGroup : str, youthTravels : str, youthFavouritePlace : str, youthRoutine : str, youthPositiveExperiences : str, 
-                  youthNegativeExperiences : str, youthAddress : str, youthLikes : str, youthHobbies : str, youthAfraids : str,
+                  youthFriendsGroup : str, youthImportantPerson: str, youthTravels : str, youthFavouritePlace : str, youthRoutine : str, youthPositiveExperiences : str, 
+                  youthNegativeExperiences : str, youthResponsabilities: str, youthAddress : str, youthLikes : str, youthHobbies : str, youthAfraids : str, youthSentimentalCouple: str,
                   youthProjects : str, youthUncompletedProjects : str, youthIllness : str, youthPersonalCrisis : str):
           self.id = id
           self.idLifeStory = idLifeStory
@@ -102,15 +108,18 @@ class Youth():
           self.youthWorkRol = youthWorkRol
           self.youthFamilyCore = youthFamilyCore
           self.youthFriendsGroup = youthFriendsGroup
+          self.youthImportantPerson = youthImportantPerson
           self.youthTravels = youthTravels
           self.youthFavouritePlace = youthFavouritePlace
           self.youthRoutine = youthRoutine
           self.youthPositiveExperiences = youthPositiveExperiences
           self.youthNegativeExperiences = youthNegativeExperiences
+          self.youthResponsabilities = youthResponsabilities
           self.youthAddress = youthAddress
           self.youthLikes = youthLikes
           self.youthHobbies = youthHobbies
           self.youthAfraids = youthAfraids
+          self.youthSentimentalCouple = youthSentimentalCouple
           self.youthProjects = youthProjects
           self.youthUncompletedProjects = youthUncompletedProjects
           self.youthIllness = youthIllness
@@ -125,15 +134,18 @@ class Youth():
             'youthWorkRol' : self.youthWorkRol,
             'youthFamilyCore' : self.youthFamilyCore,
             'youthFriendsGroup' : self.youthFriendsGroup,
+            'youthImportantPerson' : self.youthImportantPerson,
             'youthTravels' : self.youthTravels,
             'youthFavouritePlace' : self.youthFavouritePlace,
             'youthRoutine' : self.youthRoutine,
             'youthPositiveExperiences' : self.youthPositiveExperiences,
             'youthNegativeExperiences' : self.youthNegativeExperiences,
+            'youthResponsabilities' : self.youthResponsabilities,
             'youthAddress' : self.youthAddress,
             'youthLikes' : self.youthLikes,
             'youthHobbies' : self.youthHobbies,
             'youthAfraids' : self.youthAfraids,
+            'youthSentimentalCouple' : self.youthSentimentalCouple,
             'youthProjects' : self.youthProjects,
             'youthUncompletedProjects' : self.youthUncompletedProjects,
             'youthIllness' : self.youthIllness,
@@ -143,9 +155,9 @@ class Youth():
 class Adulthood():
      def __init__(self, id : int, idLifeStory : int,
                   adulthoodSentimentalCouple : str, adulthoodChildren : str, adulthoodStudies : str, adulthoodWorkPlace : str,
-                  adulthoodWorkRol : str, adulthoodFamilyCore : str, adulthoodFriendsGroup : str, adulthoodWorkGroup : str,
+                  adulthoodWorkRol : str, adulthoodFamilyCore : str, adulthoodFriendsGroup : str, adulthoodWorkGroup : str, adulthoodImportantPerson: str,
                   adulthoodTravels : str, adulthoodFavouritePlace : str, adulthoodRoutine : str, adulthoodPositiveExperiences : str, 
-                  adulthoodNegativeExperiences : str, adulthoodAddress : str, adulthoodEconomicSituation : str,
+                  adulthoodNegativeExperiences : str, adulthoodResponsabilities: str, adulthoodAddress : str, adulthoodEconomicSituation : str,
                   adulthoodProjects : str, adulthoodUncompletedProjects : str, adulthoodIllness : str, adulthoodPersonalCrisis : str):
           self.id = id
           self.idLifeStory = idLifeStory
@@ -157,11 +169,13 @@ class Adulthood():
           self.adulthoodFamilyCore = adulthoodFamilyCore
           self.adulthoodFriendsGroup = adulthoodFriendsGroup
           self.adulthoodWorkGroup = adulthoodWorkGroup
+          self.adulthoodImportantPerson = adulthoodImportantPerson
           self.adulthoodTravels = adulthoodTravels
           self.adulthoodFavouritePlace = adulthoodFavouritePlace
           self.adulthoodRoutine = adulthoodRoutine
           self.adulthoodPositiveExperiences = adulthoodPositiveExperiences
           self.adulthoodNegativeExperiences = adulthoodNegativeExperiences
+          self.adulthoodResponsabilities = adulthoodResponsabilities
           self.adulthoodAddress = adulthoodAddress
           self.adulthoodEconomicSituation = adulthoodEconomicSituation
           self.adulthoodProjects = adulthoodProjects
@@ -180,11 +194,13 @@ class Adulthood():
             'adulthoodFamilyCore' : self.adulthoodFamilyCore,
             'adulthoodFriendsGroup' : self.adulthoodFriendsGroup,
             'adulthoodWorkGroup' : self.adulthoodWorkGroup,
+            'adulthoodImportantPerson' : self.adulthoodImportantPerson,
             'adulthoodTravels' : self.adulthoodTravels,
             'adulthoodFavouritePlace' : self.adulthoodFavouritePlace,
             'adulthoodRoutine' : self.adulthoodRoutine,
             'adulthoodPositiveExperiences' : self.adulthoodPositiveExperiences,
             'adulthoodNegativeExperiences' : self.adulthoodNegativeExperiences,
+            'adulthoodResponsabilities' : self.adulthoodResponsabilities,
             'adulthoodAddress' : self.adulthoodAddress,
             'adulthoodEconomicSituation' : self.adulthoodEconomicSituation,
             'adulthoodProjects' : self.adulthoodProjects,
@@ -196,8 +212,8 @@ class Adulthood():
 class Maturity():
      def __init__(self, id : int, idLifeStory : int,
                   maturityGrandchildren : str, maturityWorkPlace : str, maturityWorkRol : str, maturityFamilyCore : str,
-                  maturityFriendsGroup : str, maturityWorkGroup : str, maturityTravels : str, maturityFavouritePlace : str,
-                  maturityRoutine : str, maturityPositiveExperiences : str, maturityNegativeExperiences : str,
+                  maturityFriendsGroup : str, maturityWorkGroup : str, maturityImportantPerson: str, maturityTravels : str, maturityFavouritePlace : str,
+                  maturityRoutine : str, maturityPositiveExperiences : str, maturityNegativeExperiences : str,maturityResponsabilities: str, 
                   maturityRetirement : str, maturityWills : str, maturityProjects : str, maturityUncompletedProjects : str,
                   maturityIllness : str, maturityPersonalCrisis : str):
           self.id = id
@@ -208,11 +224,13 @@ class Maturity():
           self.maturityFamilyCore = maturityFamilyCore
           self.maturityFriendsGroup = maturityFriendsGroup
           self.maturityWorkGroup = maturityWorkGroup
+          self.maturityImportantPerson = maturityImportantPerson
           self.maturityTravels = maturityTravels
           self.maturityFavouritePlace = maturityFavouritePlace
           self.maturityRoutine = maturityRoutine
           self.maturityPositiveExperiences = maturityPositiveExperiences
           self.maturityNegativeExperiences = maturityNegativeExperiences
+          self.maturityResponsabilities = maturityResponsabilities
           self.maturityRetirement = maturityRetirement
           self.maturityWills = maturityWills
           self.maturityProjects = maturityProjects
@@ -229,11 +247,13 @@ class Maturity():
             'maturityFamilyCore' : self.maturityFamilyCore,
             'maturityFriendsGroup' : self.maturityFriendsGroup,
             'maturityWorkGroup' : self.maturityWorkGroup,
+            'maturityImportantPerson' : self.maturityImportantPerson,
             'maturityTravels' : self.maturityTravels,
             'maturityFavouritePlace' : self.maturityFavouritePlace,
             'maturityRoutine' : self.maturityRoutine,
             'maturityPositiveExperiences' : self.maturityPositiveExperiences,
             'maturityNegativeExperiences' : self.maturityNegativeExperiences,
+            'maturityResponsabilities' : self.maturityResponsabilities,
             'maturityRetirement' : self.maturityRetirement,
             'maturityWills' : self.maturityWills,
             'maturityProjects' : self.maturityProjects,
