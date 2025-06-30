@@ -309,6 +309,7 @@ def upsert_paciente():
     nationality = data.get('nationality')
     gender = data.get('gender')
     maritalStatus = data.get('maritalStatus')
+    sentimentalCouple = data.get('sentimentalCouple')
     language = data.get('language')
     otherLanguages = data.get('otherLanguages')
     culturalHeritage = data.get('culturalHeritage')
@@ -319,7 +320,7 @@ def upsert_paciente():
     
     try:
         pacienteUpsert = ModelPaciente.upsertPaciente(mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                       nationality,gender,address,maritalStatus,language,otherLanguages,culturalHeritage,faith, paciente_id)
+                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith, paciente_id)
     
         return jsonify({'message': 'Paciente actualizado correctamente.', 'ok': 'ok'}), 200
     except Exception as e:
@@ -335,7 +336,7 @@ def crear_paciente():
     
     try:
         pacienteId = ModelPaciente.createPaciente(mysql,idOrganizacion,nuevoPaciente['name'],nuevoPaciente['firstSurname'],nuevoPaciente['secondSurname'],nuevoPaciente['alias'],nuevoPaciente['birthDate'],nuevoPaciente['age'],nuevoPaciente['birthPlace'],
-                       nuevoPaciente['nationality'],nuevoPaciente['gender'],nuevoPaciente['address'],nuevoPaciente['maritalStatus'],nuevoPaciente['language'],nuevoPaciente['otherLanguages'],nuevoPaciente['culturalHeritage'],nuevoPaciente['faith'])
+                       nuevoPaciente['nationality'],nuevoPaciente['gender'],nuevoPaciente['address'],nuevoPaciente['maritalStatus'],nuevoPaciente['sentimentalCouple'],nuevoPaciente['language'],nuevoPaciente['otherLanguages'],nuevoPaciente['culturalHeritage'],nuevoPaciente['faith'])
         pacienteLifeStory = ModelPaciente.createLifeStoryPaciente(mysql,pacienteId)
         mainSanitaryData = ModelPaciente.createSanitaryDataPaciente(mysql,pacienteId, None, None, None)
         return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId, 'lifestory':pacienteLifeStory}), 200
@@ -437,7 +438,7 @@ def post_paciente_infancia():
     childhood = data.get('childhood')
 
     try:
-        paciente = ModelPaciente.upsertChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'], childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
+        paciente = ModelPaciente.upsertChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'],childhood['childhoodImportantPerson'],childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'],childhood['childhoodResponsabilities'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -467,7 +468,7 @@ def post_paciente_juventud():
     
 
     try:
-        paciente = ModelPaciente.upsertYouthPaciente(mysql, pacienteId, youth["youthStudies"], youth['youthSchool'], youth['youthWorkPlace'], youth['youthWorkRol'], youth['youthFamilyCore'], youth['youthFriendsGroup'], youth['youthTravels'], youth['youthFavouritePlace'], youth['youthRoutine'], youth['youthPositiveExperiences'], youth['youthNegativeExperiences'], youth['youthAddress'], youth['youthLikes'], youth['youthHobbies'], youth['youthAfraids'], youth['youthProjects'], youth['youthUncompletedProjects'], youth['youthIllness'], youth['youthPersonalCrisis'])
+        paciente = ModelPaciente.upsertYouthPaciente(mysql, pacienteId, youth["youthStudies"], youth['youthSchool'], youth['youthWorkPlace'], youth['youthWorkRol'], youth['youthFamilyCore'], youth['youthFriendsGroup'], youth['youthImportantPerson'],youth['youthTravels'], youth['youthFavouritePlace'], youth['youthRoutine'], youth['youthPositiveExperiences'], youth['youthNegativeExperiences'], youth['youthResponsabilities'], youth['youthAddress'], youth['youthLikes'], youth['youthHobbies'], youth['youthAfraids'],youth['youthSentimentalCouple'], youth['youthProjects'], youth['youthUncompletedProjects'], youth['youthIllness'], youth['youthPersonalCrisis'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -495,7 +496,7 @@ def post_paciente_adultez():
     adulthood = data.get('adulthood')
 
     try:
-        paciente = ModelPaciente.upsertAdulthoodPaciente(mysql, pacienteId, adulthood["adulthoodSentimentalCouple"], adulthood['adulthoodChildren'], adulthood['adulthoodStudies'], adulthood['adulthoodWorkPlace'], adulthood['adulthoodWorkRol'], adulthood['adulthoodFamilyCore'], adulthood['adulthoodFriendsGroup'], adulthood['adulthoodWorkGroup'], adulthood['adulthoodTravels'], adulthood['adulthoodFavouritePlace'], adulthood['adulthoodRoutine'], adulthood['adulthoodPositiveExperiences'], adulthood['adulthoodNegativeExperiences'], adulthood['adulthoodAddress'], adulthood['adulthoodEconomicSituation'], adulthood['adulthoodProjects'], adulthood['adulthoodUncompletedProjects'], adulthood['adulthoodIllness'], adulthood['adulthoodPersonalCrisis'])
+        paciente = ModelPaciente.upsertAdulthoodPaciente(mysql, pacienteId, adulthood["adulthoodSentimentalCouple"], adulthood['adulthoodChildren'], adulthood['adulthoodStudies'], adulthood['adulthoodWorkPlace'], adulthood['adulthoodWorkRol'], adulthood['adulthoodFamilyCore'], adulthood['adulthoodFriendsGroup'], adulthood['adulthoodWorkGroup'], adulthood["adulthoodImportantPerson"],adulthood['adulthoodTravels'], adulthood['adulthoodFavouritePlace'], adulthood['adulthoodRoutine'], adulthood['adulthoodPositiveExperiences'], adulthood['adulthoodNegativeExperiences'], adulthood["adulthoodResponsabilities"], adulthood['adulthoodAddress'], adulthood['adulthoodEconomicSituation'], adulthood['adulthoodProjects'], adulthood['adulthoodUncompletedProjects'], adulthood['adulthoodIllness'], adulthood['adulthoodPersonalCrisis'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -524,7 +525,7 @@ def post_paciente_madurez():
     maturity = data.get('maturity')
 
     try:
-        paciente = ModelPaciente.upsertMaturityPaciente(mysql, pacienteId, maturity['maturityGrandchildren'], maturity['maturityWorkPlace'], maturity['maturityWorkRol'], maturity['maturityFamilyCore'], maturity['maturityFriendsGroup'], maturity['maturityWorkGroup'], maturity['maturityTravels'], maturity['maturityFavouritePlace'], maturity['maturityRoutine'], maturity['maturityPositiveExperiences'], maturity['maturityNegativeExperiences'], maturity['maturityRetirement'], maturity['maturityWills'], maturity['maturityProjects'], maturity['maturityUncompletedProjects'], maturity['maturityIllness'], maturity['maturityPersonalCrisis'])
+        paciente = ModelPaciente.upsertMaturityPaciente(mysql, pacienteId, maturity['maturityGrandchildren'], maturity['maturityWorkPlace'], maturity['maturityWorkRol'], maturity['maturityFamilyCore'], maturity['maturityFriendsGroup'], maturity['maturityWorkGroup'], maturity['maturityImportantPerson'], maturity['maturityTravels'], maturity['maturityFavouritePlace'], maturity['maturityRoutine'], maturity['maturityPositiveExperiences'], maturity['maturityNegativeExperiences'], maturity['maturityResponsabilities'], maturity['maturityRetirement'], maturity['maturityWills'], maturity['maturityProjects'], maturity['maturityUncompletedProjects'], maturity['maturityIllness'], maturity['maturityPersonalCrisis'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
