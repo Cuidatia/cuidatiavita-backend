@@ -879,9 +879,21 @@ def exportar_informe():
     fecha = today.strftime('%d %B, %Y')
     
     html = render_template('pdf.html', fecha=fecha, contenido=dataPaciente)
+    
+    options = {
+        'page-size': 'A4',
+        'encoding': "UTF-8",
+        'margin-top': '40mm',
+        'margin-bottom': '30mm',
+        'margin-left': '15mm',
+        'margin-right': '15mm',
+        'header-html': 'templates/header.html',
+        'footer-html': 'templates/footer.html',
+        'enable-local-file-access': None,  # Necesario para acceder a imágenes locales
+    }
 
     # Convertir HTML a PDF con pdfkit
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, options=options)
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
