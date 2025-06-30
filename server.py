@@ -109,6 +109,7 @@ def get_usuarios():
         usuarios = ModelUser.getUsuariosPagina(mysql, organizacion, limit, offset)
         return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios, 'totalUsuarios':total}), 200
     except Exception as e:
+        print(e)
         return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
 
 @app.route('/getUsuario', methods=['GET'])

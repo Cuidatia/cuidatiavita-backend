@@ -2,7 +2,7 @@ import datetime
 class Paciente():
     def __init__(self, id: int, idOrganizacion: int, 
                  name: str, firstSurname: str, secondSurname: str, alias: str, birthDate: str, age : str, birthPlace: str, nationality: str, gender: str,
-                 address: str, maritalStatus: str, sentimentalCouple: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str):
+                 address: str, maritalStatus: str, sentimentalCouple: str, language: str, otherLanguages: str, culturalHeritage : str, faith: str, time_added_paciente):
             self.id = id
             self.idOrganizacion = idOrganizacion
             self.name = name
@@ -21,6 +21,7 @@ class Paciente():
             self.otherLanguages = otherLanguages
             self.culturalHeritage = culturalHeritage
             self.faith = faith
+            self.time_added_paciente = time_added_paciente
     def to_dict(self): 
         return {
             'id' : self.id,
@@ -40,7 +41,8 @@ class Paciente():
             'language': self.language,
             'otherLanguages' : self.otherLanguages,
             'culturalHeritage': self.culturalHeritage,
-            'faith': self.faith
+            'faith': self.faith,
+            'time_added_paciente' : self.time_added_paciente
         }
 
 class LifeStory():
@@ -458,13 +460,16 @@ class OtherData():
      
 class Images():
      def __init__(self, id : int, idPaciente : int,
-                  photoReferences : str):
+                  photoReferences : str, photoCategory):
           self.id = id
           self.idPaciente = idPaciente
           self.photoReferences = photoReferences
+          self.photoCategory = photoCategory
+
      def to_dict(self): 
         return {
             'id' : self.id,
             'idPaciente' : self.idPaciente,
-            'photoReferences' : self.photoReferences
+            'photoReferences' : self.photoReferences,
+            'photoCategory' : self.photoCategory
         }

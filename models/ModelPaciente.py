@@ -11,7 +11,7 @@ class ModelPaciente():
             cursor.execute(""" select * from pacientes where id = %s """, (idPaciente))
             row = cursor.fetchone()
             paciente= Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],
-                               row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17])
+                               row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
             return paciente.to_dict()
         except Exception as e:
             return jsonify({'error':'Error al obtener el paciente.'})
@@ -46,7 +46,7 @@ class ModelPaciente():
             pacientes= []
             for row in rows:
                 paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],
-                                    row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17])
+                                    row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
                 pacientes.append(paciente.to_dict())
             return pacientes
         except:
@@ -64,7 +64,7 @@ class ModelPaciente():
             pacientes= []
             for row in rows:
                 paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],
-                                    row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17])
+                                    row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
                 pacientes.append(paciente.to_dict())
             return pacientes
         except:
@@ -424,7 +424,7 @@ class ModelPaciente():
             row = cursor.fetchone()
             if row is None:
                 return None
-            images= Images(row[0],row[1],row[2])
+            images= Images(row[0],row[1],row[2],row[3])
             return images.to_dict()
         except:
             return jsonify({'error':'Error al obtener _images_ del paciente.'})
@@ -432,14 +432,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createImagesPaciente(cls,mysql,idPaciente,photoReferences):
+    def createImagesPaciente(cls,mysql,idPaciente,photoReferences,photoCategory):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           insert into images (idPaciente,photoReferences)
-                            values (%s,%s)
-                           """, (idPaciente,photoReferences))
+                           insert into images (idPaciente,photoReferences,photoCategory)
+                            values (%s,%s,%s)
+                           """, (idPaciente,photoReferences,photoCategory))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -449,13 +449,13 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateImagesPaciente(cls,mysql,idPaciente,photoReferences):
+    def updateImagesPaciente(cls,mysql,idPaciente,photoReferences,photoCategory):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           update images set photoReferences = %s where idPaciente = %s
-                           """, (photoReferences,idPaciente))
+                           update images set photoReferences = %s, photoCategory = %s where idPaciente = %s
+                           """, (photoReferences,photoCategory,idPaciente))
             conn.commit()
             return True
         except Exception as e:
