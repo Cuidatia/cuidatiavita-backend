@@ -10,7 +10,7 @@ create table usuarios(
     `nombre` varchar(100) null,
     `email` varchar(50) NOT NULL,
     `password` varchar(255) NOT NULL,
-    `idOrganizacion` int not null,
+    `idOrganizacion` int not null
     primary key(`id`),
     constraint FK_UsuarioOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`) 
 		on delete cascade
@@ -56,6 +56,7 @@ create table pacientes (
     `otherLanguages` varchar(50),
     `culturalHeritage` varchar(255),
     `faith` varchar(100),
+    `time_added_paciente` TIMESTAMP DEFAULT current_timestamp,
     primary key (`id`),
     constraint FK_PacienteOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`)
 		on delete cascade
@@ -316,6 +317,7 @@ create table images(
     `id` int not null auto_increment,
     `idPaciente` int not null,
     `photoReferences` varchar(255) not null,
+    `photoCategory` enum('P','I', 'J', 'A', 'M', 'G') not null,
     primary key (`id`),
     constraint FK_ImagenPaciente foreign key (`idPaciente`) references pacientes(`id`)
         on delete cascade
