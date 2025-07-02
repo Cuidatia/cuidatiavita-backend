@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 import logging
 from flask_jwt_extended import jwt_required, JWTManager, create_access_token
 import os
-import jwt
-from datetime import timedelta, date
+import jwt as pyjwt
+from datetime import timedelta, date, datetime
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -61,6 +61,10 @@ logger = logging.getLogger("LoginModule")
 # Inicializar MySQL
 mysql = MySQL()
 mysql.init_app(app)
+
+ENTIDADES_EXTERNAS = {
+    "entidad_publica_salud": "claveSuperSecreta123"
+}
 
 
     # ------------------- LOG IN -------------------  #
@@ -247,7 +251,8 @@ def get_pacientes():
         if not pacientes:
             return jsonify({'error': 'No se han encontrado pacientes'}), 404
         return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes, 'totalPacientes':total}), 200
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
 @app.route('/getPaciente', methods=['GET'])
@@ -824,28 +829,51 @@ def sendMailInvitacion():
     data = request.get_json()
     email = data.get('email')
     organizacion = data.get('organizacion')
-    rol = data.get('rol')
+    roles = data.get('rol')
     
-    print(email, organizacion, rol)
+    print(data)
     
     try:
-        msg = Message(
-            'Invitación a Cuidatiavita',
-            recipients=[email],
-            sender=('Cuidatia Vita', MAIL_SENDER),
-        )
+        payload = {
+            'email' : email,
+            'organizacion': organizacion,
+            'roles': roles,
+            'exp': datetime.today() + timedelta(hours=24)
+        }
+        token = pyjwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
         
-        msg.html = f"""
-            <p>Hola,</p>
-            <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
-            <a href="{FRONTEND_API_URL}personal/create?m={email}&r={rol}&o={organizacion}">Aceptar invitación</a>
-        """
+        # msg = Message(
+        #     'Invitación a Cuidatiavita',
+        #     recipients=[email],
+        #     sender=('Cuidatia Vita', MAIL_SENDER),
+        # )
         
-        mail.send(msg)
-        return jsonify({'message': 'Email enviado correctamente'}), 200
+        # msg.html = f"""
+        #     <p>Hola,</p>
+        #     <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
+        #     <a href="{FRONTEND_API_URL}personal/create?m={email}&r={roles}&o={organizacion}">Aceptar invitación</a>
+        # """
+        
+        # mail.send(msg)
+        return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}personal/create?token={token}"}), 200
     except Exception as e:
         print(e)
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
+    
+@app.route('/api/decoded', methods=['POST'])
+def decoded_token():
+    data = request.get_json()
+    token = data.get('token')
+    
+    try:
+        decoded = pyjwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
+        return jsonify({
+            'decoded': decoded
+        })
+    except pyjwt.ExpiredSignatureError:
+        return jsonify({'error': 'El enlace ha expirado'}), 400
+    except pyjwt.InvalidTokenError:
+        return jsonify({'error': 'Token inválido'}), 400
     
 @app.route('/sendMailRecuperacion', methods=['POST'])
 def sendMailRecuperar():
@@ -853,20 +881,26 @@ def sendMailRecuperar():
     email = data.get('email')
     
     try:
-        msg = Message(
-            'Recuperación de contraseña',
-            recipients=[email],
-            sender=('Cuidatia Vita', MAIL_SENDER),
-        ) 
+        # msg = Message(
+        #     'Recuperación de contraseña',
+        #     recipients=[email],
+        #     sender=('Cuidatia Vita', MAIL_SENDER),
+        # ) 
         
-        msg.html = f"""
-            <p>Hola,</p>
-            <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
-            <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
-        """
+        # msg.html = f"""
+        #     <p>Hola,</p>
+        #     <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
+        #     <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
+        # """
         
-        mail.send(msg) 
-        return jsonify({'message': 'Email enviado correctamente'}), 200
+        # mail.send(msg) 
+        payload = {
+            'email' : email,
+            'exp': datetime.today() + timedelta(hours=24)
+        }
+        token = pyjwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
+        
+        return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}recuperacion-contrasena/recuperar?token={token}"}), 200
     except Exception as e:
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
 
@@ -901,6 +935,34 @@ def exportar_informe():
     response.headers['Content-Disposition'] = 'attachment; filename=informe.pdf'
     
     return response
+
+@app.route('/api/getToken', methods=['POST'])
+def emitir_token():
+    data = request.get_json()
+    entidad = data.get('entidad')
+    clave = data.get('clave')
+
+    if entidad not in ENTIDADES_EXTERNAS or ENTIDADES_EXTERNAS[entidad] != clave:
+        return jsonify({"error": "Credenciales inválidas"}), 401
+
+    # Usa create_access_token
+    access_token = create_access_token(identity=entidad, expires_delta=timedelta(days=7))
+
+    return jsonify({
+        "token": access_token,
+        "expira_en": "7 días"
+    })
+    
+@app.route('/api/entities/getPacientes', methods=['GET'])
+@jwt_required()
+def get_all_pacientes_entities():
+    try:
+        pacientes = ModelPaciente.getAllPacientes(mysql)
+        if not pacientes:
+            return jsonify({'error': 'No se han encontrado pacientes'}), 404
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
+    except:
+        return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
