@@ -60,6 +60,7 @@ class ModelUser():
                 
             return users
         except Exception as e:
+            print(e)
             return jsonify({'error':e}), 400
         finally:
             cursor.close()
@@ -115,7 +116,7 @@ class ModelUser():
             
             
     @classmethod
-    def createUser(cls,mysql, nombre, email, password, idOrganizacion, rol):
+    def createUser(cls,mysql, nombre, email, password, idOrganizacion, roles):
         try:
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4))
             
@@ -192,10 +193,27 @@ class ModelUser():
             cursor = conn.cursor()
             
             cursor.execute(
-                "update usuarios set nombre = %s, email = %s where id = %s",
-                (nombre,email,usuarioId)
+                "UPDATE usuarios SET nombre = %s, email = %s WHERE id = %s",
+                (nombre, email, usuarioId)
             )
+
+            # 1. Elimina roles actuales del usuario
+            cursor.execute(
+                "DELETE FROM usuario_roles WHERE idUsuario = %s",
+                (usuarioId,)
+            )
+
+            # 2. Inserta los nuevos roles
+            for rol_id in roles:
+                cursor.execute(
+                    "INSERT INTO usuario_roles (idUsuario, idRol) VALUES (%s, %s)",
+                    (usuarioId, rol_id)
+                )
+
             conn.commit()
+
+            
+            #Añadir aqui el update de la tabla usuario_roles
             
             usuario = Usuario(usuarioId,nombre,email,True,idOrganizacion,roles)
             
