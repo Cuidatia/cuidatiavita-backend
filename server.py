@@ -909,8 +909,7 @@ def sendMailRecuperar():
 @jwt_required()
 def exportar_informe():
     data = request.get_json()
-    dataPaciente = data.get('dataPaciente')
-
+    dataPaciente = data.get('datos')
     today = date.today()
     fecha = today.strftime('%d %B, %Y')
     
@@ -924,7 +923,7 @@ def exportar_informe():
         'margin-left': '15mm',
         'margin-right': '15mm',
         'header-html': 'templates/header.html',
-        'footer-html': 'templates/footer.html',
+        #'footer-html': 'templates/footer.html',
         'enable-local-file-access': None,  # Necesario para acceder a imágenes locales
     }
 

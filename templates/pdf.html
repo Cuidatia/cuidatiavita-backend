@@ -10,34 +10,32 @@
       padding: 40px;
       color: #333;
     }
-    .logo {
-      width: 150px;
-      margin-bottom: 20px;
-    }
-    header {
-      border-bottom: 2px solid #ccc;
-      margin-bottom: 30px;
-      padding-bottom: 10px;
-    }
     h1 {
       font-size: 24px;
       margin: 0;
-    }
-    .section {
+      color: #2c3e50;
       margin-bottom: 20px;
+      text-align: center;
     }
-    .section h2 {
+    section {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    section h2 {
       font-size: 18px;
-      color: #0056b3;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 4px;
+      color: #34495e; 
+      border-bottom: 1px solid #ddd; 
+      padding-bottom: 10px; 
+      margin-bottom: 15px;
     }
-    .section p {
+    section p {
       margin: 4px 0;
-    }
-    .label {
-      font-weight: bold;
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      margin-bottom: 8px;
     }
     footer {
       margin-top: 40px;
@@ -50,6 +48,30 @@
   </style>
 </head>
 <body>
-  {{contenido | safe }}
+  <div class="informe-pdf">
+    <h1>Informe detallado de la persona</h1>
+
+    {% for titulo, contenido in contenido.items() %}
+    <section>
+      <h2>{{ titulo }}</h2>
+
+      {% if contenido is string %}
+        <p>{{ contenido }}</p>
+      {% else %}
+        {% for key, value in contenido.items() %}
+          <p><strong>{{ key }}</strong></p>
+          {% if value %}
+              <p><em>{{ value }}</em></p>
+          {% else %}
+            <p><em>No proporciona información</em></p>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+    </section>
+  {% endfor %}
+  </div>
+
+  <footer style="margin-top: 40px; padding-top: 15px; border-top: 1px solid #eee; text-align: right; font-size: 0.8em; color: #888; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><em>Informe generado en {{fecha}}.</em></footer>
 </body>
 </html>

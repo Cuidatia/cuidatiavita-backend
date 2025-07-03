@@ -10,7 +10,7 @@ create table usuarios(
     `nombre` varchar(100) null,
     `email` varchar(50) NOT NULL,
     `password` varchar(255) NOT NULL,
-    `idOrganizacion` int not null
+    `idOrganizacion` int not null,
     primary key(`id`),
     constraint FK_UsuarioOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`) 
 		on delete cascade
@@ -50,7 +50,7 @@ create table pacientes (
     `nationality` varchar(50) not null,
     `gender` enum('M','F','O') not null,
     `address` varchar(100) not null,
-    `maritalStatus` enum('ST','C', 'V', 'S', 'D') not null,
+    `maritalStatus` enum('ST','C', 'V', 'S', 'D', 'P') not null,
     `sentimentalCouple` varchar(100),
     `language` varchar(20) not null,
     `otherLanguages` varchar(50),
