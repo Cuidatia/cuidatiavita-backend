@@ -49,8 +49,7 @@ class ModelPaciente():
                                     row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
                 pacientes.append(paciente.to_dict())
             return pacientes
-        except Exception as e:
-            print(e)
+        except:
             return jsonify({'error':'Error al obtener los pacientes.'})
         finally:
             cursor.close()
@@ -1380,7 +1379,7 @@ class ModelPaciente():
     def getMaturityPaciente(cls,mysql,idPaciente):
         conn = mysql.connect()
         cursor = conn.cursor()
-        
+        print(idPaciente)
         try:
             cursor.execute (""" SELECT * FROM maturity
             INNER JOIN lifeStory ON lifeStory.id = maturity.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente))
@@ -1515,7 +1514,7 @@ class ModelPaciente():
             pacientes= []
             
             for row in rows:
-                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16], row[17])
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16])
                 pacientes.append(paciente.to_dict())
                 
             return pacientes
@@ -1538,52 +1537,6 @@ class ModelPaciente():
             conn.commit()
             return True
         except Exception as e:
-            return e
-        finally:
-            cursor.close()
-            conn.close()
-
-#####################################################################################   
-
-    @classmethod
-    def getAllPacientes(cls, mysql):
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        try:
-            cursor.execute("""
-                SELECT pacientes.id, organizaciones.nombre, pacientes.name, pacientes.firstSurname, pacientes.secondSurname, pacientes.alias, pacientes.birthDate,
-                pacientes.age, pacientes.birthPlace, pacientes.nationality, pacientes.gender, pacientes.address, pacientes.maritalStatus, pacientes.sentimentalCouple,
-                pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith
-                FROM pacientes
-                INNER JOIN organizaciones ON pacientes.idOrganizacion = organizaciones.id
-            """)
-            rows = cursor.fetchall()
-            pacientes = []
-
-            for row in rows:
-                paciente = Paciente(*row)
-                
-                childhood = cls.getChildhoodPaciente(mysql, row[0])
-                youth = cls.getYouthPaciente(mysql,row[0])
-                adulthood = cls.getAdulthoodPaciente(mysql, row[0])
-                maturity = cls.getMaturityPaciente(mysql,row[0])
-                
-                
-                lifestory = {
-                    "childhood": childhood,
-                    "youth": youth,
-                    "adulthood": adulthood,
-                    "maturity": maturity
-                }
-                
-                pacientes.append({
-                    **paciente.to_dict(),
-                    "lifestory": lifestory
-                })
-
-            return pacientes
-        except Exception as e:
-            print(e)
             return e
         finally:
             cursor.close()
