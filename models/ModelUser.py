@@ -13,19 +13,11 @@ class ModelUser():
             con = mysql.connect()
             cursor = con.cursor()
             cursor.execute(
-<<<<<<< HEAD
                 'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.password ' + 
                 'FROM usuarios ' +
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE usuarios.email = %s GROUP BY usuarios.id'
-=======
-                'select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre, usuarios.password ' + 
-                'from usuarios ' +
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where usuarios.email = %s'
->>>>>>> parent of a0dd29a (02/07)
                 , (email)
             )
             row = cursor.fetchone()
@@ -53,18 +45,11 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-<<<<<<< HEAD
             cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE idOrganizacion = ' + org +
                 ' GROUP BY usuarios.id')
-=======
-            cursor.execute("select usuarios.id, usuarios.nombre, usuarios.email, roles.nombre  from usuarios "+
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where idOrganizacion = ' + org)
->>>>>>> parent of a0dd29a (02/07)
             
             usuarios = cursor.fetchall()
             users= []
@@ -86,17 +71,10 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-<<<<<<< HEAD
             cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email,  GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios 
                 INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
                 INNER JOIN roles ON usuario_roles.idRol = roles.id
                 WHERE idOrganizacion = %s GROUP BY usuarios.id ORDER BY id ASC LIMIT %s OFFSET %s""", (org, limit, offset))
-=======
-            cursor.execute(""" select usuarios.id, usuarios.nombre, usuarios.email, roles.nombre  from usuarios 
-                inner join usuario_roles on usuarios.id = usuario_roles.idUsuario
-                inner join roles on usuario_roles.idRol = roles.id
-                where idOrganizacion = %s order by id ASC limit %s offset %s""", (org, limit, offset))
->>>>>>> parent of a0dd29a (02/07)
             
             usuarios = cursor.fetchall()
             users= []
@@ -118,18 +96,11 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-<<<<<<< HEAD
             cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE usuarios.id = ' + usuarioId +
                 ' GROUP BY usuarios.id')
-=======
-            cursor.execute("select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre  from usuarios "+
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where usuarios.id = ' + usuarioId)
->>>>>>> parent of a0dd29a (02/07)
             
             row = cursor.fetchone()
             if row != None:
@@ -161,7 +132,6 @@ class ModelUser():
             except:
                 return jsonify({'message': 'Error al crear el usuario'}), 400
             
-<<<<<<< HEAD
             try:
                 for rol in roles:        
                     cursor.execute(
@@ -169,14 +139,6 @@ class ModelUser():
                         (usuario_id,rol)
                     )
                     conn.commit()
-=======
-            try:        
-                cursor.execute(
-                    "insert into usuario_roles (idUsuario, idRol) values(%s,%s)",
-                    (usuario_id,rol)
-                )
-                conn.commit()
->>>>>>> parent of a0dd29a (02/07)
             except:
                 return jsonify({'message': 'Error al asignar rol'}), 400
 
