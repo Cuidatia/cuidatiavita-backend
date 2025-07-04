@@ -32,19 +32,19 @@ class ModelOrganizacion():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute(""" select  gender, count(*) as cantidad from pacientes where idOrganizacion = %s group by gender """, (id,))
+            cursor.execute(""" SELECT  gender, COUNT(*) AS cantidad FROM pacientes WHERE idOrganizacion = %s GROUP BY gender """, (id,))
             desc = [col[0] for col in cursor.description]
             genero_data = [dict(zip(desc, row)) for row in cursor.fetchall()]
             total_usuarios = {"M": 0,"F": 0,"O": 0}
             for fila in genero_data:
                 total_usuarios[fila['gender']] = fila['cantidad']
             
-            cursor.execute(""" select count(distinct u.id) as total_profesionales from usuarios u inner join usuario_roles ur on u.id = ur.idUsuario
-            where u.idOrganizacion = %s """, (id,))
+            cursor.execute(""" SELECT COUNT(distinct u.id) AS total_profesionales FROM usuarios u INNER JOIN usuario_roles ur ON u.id = ur.idUsuario
+            WHERE u.idOrganizacion = %s """, (id,))
             total_profesionales = cursor.fetchone()[0]
 
-            cursor.execute(""" select r.nombre as rol, count(ur.idUsuario) as cantidad from usuario_roles ur inner join usuarios u on u.id = ur.idUsuario
-            inner join roles r on r.id = ur.idRol where u.idOrganizacion = %s group by r.nombre order by cantidad DESC """, (id,))
+            cursor.execute(""" SELECT r.nombre AS rol, COUNT(ur.idUsuario) AS cantidad FROM usuario_roles ur INNER JOIN usuarios u ON u.id = ur.idUsuario
+            INNER JOIN roles r ON r.id = ur.idRol WHERE u.idOrganizacion = %s GROUP BY r.nombre ORDER BY cantidad DESC """, (id,))
             desc = [col[0] for col in cursor.description]
             total_roles = [dict(zip(desc, row)) for row in cursor.fetchall()]
                     

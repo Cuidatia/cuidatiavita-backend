@@ -9,7 +9,7 @@ class ModelRoles():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("select * from roles where id != 1 and id != 7")
+            cursor.execute("SELECT * FROM roles WHERE id != 1 AND id != 7")
             
             rows = cursor.fetchall()
             rolesList= []

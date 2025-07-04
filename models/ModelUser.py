@@ -13,11 +13,11 @@ class ModelUser():
             con = mysql.connect()
             cursor = con.cursor()
             cursor.execute(
-                'select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.password ' + 
-                'from usuarios ' +
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where usuarios.email = %s GROUP BY usuarios.id'
+                'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.password ' + 
+                'FROM usuarios ' +
+                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
+                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
+                'WHERE usuarios.email = %s GROUP BY usuarios.id'
                 , (email)
             )
             row = cursor.fetchone()
@@ -45,10 +45,10 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("select usuarios.id, usuarios.nombre, usuarios.email, GROUP_CONCAT(roles.nombre) as roles  from usuarios "+
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where idOrganizacion = ' + org +
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
+                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
+                'WHERE idOrganizacion = ' + org +
                 ' GROUP BY usuarios.id')
             
             usuarios = cursor.fetchall()
@@ -72,10 +72,10 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute(""" select usuarios.id, usuarios.nombre, usuarios.email,  GROUP_CONCAT(roles.nombre) as roles  from usuarios 
-                inner join usuario_roles on usuarios.id = usuario_roles.idUsuario
-                inner join roles on usuario_roles.idRol = roles.id
-                where idOrganizacion = %s GROUP BY usuarios.id order by id ASC limit %s offset %s""", (org, limit, offset))
+            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email,  GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios 
+                INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
+                INNER JOIN roles ON usuario_roles.idRol = roles.id
+                WHERE idOrganizacion = %s GROUP BY usuarios.id ORDER BY id ASC LIMIT %s OFFSET %s""", (org, limit, offset))
             
             usuarios = cursor.fetchall()
             users= []
@@ -97,10 +97,10 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, GROUP_CONCAT(roles.nombre) as roles  from usuarios "+
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where usuarios.id = ' + usuarioId +
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
+                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
+                'WHERE usuarios.id = ' + usuarioId +
                 ' GROUP BY usuarios.id')
             
             row = cursor.fetchone()
@@ -125,7 +125,7 @@ class ModelUser():
             
             try:
                 cursor.execute(
-                    "insert into usuarios (nombre, email, password, idOrganizacion) values(%s,%s,%s,%s)",
+                    "INSERT INTO usuarios (nombre, email, password, idOrganizacion) VALUES(%s,%s,%s,%s)",
                     (nombre,email,hashed_password,idOrganizacion)
                 )
                 conn.commit()
@@ -136,7 +136,7 @@ class ModelUser():
             try:
                 for rol in roles:        
                     cursor.execute(
-                        "insert into usuario_roles (idUsuario, idRol) values(%s,%s)",
+                        "INSERT INTO usuario_roles (idUsuario, idRol) VALUES(%s,%s)",
                         (usuario_id,rol)
                     )
                     conn.commit()
@@ -145,11 +145,11 @@ class ModelUser():
 
             
             cursor.execute(
-                'select usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre ' + 
-                'from usuarios ' +
-                'inner join usuario_roles on usuarios.id = usuario_roles.idUsuario ' +
-                'inner join roles on usuario_roles.idRol = roles.id ' +
-                'where usuarios.id = %s'
+                'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre ' + 
+                'FROM usuarios ' +
+                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
+                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
+                'WHERE usuarios.id = %s'
                 , (usuario_id)
             )
             
@@ -234,7 +234,7 @@ class ModelUser():
             cursor = conn.cursor()
             
             cursor.execute(
-                "update usuarios set password = %s where id = %s",
+                "UPDATE usuarios SET password = %s WHERE id = %s",
                 (hashed_password,usuarioId)
             )
             conn.commit()
@@ -252,7 +252,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("select usuarios.id from usuarios where usuarios.email = %s", (email))
+            cursor.execute("SELECT usuarios.id FROM usuarios WHERE usuarios.email = %s", (email))
             
             userId = cursor.fetchone()
                         
@@ -271,11 +271,11 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.execute("""
-                           select usuarios.nombre, roles.nombre from usuarios 
-                           inner join paciente_personalReferencia on usuarios.id = paciente_personalReferencia.idUsuario
-                           inner join pacientes on pacientes.id = paciente_personalReferencia.idPaciente inner join usuario_roles on usuarios.id = usuario_roles.idUsuario
-                           inner join roles on usuario_roles.idRol = roles.id
-                           where pacientes.id = %s
+                           SELECT usuarios.nombre, roles.nombre FROM usuarios 
+                           INNER JOIN paciente_personalReferencia ON usuarios.id = paciente_personalReferencia.idUsuario
+                           INNER JOIN pacientes ON pacientes.id = paciente_personalReferencia.idPaciente INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
+                           INNER JOIN roles ON usuario_roles.idRol = roles.id
+                           WHERE pacientes.id = %s
                            """, (pacienteId))
             
             usuarios = cursor.fetchall()
