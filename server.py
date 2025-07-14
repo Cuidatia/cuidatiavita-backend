@@ -934,7 +934,7 @@ def exportar_informe():
         'margin-right': '15mm',
         'header-html': 'templates/header.html',
         'footer-html': 'templates/footer.html',
-        'enable-local-file-access': None,  # Necesario para acceder a imágenes locales
+        'enable-local-file-access': '',  # Necesario para acceder a imágenes locales
     }
     
     # Guarda temporalmente el header y footer
@@ -942,9 +942,14 @@ def exportar_informe():
         f.write(header_html)
     with open('templates/_footer_temp.html', 'w', encoding='utf-8') as f:
         f.write(footer_html)
+        
+    base_path = os.path.abspath(os.path.dirname(__file__))
 
-    options['header-html'] = 'templates/_header_temp.html'
-    options['footer-html'] = 'templates/_footer_temp.html'
+    header_path = os.path.join(base_path, 'templates/_header_temp.html')
+    footer_path = os.path.join(base_path, 'templates/_footer_temp.html')
+
+    options['header-html'] = header_path
+    options['footer-html'] = footer_path
 
     # Convertir HTML a PDF con pdfkit
     pdf = pdfkit.from_string(html, False, options=options)
