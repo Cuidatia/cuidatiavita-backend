@@ -8,6 +8,7 @@ import logging
 from flask_jwt_extended import jwt_required, JWTManager, create_access_token
 import os
 import jwt as pyjwt
+import locale
 from datetime import timedelta, date, datetime
 
 from models.ModelUser import ModelUser
@@ -908,24 +909,42 @@ def sendMailRecuperar():
 @app.route('/exportarInforme', methods=['POST'])
 @jwt_required()
 def exportar_informe():
+    
+    # Establecer idioma en español (cambia según sistema operativo)
+    try:
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Linux/macOS
+    except locale.Error:
+        locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Windows
+    
     data = request.get_json()
     dataPaciente = data.get('datos')
     today = date.today()
     fecha = today.strftime('%d %B, %Y')
     
-    html = render_template('pdf.html', fecha=fecha, contenido=dataPaciente)
+    html = render_template('pdf.html', contenido=dataPaciente)
+    header_html = render_template('header.html')
+    footer_html = render_template('footer.html', fecha=fecha)
     
     options = {
         'page-size': 'A4',
-        'encoding': "UTF-8",
+        'encoding': 'UTF-8',
         'margin-top': '40mm',
         'margin-bottom': '30mm',
         'margin-left': '15mm',
         'margin-right': '15mm',
         'header-html': 'templates/header.html',
-        #'footer-html': 'templates/footer.html',
+        'footer-html': 'templates/footer.html',
         'enable-local-file-access': None,  # Necesario para acceder a imágenes locales
     }
+    
+    # Guarda temporalmente el header y footer
+    with open('templates/_header_temp.html', 'w', encoding='utf-8') as f:
+        f.write(header_html)
+    with open('templates/_footer_temp.html', 'w', encoding='utf-8') as f:
+        f.write(footer_html)
+
+    options['header-html'] = 'templates/_header_temp.html'
+    options['footer-html'] = 'templates/_footer_temp.html'
 
     # Convertir HTML a PDF con pdfkit
     pdf = pdfkit.from_string(html, False, options=options)
