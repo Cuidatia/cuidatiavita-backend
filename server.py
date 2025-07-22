@@ -10,6 +10,7 @@ import os
 import jwt as pyjwt
 import locale
 from datetime import timedelta, date, datetime
+import tempfile
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -910,21 +911,38 @@ def sendMailRecuperar():
 @jwt_required()
 def exportar_informe():
     
-    # Establecer idioma en español (cambia según sistema operativo)
+    # Establecer idioma en español
     try:
         locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Linux/macOS
     except locale.Error:
         locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')  # Windows
-    
+
     data = request.get_json()
     dataPaciente = data.get('datos')
+
     today = date.today()
     fecha = today.strftime('%d %B, %Y')
-    
+
+    # Ruta absoluta del logo para wkhtmltopdf
+    base_path = os.path.abspath(os.path.dirname(__file__))
+    logo_path = os.path.abspath(os.path.join(base_path, 'static', 'img', 'logoCuidatiaVita.png'))
+    logo_url = f'file:///{logo_path.replace(os.sep, "/")}'
+
+    # Renderizar contenido principal, header y footer
     html = render_template('pdf.html', contenido=dataPaciente)
-    header_html = render_template('header.html')
+    header_html = render_template('header.html', logo_url=logo_url)
     footer_html = render_template('footer.html', fecha=fecha)
-    
+
+    # Crear archivos temporales para header y footer
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.html', mode='w', encoding='utf-8') as header_file:
+        header_file.write(header_html)
+        header_path = header_file.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.html', mode='w', encoding='utf-8') as footer_file:
+        footer_file.write(footer_html)
+        footer_path = footer_file.name
+
+    # Opciones para pdfkit
     options = {
         'page-size': 'A4',
         'encoding': 'UTF-8',
@@ -932,28 +950,19 @@ def exportar_informe():
         'margin-bottom': '30mm',
         'margin-left': '15mm',
         'margin-right': '15mm',
-        'header-html': 'templates/header.html',
-        'footer-html': 'templates/footer.html',
-        'enable-local-file-access': '',  # Necesario para acceder a imágenes locales
+        'header-html': header_path,
+        'footer-html': footer_path,
+        'enable-local-file-access': '',  # Muy importante para rutas locales
     }
-    
-    # Guarda temporalmente el header y footer
-    with open('templates/_header_temp.html', 'w', encoding='utf-8') as f:
-        f.write(header_html)
-    with open('templates/_footer_temp.html', 'w', encoding='utf-8') as f:
-        f.write(footer_html)
-        
-    base_path = os.path.abspath(os.path.dirname(__file__))
 
-    header_path = os.path.join(base_path, 'templates/_header_temp.html')
-    footer_path = os.path.join(base_path, 'templates/_footer_temp.html')
-
-    options['header-html'] = header_path
-    options['footer-html'] = footer_path
-
-    # Convertir HTML a PDF con pdfkit
+    # Generar PDF
     pdf = pdfkit.from_string(html, False, options=options)
 
+    # Eliminar archivos temporales
+    os.remove(header_path)
+    os.remove(footer_path)
+
+    # Responder con el PDF
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'attachment; filename=informe.pdf'
