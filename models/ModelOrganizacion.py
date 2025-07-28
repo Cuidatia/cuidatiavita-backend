@@ -38,6 +38,14 @@ class ModelOrganizacion():
             total_usuarios = {"M": 0,"F": 0,"O": 0}
             for fila in genero_data:
                 total_usuarios[fila['gender']] = fila['cantidad']
+                
+            cursor.execute("""
+                SELECT COUNT(*) AS count_usuarios
+                FROM pacientes
+                WHERE idOrganizacion = %s
+                AND time_added_paciente >= NOW() - INTERVAL 30 DAY
+            """, (id,))
+            count_usuarios = cursor.fetchone()
             
             cursor.execute(""" SELECT COUNT(distinct u.id) AS total_profesionales FROM usuarios u INNER JOIN usuario_roles ur ON u.id = ur.idUsuario
             WHERE u.idOrganizacion = %s """, (id,))
@@ -48,7 +56,7 @@ class ModelOrganizacion():
             desc = [col[0] for col in cursor.description]
             total_roles = [dict(zip(desc, row)) for row in cursor.fetchall()]
                     
-            return {"total_usuarios": total_usuarios, "total_profesionales": total_profesionales, "total_roles": total_roles}
+            return {"total_usuarios": total_usuarios, "total_profesionales": total_profesionales, "total_roles": total_roles, "usuarios_30_dias": count_usuarios}
         
         except Exception as e:
             raise e

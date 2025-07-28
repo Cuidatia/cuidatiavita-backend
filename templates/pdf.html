@@ -5,11 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Historia de Vida</title>
   <style>
+    @page {
+      margin: 40mm 15mm 30mm 15mm;
+    }
+
     body {
       font-family: Arial, sans-serif;
       padding: 40px;
       color: #333;
+      font-size: 12px;
+      margin: 0;
     }
+    
+    .content {
+      margin-top: 100px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    img {
+      max-height: 150px;
+      width: auto;
+    }
+
+    footer {
+      position: fixed;
+      bottom: -25px;
+      left: 0;
+      right: 0;
+      height: 20mm;
+      font-size: 10px;
+      color: #555;
+      text-align: right;
+      border-top: 1px solid #ccc;
+      padding-top: 5px;
+    }
+
     h1 {
       font-size: 24px;
       margin: 0;
@@ -37,41 +69,41 @@
       line-height: 1.6;
       margin-bottom: 8px;
     }
-    footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      border-top: 1px solid #ccc;
-      padding-top: 10px;
-    }
   </style>
 </head>
 <body>
-  <div class="informe-pdf">
-    <h1>Informe detallado de la persona</h1>
+    <footer class="pdf-footer">
+      Informe generado el {{ fecha }}
+    </footer>
 
-    {% for titulo, contenido in contenido.items() %}
-    <section>
-      <h2>{{ titulo }}</h2>
+  <main class="content">
+    <div class="informe-pdf">
+      <div class="logo">
+        <img src="https://master.d2vmj9k2v29cot.amplifyapp.com/_next/static/media/logoCuidatiaVita.c4f36fc9.png" alt="Logo" style="height: 60px; margin-top: 10px;" />
+      </div>  
+      <h1>Informe detallado de la persona</h1>
 
-      {% if contenido is string %}
-        <p>{{ contenido }}</p>
-      {% else %}
-        {% for key, value in contenido.items() %}
-          <p><strong>{{ key }}</strong></p>
-          {% if value %}
-              <p><em>{{ value }}</em></p>
-          {% else %}
-            <p><em>No proporciona información</em></p>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+      {% for titulo, contenido in contenido.items() %}
+      <section>
+        <h2>{{ titulo }}</h2>
 
-    </section>
-  {% endfor %}
-  </div>
+        {% if contenido is string %}
+          <p>{{ contenido }}</p>
+        {% else %}
+          {% for key, value in contenido.items() %}
+            <p><strong>{{ key }}</strong></p>
+            {% if value %}
+                <p><em>{{ value }}</em></p>
+            {% else %}
+              <p><em>No proporciona información</em></p>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
 
-  {# <footer style="margin-top: 40px; padding-top: 15px; border-top: 1px solid #eee; text-align: right; font-size: 0.8em; color: #888; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><em>Informe generado en {{fecha}}.</em></footer> #}
+      </section>
+    {% endfor %}
+    </div>
+  </main>
+
 </body>
 </html>

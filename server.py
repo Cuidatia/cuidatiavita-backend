@@ -115,7 +115,6 @@ def get_usuarios():
         usuarios = ModelUser.getUsuariosPagina(mysql, organizacion, limit, offset)
         return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios, 'totalUsuarios':total}), 200
     except Exception as e:
-        print(e)
         return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
 
 @app.route('/getUsuario', methods=['GET'])
@@ -150,11 +149,9 @@ def buscar_usuarios():
 @jwt_required()
 def get_personal_name():
     usuarioId = request.args.get('id') 
-    print(usuarioId)
     try:
         usuario = ModelUser.getUsuario(mysql, usuarioId)
         personalNombreCompleto = usuario['nombre']
-        print(personalNombreCompleto)
         if personalNombreCompleto:
             return jsonify({'message': 'Usuario obtenido', 'personalNombreCompleto': personalNombreCompleto}), 200
         else:
@@ -167,9 +164,7 @@ def get_personal_name():
 def eliminar_usuario():
     data = request.get_json()
     usuarioId = data.get('usuarioId')
-    print("ID recibido:", usuarioId)
     try:
-        print("Datos recibidos:", data)
         ModelUser.deleteUser(mysql, usuarioId)
         
         return jsonify({'message': 'Usuario eliminado'}), 200
@@ -255,7 +250,6 @@ def get_pacientes():
             return jsonify({'error': 'No se han encontrado pacientes'}), 404
         return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes, 'totalPacientes':total}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
 @app.route('/getPaciente', methods=['GET'])
@@ -274,11 +268,11 @@ def get_paciente():
 @jwt_required()
 def get_paciente_name():
     pacienteId = request.args.get('id') 
-    print(pacienteId)
+    
     try:
         paciente = ModelPaciente.getPaciente(mysql, pacienteId)
         pacienteNombreCompleto = paciente['name'] + ' ' + paciente['firstSurname'] + ' ' + paciente['secondSurname']
-        print(pacienteNombreCompleto)
+        
         if pacienteNombreCompleto:
             return jsonify({'message': 'Usuario obtenido', 'pacienteNombreCompleto': pacienteNombreCompleto}), 200
         else:
@@ -371,12 +365,10 @@ def get_paciente_personality():
     
     try:
         pacientePersonality = ModelPaciente.getPersonalityPaciente(mysql, pacienteId)
-        print(pacientePersonality)
         if not pacientePersonality:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos personales obtenidos', 'personality':pacientePersonality}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error':'Error al obtener los datos personales.'}), 400
     
     
@@ -451,7 +443,6 @@ def post_paciente_infancia():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error':'Error al guardar los datos de infancia.'}), 400
 
     # ------------------- PACIENTES | JUVENTUD ------------------- #
@@ -509,7 +500,6 @@ def post_paciente_adultez():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error':'Error al guardar los datos de adultez.'}), 400
     
     # ------------------- PACIENTES | MADUREZ ------------------- #
@@ -591,7 +581,6 @@ def post_medicina_enfermeria():
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
 
 # ------------------- PACIENTES | FARMACIA ------------------- #
@@ -619,7 +608,6 @@ def post_farmacia():
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
     
 # ------------------- PACIENTES | TOES ------------------- #
@@ -641,13 +629,11 @@ def post_toes():
     data = request.get_json()
     idPaciente = data.get('id')
     socialedu = data.get('socialedu')
-    print(socialedu)
     try:
         socialedu = ModelPaciente.upsertSocialEduPaciente(mysql, idPaciente, socialedu['cognitiveAbilities'], socialedu['affectiveCapacity'], socialedu['behaviorCapacity'], socialedu['collaborationLevel'], socialedu['autonomyLevel'], socialedu['groupParticipation'])
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
     
 # ------------------- PACIENTES | TRABAJO SOCIAL ------------------- #
@@ -675,7 +661,6 @@ def post_trabajo_social():
         
         return jsonify({'message': 'Información guardada correctamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido guardar la información del usuario'}), 400
 
     
@@ -797,7 +782,6 @@ def get_resumen_organizacion():
         return jsonify({'message': 'Resumen organizacion obtenida', 'resumen':resumen}), 200
     
     except Exception as e:
-        print(e)
         return jsonify({'error': 'error'}), 401
     
     
@@ -834,8 +818,6 @@ def sendMailInvitacion():
     organizacion = data.get('organizacion')
     roles = data.get('rol')
     
-    print(data)
-    
     try:
         payload = {
             'email' : email,
@@ -860,7 +842,6 @@ def sendMailInvitacion():
         # mail.send(msg)
         return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}personal/create?token={token}"}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
     
 @app.route('/api/decoded', methods=['POST'])
@@ -923,44 +904,19 @@ def exportar_informe():
     today = date.today()
     fecha = today.strftime('%d %B, %Y')
 
-    # Ruta absoluta del logo para wkhtmltopdf
-    base_path = os.path.abspath(os.path.dirname(__file__))
-    logo_path = os.path.abspath(os.path.join(base_path, 'static', 'img', 'logoCuidatiaVita.png'))
-    logo_url = f'file:///{logo_path.replace(os.sep, "/")}'
-
     # Renderizar contenido principal, header y footer
-    html = render_template('pdf.html', contenido=dataPaciente)
-    header_html = render_template('header.html', logo_url=logo_url)
-    footer_html = render_template('footer.html', fecha=fecha)
-
-    # Crear archivos temporales para header y footer
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.html', mode='w', encoding='utf-8') as header_file:
-        header_file.write(header_html)
-        header_path = header_file.name
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.html', mode='w', encoding='utf-8') as footer_file:
-        footer_file.write(footer_html)
-        footer_path = footer_file.name
+    html = render_template('pdf.html', contenido=dataPaciente, fecha=fecha)
+    
 
     # Opciones para pdfkit
     options = {
         'page-size': 'A4',
         'encoding': 'UTF-8',
-        'margin-top': '40mm',
-        'margin-bottom': '30mm',
-        'margin-left': '15mm',
-        'margin-right': '15mm',
-        'header-html': header_path,
-        'footer-html': footer_path,
         'enable-local-file-access': '',  # Muy importante para rutas locales
     }
 
     # Generar PDF
     pdf = pdfkit.from_string(html, False, options=options)
-
-    # Eliminar archivos temporales
-    os.remove(header_path)
-    os.remove(footer_path)
 
     # Responder con el PDF
     response = make_response(pdf)
@@ -968,6 +924,7 @@ def exportar_informe():
     response.headers['Content-Disposition'] = 'attachment; filename=informe.pdf'
     
     return response
+    return jsonify({'message': 'Función de exportar informe no implementada'}), 501
 
 @app.route('/api/getToken', methods=['POST'])
 def emitir_token():
