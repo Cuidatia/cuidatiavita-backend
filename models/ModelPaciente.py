@@ -1553,10 +1553,55 @@ class ModelPaciente():
             cursor.execute("""
                 SELECT pacientes.id, organizaciones.nombre, pacientes.name, pacientes.firstSurname, pacientes.secondSurname, pacientes.alias, pacientes.birthDate,
                 pacientes.age, pacientes.birthPlace, pacientes.nationality, pacientes.gender, pacientes.address, pacientes.maritalStatus, pacientes.sentimentalCouple,
-                pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith
+                pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.time_added_paciente
                 FROM pacientes
                 INNER JOIN organizaciones ON pacientes.idOrganizacion = organizaciones.id
             """)
+            rows = cursor.fetchall()
+            pacientes = []
+
+            for row in rows:
+                paciente = Paciente(*row)
+                
+                childhood = cls.getChildhoodPaciente(mysql, row[0])
+                youth = cls.getYouthPaciente(mysql,row[0])
+                adulthood = cls.getAdulthoodPaciente(mysql, row[0])
+                maturity = cls.getMaturityPaciente(mysql,row[0])
+                
+                
+                lifestory = {
+                    "childhood": childhood,
+                    "youth": youth,
+                    "adulthood": adulthood,
+                    "maturity": maturity
+                }
+                
+                pacientes.append({
+                    **paciente.to_dict(),
+                    "lifestory": lifestory
+                })
+
+            return pacientes
+        except Exception as e:
+            print(e)
+            return e
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def getAllPacientesPagina(cls, mysql,limit, offset):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                SELECT pacientes.id, organizaciones.nombre, pacientes.name, pacientes.firstSurname, pacientes.secondSurname, pacientes.alias, pacientes.birthDate,
+                    pacientes.age, pacientes.birthPlace, pacientes.nationality, pacientes.gender, pacientes.address, pacientes.maritalStatus, pacientes.sentimentalCouple,
+                    pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.time_added_paciente
+                FROM pacientes
+                INNER JOIN organizaciones ON pacientes.idOrganizacion = organizaciones.id
+                ORDER BY pacientes.id ASC LIMIT %s OFFSET %s
+            """, (limit, offset))
             rows = cursor.fetchall()
             pacientes = []
 

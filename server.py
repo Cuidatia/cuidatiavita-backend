@@ -100,6 +100,22 @@ def crear_usuario():
     except Exception as e:
         return jsonify({'error': 'No se ha podido crear el usuario.'}), 400
 
+@app.route('/getAllUsuarios', methods=['GET'])
+@jwt_required()
+def get_all_usuarios():
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
+    
+    try:
+
+        total = len(ModelUser.getAllUsuarios(mysql))
+        usuarios = ModelUser.getAllUsuariosPagina(mysql, limit, offset)
+        return jsonify({'message': 'Usuarios obtenidos', 'usuarios':usuarios, 'totalUsuarios':total}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido obtener los usuarios'}), 400
+
 @app.route('/getUsuarios', methods=['GET'])
 @jwt_required()
 def get_usuarios():
@@ -223,14 +239,18 @@ def recuperar_password():
 @app.route('/getAllPacientes', methods=['GET'])
 @jwt_required()
 def get_all_pacientes():
-    idOrganizacion = request.args.get('idOrganizacion')
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
 
     try:
-        pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
+        total = len(ModelPaciente.getAllPacientes(mysql))
+        pacientes = ModelPaciente.getAllPacientesPagina(mysql, limit, offset)
         if not pacientes:
             return jsonify({'error': 'No se han encontrado pacientes'}), 404
-        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
-    except:
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes, 'totalPacientes':total}), 200
+    except Exception as e:
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
 
 

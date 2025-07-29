@@ -67,6 +67,57 @@ class ModelUser():
             conn.close()
 
     @classmethod
+    def getAllUsuarios(cls,mysql):
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
+                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
+                ' GROUP BY usuarios.id')
+            
+            usuarios = cursor.fetchall()
+            users= []
+            
+            for usuario in usuarios:
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4])
+                users.append(user.to_dict())
+                
+            return users
+        except Exception as e:
+            print(e)
+            return jsonify({'error':e}), 400
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def getAllUsuariosPagina(cls,mysql, limit, offset):
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            
+            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios 
+                INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
+                INNER JOIN roles ON usuario_roles.idRol = roles.id
+                 GROUP BY usuarios.id ORDER BY id ASC LIMIT %s OFFSET %s""", (limit, offset))
+            
+            usuarios = cursor.fetchall()
+            users= []
+            
+            for usuario in usuarios:
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4])
+                users.append(user.to_dict())
+                
+            return users
+        except Exception as e:
+            return jsonify({'error':e}), 400
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
     def getUsuariosPagina(cls,mysql, org, limit, offset):
         try:
             conn = mysql.connect()
