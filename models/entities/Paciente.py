@@ -59,7 +59,7 @@ class Childhood():
      def __init__(self, id : int, idLifeStory : int,
                   childhoodStudies : str, childhoodSchool : str, childhoodMotivations : str, childhoodFamilyCore : str, childhoodFriendsGroup : str, childhoodImportantPerson: str, 
                   childhoodTravels : str, childhoodFavouritePlace : str, childhoodPositiveExperiences : str, childhoodNegativeExperiences : str, childhoodResponsabilities: str,
-                  childhoodAddress : str, childhoodLikes : str, childhoodAfraids : str):
+                  childhoodAddress : str, childhoodLikes : str, childhoodAfraids : str, childhoodMusic: str):
           self.id = id
           self.idLifeStory = idLifeStory
           self.childhoodStudies = childhoodStudies
@@ -76,6 +76,7 @@ class Childhood():
           self.childhoodAddress = childhoodAddress
           self.childhoodLikes = childhoodLikes
           self.childhoodAfraids = childhoodAfraids
+          self.childhoodMusic = childhoodMusic
      def to_dict(self): 
         return {
             'id' : self.id,
@@ -93,7 +94,8 @@ class Childhood():
             'childhoodResponsabilities' : self.childhoodResponsabilities,
             'childhoodAddress' : self.childhoodAddress,
             'childhoodLikes' : self.childhoodLikes,
-            'childhoodAfraids' : self.childhoodAfraids
+            'childhoodAfraids' : self.childhoodAfraids,
+            'childhoodMusic' : self.childhoodMusic
         }
      
 class Youth():
@@ -101,7 +103,7 @@ class Youth():
                   youthStudies : str, youthSchool : str, youthWorkPlace : str, youthWorkRol : str, youthFamilyCore : str,
                   youthFriendsGroup : str, youthImportantPerson: str, youthTravels : str, youthFavouritePlace : str, youthRoutine : str, youthPositiveExperiences : str, 
                   youthNegativeExperiences : str, youthResponsabilities: str, youthAddress : str, youthLikes : str, youthHobbies : str, youthAfraids : str, youthSentimentalCouple: str,
-                  youthProjects : str, youthUncompletedProjects : str, youthIllness : str, youthPersonalCrisis : str):
+                  youthProjects : str, youthUncompletedProjects : str, youthIllness : str, youthPersonalCrisis : str, youthMusic : str):
           self.id = id
           self.idLifeStory = idLifeStory
           self.youthStudies = youthStudies
@@ -126,6 +128,7 @@ class Youth():
           self.youthUncompletedProjects = youthUncompletedProjects
           self.youthIllness = youthIllness
           self.youthPersonalCrisis = youthPersonalCrisis
+          self.youthMusic = youthMusic
      def to_dict(self): 
         return {
             'id' : self.id,
@@ -151,7 +154,8 @@ class Youth():
             'youthProjects' : self.youthProjects,
             'youthUncompletedProjects' : self.youthUncompletedProjects,
             'youthIllness' : self.youthIllness,
-            'youthPersonalCrisis' : self.youthPersonalCrisis
+            'youthPersonalCrisis' : self.youthPersonalCrisis,
+            'youthMusic' : self.youthMusic
         }
      
 class Adulthood():
@@ -160,7 +164,7 @@ class Adulthood():
                   adulthoodWorkRol : str, adulthoodFamilyCore : str, adulthoodFriendsGroup : str, adulthoodWorkGroup : str, adulthoodImportantPerson: str,
                   adulthoodTravels : str, adulthoodFavouritePlace : str, adulthoodRoutine : str, adulthoodPositiveExperiences : str, 
                   adulthoodNegativeExperiences : str, adulthoodResponsabilities: str, adulthoodAddress : str, adulthoodEconomicSituation : str,
-                  adulthoodProjects : str, adulthoodUncompletedProjects : str, adulthoodIllness : str, adulthoodPersonalCrisis : str):
+                  adulthoodProjects : str, adulthoodUncompletedProjects : str, adulthoodIllness : str, adulthoodPersonalCrisis : str, adulthoodMusic : str):
           self.id = id
           self.idLifeStory = idLifeStory
           self.adulthoodSentimentalCouple = adulthoodSentimentalCouple
@@ -184,6 +188,7 @@ class Adulthood():
           self.adulthoodUncompletedProjects = adulthoodUncompletedProjects
           self.adulthoodIllness = adulthoodIllness
           self.adulthoodPersonalCrisis = adulthoodPersonalCrisis
+          self.adulthoodMusic = adulthoodMusic
      def to_dict(self): 
         return {
             'id' : self.id,
@@ -208,7 +213,8 @@ class Adulthood():
             'adulthoodProjects' : self.adulthoodProjects,
             'adulthoodUncompletedProjects' : self.adulthoodUncompletedProjects,
             'adulthoodIllness' : self.adulthoodIllness,
-            'adulthoodPersonalCrisis' : self.adulthoodPersonalCrisis
+            'adulthoodPersonalCrisis' : self.adulthoodPersonalCrisis,
+            'adulthoodMusic' : self.adulthoodMusic
         }
      
 class Maturity():
@@ -217,7 +223,7 @@ class Maturity():
                   maturityFriendsGroup : str, maturityWorkGroup : str, maturityImportantPerson: str, maturityTravels : str, maturityFavouritePlace : str,
                   maturityRoutine : str, maturityPositiveExperiences : str, maturityNegativeExperiences : str,maturityResponsabilities: str, 
                   maturityRetirement : str, maturityWills : str, maturityProjects : str, maturityUncompletedProjects : str,
-                  maturityIllness : str, maturityPersonalCrisis : str):
+                  maturityIllness : str, maturityPersonalCrisis : str, maturityMusic : str):
           self.id = id
           self.idLifeStory = idLifeStory
           self.maturityGrandchildren = maturityGrandchildren
@@ -239,6 +245,7 @@ class Maturity():
           self.maturityUncompletedProjects = maturityUncompletedProjects
           self.maturityIllness = maturityIllness
           self.maturityPersonalCrisis = maturityPersonalCrisis
+          self.maturityMusic = maturityMusic
      def to_dict(self): 
         return {
             'id' : self.id,
@@ -261,7 +268,8 @@ class Maturity():
             'maturityProjects' : self.maturityProjects,
             'maturityUncompletedProjects' : self.maturityUncompletedProjects,
             'maturityIllness' : self.maturityIllness,
-            'maturityPersonalCrisis' : self.maturityPersonalCrisis
+            'maturityPersonalCrisis' : self.maturityPersonalCrisis,
+            'maturityMusic' : self.maturityMusic
         }
 
 class Personality():

@@ -5,7 +5,7 @@ from flaskext.mysql import MySQL
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import logging
-from flask_jwt_extended import jwt_required, JWTManager, create_access_token
+from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity
 import os
 import jwt as pyjwt
 import locale
@@ -152,7 +152,10 @@ def buscar_usuarios():
     idOrganizacion = request.args.get('idOrganizacion')
 
     try:
-        usuarios = ModelUser.getAllUsers(mysql, idOrganizacion)
+        if idOrganizacion is None:
+            usuarios = ModelUser.getAllUsuarios(mysql)
+        else:
+            usuarios = ModelUser.getAllUsers(mysql, idOrganizacion)
         usuarios_filtrados = [
             usuario for usuario in usuarios
             if nombre in usuario['nombre'].lower()
@@ -307,7 +310,10 @@ def buscar_pacientes():
     idOrganizacion = request.args.get('idOrganizacion')
 
     try:
-        pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
+        if idOrganizacion is None:
+            pacientes = ModelPaciente.getAllPacientes(mysql)
+        else:
+            pacientes = ModelPaciente.getPacientes(mysql, idOrganizacion)
         pacientes_filtrados = [
             paciente for paciente in pacientes
             if nombre in paciente['name'].lower()
@@ -458,7 +464,7 @@ def post_paciente_infancia():
     childhood = data.get('childhood')
 
     try:
-        paciente = ModelPaciente.upsertChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'],childhood['childhoodImportantPerson'],childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'],childhood['childhoodResponsabilities'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'])
+        paciente = ModelPaciente.upsertChildhoodPaciente(mysql, pacienteId, childhood["childhoodStudies"], childhood['childhoodSchool'], childhood['childhoodMotivations'], childhood['childhoodFamilyCore'], childhood['childhoodFriendsGroup'],childhood['childhoodImportantPerson'],childhood['childhoodTravels'], childhood['childhoodFavouritePlace'], childhood["childhoodPositiveExperiences"], childhood['childhoodNegativeExperiences'],childhood['childhoodResponsabilities'], childhood['childhoodAddress'], childhood['childhoodLikes'], childhood['childhoodAfraids'], childhood['childhoodMusic'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -487,7 +493,7 @@ def post_paciente_juventud():
     
 
     try:
-        paciente = ModelPaciente.upsertYouthPaciente(mysql, pacienteId, youth["youthStudies"], youth['youthSchool'], youth['youthWorkPlace'], youth['youthWorkRol'], youth['youthFamilyCore'], youth['youthFriendsGroup'], youth['youthImportantPerson'],youth['youthTravels'], youth['youthFavouritePlace'], youth['youthRoutine'], youth['youthPositiveExperiences'], youth['youthNegativeExperiences'], youth['youthResponsabilities'], youth['youthAddress'], youth['youthLikes'], youth['youthHobbies'], youth['youthAfraids'],youth['youthSentimentalCouple'], youth['youthProjects'], youth['youthUncompletedProjects'], youth['youthIllness'], youth['youthPersonalCrisis'])
+        paciente = ModelPaciente.upsertYouthPaciente(mysql, pacienteId, youth["youthStudies"], youth['youthSchool'], youth['youthWorkPlace'], youth['youthWorkRol'], youth['youthFamilyCore'], youth['youthFriendsGroup'], youth['youthImportantPerson'],youth['youthTravels'], youth['youthFavouritePlace'], youth['youthRoutine'], youth['youthPositiveExperiences'], youth['youthNegativeExperiences'], youth['youthResponsabilities'], youth['youthAddress'], youth['youthLikes'], youth['youthHobbies'], youth['youthAfraids'],youth['youthSentimentalCouple'], youth['youthProjects'], youth['youthUncompletedProjects'], youth['youthIllness'], youth['youthPersonalCrisis'], youth['youthMusic'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -515,7 +521,7 @@ def post_paciente_adultez():
     adulthood = data.get('adulthood')
 
     try:
-        paciente = ModelPaciente.upsertAdulthoodPaciente(mysql, pacienteId, adulthood["adulthoodSentimentalCouple"], adulthood['adulthoodChildren'], adulthood['adulthoodStudies'], adulthood['adulthoodWorkPlace'], adulthood['adulthoodWorkRol'], adulthood['adulthoodFamilyCore'], adulthood['adulthoodFriendsGroup'], adulthood['adulthoodWorkGroup'], adulthood["adulthoodImportantPerson"],adulthood['adulthoodTravels'], adulthood['adulthoodFavouritePlace'], adulthood['adulthoodRoutine'], adulthood['adulthoodPositiveExperiences'], adulthood['adulthoodNegativeExperiences'], adulthood["adulthoodResponsabilities"], adulthood['adulthoodAddress'], adulthood['adulthoodEconomicSituation'], adulthood['adulthoodProjects'], adulthood['adulthoodUncompletedProjects'], adulthood['adulthoodIllness'], adulthood['adulthoodPersonalCrisis'])
+        paciente = ModelPaciente.upsertAdulthoodPaciente(mysql, pacienteId, adulthood["adulthoodSentimentalCouple"], adulthood['adulthoodChildren'], adulthood['adulthoodStudies'], adulthood['adulthoodWorkPlace'], adulthood['adulthoodWorkRol'], adulthood['adulthoodFamilyCore'], adulthood['adulthoodFriendsGroup'], adulthood['adulthoodWorkGroup'], adulthood["adulthoodImportantPerson"],adulthood['adulthoodTravels'], adulthood['adulthoodFavouritePlace'], adulthood['adulthoodRoutine'], adulthood['adulthoodPositiveExperiences'], adulthood['adulthoodNegativeExperiences'], adulthood["adulthoodResponsabilities"], adulthood['adulthoodAddress'], adulthood['adulthoodEconomicSituation'], adulthood['adulthoodProjects'], adulthood['adulthoodUncompletedProjects'], adulthood['adulthoodIllness'], adulthood['adulthoodPersonalCrisis'], adulthood['adulthoodMusic'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -543,7 +549,7 @@ def post_paciente_madurez():
     maturity = data.get('maturity')
 
     try:
-        paciente = ModelPaciente.upsertMaturityPaciente(mysql, pacienteId, maturity['maturityGrandchildren'], maturity['maturityWorkPlace'], maturity['maturityWorkRol'], maturity['maturityFamilyCore'], maturity['maturityFriendsGroup'], maturity['maturityWorkGroup'], maturity['maturityImportantPerson'], maturity['maturityTravels'], maturity['maturityFavouritePlace'], maturity['maturityRoutine'], maturity['maturityPositiveExperiences'], maturity['maturityNegativeExperiences'], maturity['maturityResponsabilities'], maturity['maturityRetirement'], maturity['maturityWills'], maturity['maturityProjects'], maturity['maturityUncompletedProjects'], maturity['maturityIllness'], maturity['maturityPersonalCrisis'])
+        paciente = ModelPaciente.upsertMaturityPaciente(mysql, pacienteId, maturity['maturityGrandchildren'], maturity['maturityWorkPlace'], maturity['maturityWorkRol'], maturity['maturityFamilyCore'], maturity['maturityFriendsGroup'], maturity['maturityWorkGroup'], maturity['maturityImportantPerson'], maturity['maturityTravels'], maturity['maturityFavouritePlace'], maturity['maturityRoutine'], maturity['maturityPositiveExperiences'], maturity['maturityNegativeExperiences'], maturity['maturityResponsabilities'], maturity['maturityRetirement'], maturity['maturityWills'], maturity['maturityProjects'], maturity['maturityUncompletedProjects'], maturity['maturityIllness'], maturity['maturityPersonalCrisis'], maturity['maturityMusic'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -789,20 +795,103 @@ def get_organizacion():
         return jsonify({'message': 'Organizacion obtenida', 'organizacion':organizacion}), 200
     
     except Exception as e:
+        print(e)
         return jsonify({'error': 'error'}), 401
 
 @app.route('/getResumenOrganizacion', methods=['GET'])
 @jwt_required()
 def get_resumen_organizacion():
     organizacionId = request.args.get('org')
+    is_superadmin = request.args.get('rol', 'false').lower() == 'true'
 
     try:
-        resumen = ModelOrganizacion.getResumenOrganizacion(mysql, organizacionId)
+        resumen = ModelOrganizacion.getResumenOrganizacion(mysql, organizacionId, is_superadmin)
     
         return jsonify({'message': 'Resumen organizacion obtenida', 'resumen':resumen}), 200
     
     except Exception as e:
+        print(e)
         return jsonify({'error': 'error'}), 401
+    
+@app.route('/getAllOrganizaciones', methods=['GET'])
+@jwt_required()
+def get_all_organizaciones():
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
+    
+    try:
+
+        total = len(ModelOrganizacion.getAllOrganizaciones(mysql))
+        organizaciones = ModelOrganizacion.getAllOrganizacionesPagina(mysql, limit, offset)
+        return jsonify({'message': 'Organizaciones obtenidas', 'organizaciones':organizaciones, 'totalOrganizaciones':total}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido obtener las organizaciones'}), 400
+
+@app.route('/crearOrganizacion', methods=['POST'])
+def crear_organizacion():
+    data = request.get_json().get('nuevaOrganizacion')
+    nombre = data.get('nombre')
+    direccion = data.get('direccion')
+    localidad = data.get('localidad')
+    provincia = data.get('provincia')
+    codigo_postal = data.get('codigo_postal')
+    telefono = data.get('telefono')
+    
+    try:        
+        organizacion = ModelOrganizacion.createOrg(mysql, nombre, direccion, localidad, provincia, codigo_postal, telefono)
+        return jsonify({'message':'Organizacion creada correctamente.', 'organizacion':organizacion}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'No se ha podido crear la organizacion.'}), 400
+
+@app.route('/eliminarOrganizacion', methods=['POST'])
+@jwt_required()
+def eliminar_organizacion():
+    data = request.get_json()
+    organizacionId = data.get('organizacionId')
+    try:
+        ModelOrganizacion.deleteOrg(mysql, organizacionId)
+        
+        return jsonify({'message': 'Organizacion eliminada'}), 200
+    except Exception as e:
+        return jsonify({'message': 'No se ha podido eliminar la organizacion'}), 400
+      
+@app.route('/modificarOrganizacion', methods=['PUT'])
+@jwt_required()
+def modificar_organizacion():
+    data = request.get_json()
+    organizacion = data.get('mostrarOrganizacion')
+    organizacionId = organizacion['id']
+    nombre = organizacion['nombre']
+    direccion = organizacion['direccion']
+    localidad = organizacion['localidad']
+    provincia = organizacion['provincia']
+    codigo_postal = organizacion['codigo_postal']
+    telefono = organizacion['telefono']
+    
+    try:
+        organizacion = ModelOrganizacion.updateDataOrg(mysql, organizacionId, nombre, direccion, localidad, provincia, codigo_postal, telefono)
+        
+        return jsonify({'message': 'Organizacion modificada correctamente', 'organizacion':organizacion}), 200
+    except Exception as e:
+        return jsonify({'error': 'No se ha podido modificar la organizacion'}), 400
+    
+@app.route('/searchOrganizacion', methods=['GET'])
+@jwt_required()
+def buscar_organizaciones():
+    nombre = request.args.get('nombre', '').lower()
+
+    try:
+        organizaciones = ModelOrganizacion.getAllOrganizaciones(mysql)
+        organizaciones_filtradas = [
+            organizacion for organizacion in organizaciones
+            if nombre in organizacion['nombre'].lower()
+        ]
+        return jsonify({'message': 'Organizaciones filtradas', 'organizaciones': organizaciones_filtradas}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error al buscar organizaciones'}), 400
     
     
     # ------------------- ROLES ------------------- #

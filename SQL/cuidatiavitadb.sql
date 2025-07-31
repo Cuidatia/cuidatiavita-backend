@@ -2,6 +2,11 @@ use cuidatiavitadb;
 create table organizaciones (
 	`id` int NOT NULL auto_increment,
     `nombre` varchar(100) NOT NULL,
+    `direccion` varchar(100) NOT NULL,
+    `localidad` varchar(100) NOT NULL,
+    `provincia` varchar(100) NOT NULL,
+    `codigo_postal` varchar(100) NOT NULL,
+    `telefono` varchar(100) NOT NULL,
     primary key (`id`)
 );
 
@@ -89,6 +94,7 @@ create table childhood(
     `childhoodAddress` varchar(100),
     `childhoodLikes` varchar(100),
     `childhoodAfraids` varchar(100),
+    `childhoodMusic` varchar(100),
     primary key (`id`),
     constraint FK_LifeStoryChilhood foreign key (`idLifestory`) references lifeStory(`id`)
 		on delete cascade
@@ -120,7 +126,7 @@ create table youth (
     `youthUncompletedProjects` varchar(100),
     `youthIllness` varchar(100),
     `youthPersonalCrisis` varchar(100),
-
+    `youthMusic` varchar(100),
     primary key (`id`),
     constraint FK_LifeStoryYouth foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -151,6 +157,7 @@ create table adulthood (
     `adulthoodUncompletedProjects` varchar(100),
     `adulthoodIllness` varchar(100),
     `adulthoodPersonalCrisis` varchar(100),
+    `adulthoodMusic` varchar(100),
     primary key (`id`),
     constraint FK_LifeStoryAdulthood foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -179,6 +186,7 @@ create table maturity (
     `maturityUncompletedProjects` varchar(100),
     `maturityIllness` varchar(100),
     `maturityPersonalCrisis` varchar(100),
+    `maturityMusic` varchar(100),
     primary key (`id`),
     constraint FK_LifeStoryMaturity foreign key (`idLifeStory`) references lifeStory(`id`)
 		on delete cascade
@@ -334,16 +342,30 @@ create table paciente_personalReferencia(
     constraint FK_PersonalPacienteUsuario foreign key (`idUsuario`) references usuarios(`id`)
 );
 
-insert into organizaciones (`nombre`) values ('Cuidatia Vita');
-insert into organizaciones (`nombre`) values ('Organización Prueba');
+insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Cuidatia Vita','C/Clara Campoamor','Almendralejo','Badajoz','06002','924 66 75 78');
+insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba','Av. de la Universidad','Caceres','Caceres','10003','927 25 71 95');
+insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 2','Av. de la Universidad','Caceres','Caceres','10004','927 25 71 95');
+insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 3','Av. de la Universidad','Caceres','Caceres','10005','927 25 71 95');
+insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 4','Av. de la Universidad','Caceres','Caceres','10006','927 25 71 95');
 
 insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Super Administrador', 'superadmin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 1);
 insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 2);
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin2@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 3);
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin3@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 4);
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin4@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 5);
 insert into usuarios (nombre, email, password, idOrganizacion) values ('Juan Alberto Torró Gómez', 'user1@prueba.es','123456',2);
 insert into usuarios (nombre, email, password, idOrganizacion) values ('Paula Guilbert Arnau', 'user2@prueba.es','123456',2);
 insert into usuarios (nombre, email, password, idOrganizacion) values ('Dejan Ishult Trigueros', 'user3@prueba.es','123456',2);
 insert into usuarios (nombre, email, password, idOrganizacion) values ('Jaime Lima Mata', 'user4@prueba.es','123456',2);
 insert into usuarios (nombre, email, password, idOrganizacion) values ('Elena Nito Del Bosque', 'user5@prueba.es','123456',2);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Miguel Sanchez Perez', 'user34@prueba.es','123456',3);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Pedro Sanchez Perez', 'user35@prueba.es','123456',3);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Bell Liahm', 'user44@prueba.es','123456',4);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Ruben Diaz', 'user45@prueba.es','123456',4);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Lucas Martin Jimenez', 'user54@prueba.es','123456',5);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Sofia Soares Jota', 'user55@prueba.es','123456',5);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Becky Kitagawa', 'user36@prueba.es','123456',3);
+insert into usuarios (nombre, email, password, idOrganizacion) values ('Almada San Roque', 'user56@prueba.es','123456',5);
 
 insert into roles (`nombre`) values ('superadmin');
 insert into roles (`nombre`, `description`) values ('administrador', 'Administrador de la organización; Visualiza todos los datos de la organización;  Añade, modifica y elimina usuarios de la organización; Añade, modifica y elimina pacientes de la organización; Accede a todos los datos de los pacientes de la organización;');
@@ -356,11 +378,22 @@ insert into roles (`nombre`, `description`) values ('familiar', 'Acceso diecto a
 
 insert into usuario_roles (`idUsuario`, `idRol`) values (1, 1); 
 insert into usuario_roles (`idUsuario`, `idRol`) values (2, 2);
-insert into usuario_roles (`idUsuario`, `idRol`) values (3, 3);
-insert into usuario_roles (`idUsuario`, `idRol`) values (4, 4);
-insert into usuario_roles (`idUsuario`, `idRol`) values (5, 5);
-insert into usuario_roles (`idUsuario`, `idRol`) values (6, 6);
-insert into usuario_roles (`idUsuario`, `idRol`) values (7, 6);
+insert into usuario_roles (`idUsuario`, `idRol`) values (3, 2);
+insert into usuario_roles (`idUsuario`, `idRol`) values (4, 2);
+insert into usuario_roles (`idUsuario`, `idRol`) values (5, 2);
+insert into usuario_roles (`idUsuario`, `idRol`) values (6, 3);
+insert into usuario_roles (`idUsuario`, `idRol`) values (7, 4);
+insert into usuario_roles (`idUsuario`, `idRol`) values (8, 5);
+insert into usuario_roles (`idUsuario`, `idRol`) values (9, 6);
+insert into usuario_roles (`idUsuario`, `idRol`) values (10, 7);
+insert into usuario_roles (`idUsuario`, `idRol`) values (11, 3);
+insert into usuario_roles (`idUsuario`, `idRol`) values (12, 5);
+insert into usuario_roles (`idUsuario`, `idRol`) values (13, 3);
+insert into usuario_roles (`idUsuario`, `idRol`) values (14, 5);
+insert into usuario_roles (`idUsuario`, `idRol`) values (15, 3);
+insert into usuario_roles (`idUsuario`, `idRol`) values (16, 5);
+insert into usuario_roles (`idUsuario`, `idRol`) values (17, 6);
+insert into usuario_roles (`idUsuario`, `idRol`) values (18, 7);
 
 INSERT INTO pacientes (idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith) VALUES (
     2, 'Carlos', 'Martínez', 'Ruiz', 'Prueba', '1955-07-12', 70, 'Madrid','Española', 'M', 'Calle Mayor 45, Madrid', 'C','', 'Español', 'Inglés, Francés','Mediterránea', 'Católica'
@@ -474,27 +507,27 @@ INSERT INTO lifeStory (idPaciente) VALUES (7);
 INSERT INTO childhood (
     idLifeStory, childhoodStudies, childhoodSchool, childhoodMotivations, childhoodFamilyCore,
     childhoodFriendsGroup, childhoodImportantPerson,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
-    childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids
+    childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids, childhoodMusic
 ) VALUES
-(2, 'Primaria completa',         'Colegio San Vicente',  'Jugar con amigos',         'Familia numerosa (4 hermanos)',   'Amigos del barrio',  '',     'Veranos en la playa',   'Patio de la escuela',      'Excursión al zoológico',      'Enfermedad de un hermano',  '',    'C/ Olivo 12, Sevilla',    'Dibujar y fútbol',        'Tormentas'),
-(3, 'Primaria completa',       'Colegio Nuestra Señora', 'Leer libros de aventuras', 'Vive con madre y abuelos',        'Vecinos de la finca',   '',  'Visitas a Granada',      'Parque del pueblo',        'Fiesta de cumpleaños cada año', 'Pérdida del abuelo',        '',    'Av. Los Pinos 5, Bilbao','Coleccionar sellos',     'Alturas'),
-(4, 'Primaria completa',         'Escuela Pública Nº3',    'Explorar la naturaleza',    'Padres separados',                'Primos y vecinos',   '',    'Excursiones familiares', 'Río cercano',             'Primer campamento escolar',     'Bullying en el cole',        '',   'C/ Luna 23, Zaragoza',   'Insectos y armar puzzles', 'Ruido fuerte'),
-(5, 'Primaria completa',         'Colegio Santa María',    'Aprender a leer',           'Vive en un orfanato',                'Niños del orfanato', '',    'Viaje a Barcelona',      'Biblioteca local',        'Concurso de dibujo',            'Cambio de colegio repetido',  '',  'Pº Sta. Catalina 8, Murcia','Cantar y pintar',      'Perderse solo'),
-(6, 'Primaria completa',       'Colegio Montesol',       'Ver películas de ciencia',  'Familia extendida grande',        'Amigos del vecindario', '', 'Visitas a la montaña',   'Huerto familiar',         'Fiesta patronal anual',          'Accidente leve en bici',    '',    'C/ San Roque 19, Málaga','Ciencia y animales',      'Oscuridad'),
-(7, 'Primaria completa',         'Colegio Cristo Rey',     'Hacer teatro escolar',      'Hijo único',                      'Compañeros de clases', '',  'Viaje a Portugal',       'Auditorio municipal',     'Obra de teatro en familia',     'Divorcio de los padres',   '',      'C/ Naranjo 47, Valladolid','Cantar y bailar',       'Perder juguetes');
+(2, 'Primaria completa',         'Colegio San Vicente',  'Jugar con amigos',         'Familia numerosa (4 hermanos)',   'Amigos del barrio',  '',     'Veranos en la playa',   'Patio de la escuela',      'Excursión al zoológico',      'Enfermedad de un hermano',  '',    'C/ Olivo 12, Sevilla',    'Dibujar y fútbol',        'Tormentas', ' '),
+(3, 'Primaria completa',       'Colegio Nuestra Señora', 'Leer libros de aventuras', 'Vive con madre y abuelos',        'Vecinos de la finca',   '',  'Visitas a Granada',      'Parque del pueblo',        'Fiesta de cumpleaños cada año', 'Pérdida del abuelo',        '',    'Av. Los Pinos 5, Bilbao','Coleccionar sellos',     'Alturas', ' '),
+(4, 'Primaria completa',         'Escuela Pública Nº3',    'Explorar la naturaleza',    'Padres separados',                'Primos y vecinos',   '',    'Excursiones familiares', 'Río cercano',             'Primer campamento escolar',     'Bullying en el cole',        '',   'C/ Luna 23, Zaragoza',   'Insectos y armar puzzles', 'Ruido fuerte', ' '),
+(5, 'Primaria completa',         'Colegio Santa María',    'Aprender a leer',           'Vive en un orfanato',                'Niños del orfanato', '',    'Viaje a Barcelona',      'Biblioteca local',        'Concurso de dibujo',            'Cambio de colegio repetido',  '',  'Pº Sta. Catalina 8, Murcia','Cantar y pintar',      'Perderse solo', ' '),
+(6, 'Primaria completa',       'Colegio Montesol',       'Ver películas de ciencia',  'Familia extendida grande',        'Amigos del vecindario', '', 'Visitas a la montaña',   'Huerto familiar',         'Fiesta patronal anual',          'Accidente leve en bici',    '',    'C/ San Roque 19, Málaga','Ciencia y animales',      'Oscuridad', ' '),
+(7, 'Primaria completa',         'Colegio Cristo Rey',     'Hacer teatro escolar',      'Hijo único',                      'Compañeros de clases', '',  'Viaje a Portugal',       'Auditorio municipal',     'Obra de teatro en familia',     'Divorcio de los padres',   '',      'C/ Naranjo 47, Valladolid','Cantar y bailar',       'Perder juguetes', ' ');
 
 INSERT INTO youth (
     idLifeStory, youthStudies, youthSchool, youthWorkPlace, youthWorkRol, youthFamilyCore,
     youthFriendsGroup,youthImportantPerson, youthTravels, youthFavouritePlace, youthRoutine, youthPositiveExperiences,
     youthNegativeExperiences, youthResponsabilities, youthAddress, youthLikes, youthHobbies, youthAfraids, youthSentimentalCouple,
-    youthProjects, youthUncompletedProjects, youthIllness, youthPersonalCrisis
+    youthProjects, youthUncompletedProjects, youthIllness, youthPersonalCrisis, youthMusic
 ) VALUES
-(2, 'ESO completa',       'IES El Terruño',     'Cafetería Estrella',   'Camarero',      'Madre y 4 hermanos',         'Amigos del instituto', '',    'Intercambio Erasmus (Portugal)', 'Sala de estudio',     'Estudiar y trabajo parcial',   'Primeros exámenes aprobados',       'Ruptura con noviazgo',       '',    'C/ Olivo 12, Sevilla',   'Música rock',           'Fútbol', '','', 'Crear banda musical', 'No finalizar bachillerato', 'Apendicitis','Alcoholismo familiar'),
-(3, 'ESO incompleta',     'IES Bilbao Centro',  'Tienda de ropa',      'Dependiente',  'Padre viudo, vive con abuela',    'Vecinos y primos',  '',        'Viaje de fin de curso a París', 'Centro juvenil',      'Clases y trabajo de fin de semana','Tercer puesto en campeonato  de futsal', 'Muerte de la madre',         '',    'Av. Los Pinos 5, Bilbao','Videos de YouTube', 'Baloncesto', '','', 'Montar un taller mecánico','',    'Gripe grave', ''),
-(4, 'ESO completa',       'IES Pilar Lorengar', 'Fábrica de plásticos', 'Operario',     'Padres separados, vive con padre', 'Amigos de clase',  '',         'No viajó a ningún sitio',        'Cafetería del barrio',  'Trabajo por turnos',            'Aprender primeros auxilios',       'Problemas de adaptación social', '',   'C/ Luna 23, Zaragoza',   'Música electrónica', 'Videojuegos', '', '','', 'Sin lograrlo por falta de recursos','No sufrió ninguna enfermedad', ''),
-(5, 'Bachillerato artístico', 'IES La Marina', 'Restaurante La Brisa', 'Ayudante de cocina','Vive en orfanato hasta 18 años', 'Compañeros del orfanato',  '',  'Verano en Cuba',             'Estudio de arte',       'Prácticas de cocina',            'Primer premio de pintura',          '',  '',  'Pº Sta. Catalina 8, Murcia','Arte contemporáneo',    'Pintura y dibujo','Rendirse ante el estrés', '','Exponer sus obras en una galería local',  'No culminar bachillerato', 'No sufrió ninguna enfermedad', 'Ansiedad'),
-(6, 'ESO completa',       'IES Montesol',       'Visitas a residencia ancianos','Voluntariado',  'Familia extensa unida',       'Amigos de barrio','',       'Viaje a Francia con familia', 'Biblioteca municipal',  'Equilibrar estudios y voluntariado','Premio local de escritura',     '',     '',    'C/ San Roque 19, Málaga','Lectura de poesía', 'Cuentacuentos', 'Sufrir rechazo social', '','Publicar un cuento infantil', '', '',  ''),
-(7, 'Bachillerato científico','IES Buenavista','Laboratorio Unitech',  'Practicante de laboratorio','Hijo único','Círculo de estudio', '',     'No ha viajado', 'Biblioteca universitaria','Estudiar y hacer voluntariado', 'Publicar artículo en revista',    'Fracaso en oposición',    '',           'C/ Naranjo 47, Valladolid','Astronomía', 'Ajedrez', '','', '',   'No terminar grado universitario','Neumonía', 'Estrés universitario');
+(2, 'ESO completa',       'IES El Terruño',     'Cafetería Estrella',   'Camarero',      'Madre y 4 hermanos',         'Amigos del instituto', '',    'Intercambio Erasmus (Portugal)', 'Sala de estudio',     'Estudiar y trabajo parcial',   'Primeros exámenes aprobados',       'Ruptura con noviazgo',       '',    'C/ Olivo 12, Sevilla',   'Música rock',           'Fútbol', '','', 'Crear banda musical', 'No finalizar bachillerato', 'Apendicitis','Alcoholismo familiar', ''),
+(3, 'ESO incompleta',     'IES Bilbao Centro',  'Tienda de ropa',      'Dependiente',  'Padre viudo, vive con abuela',    'Vecinos y primos',  '',        'Viaje de fin de curso a París', 'Centro juvenil',      'Clases y trabajo de fin de semana','Tercer puesto en campeonato  de futsal', 'Muerte de la madre',         '',    'Av. Los Pinos 5, Bilbao','Videos de YouTube', 'Baloncesto', '','', 'Montar un taller mecánico','',    'Gripe grave', '', ''),
+(4, 'ESO completa',       'IES Pilar Lorengar', 'Fábrica de plásticos', 'Operario',     'Padres separados, vive con padre', 'Amigos de clase',  '',         'No viajó a ningún sitio',        'Cafetería del barrio',  'Trabajo por turnos',            'Aprender primeros auxilios',       'Problemas de adaptación social', '',   'C/ Luna 23, Zaragoza',   'Música electrónica', 'Videojuegos', '', '','', 'Sin lograrlo por falta de recursos','No sufrió ninguna enfermedad', '', ''),
+(5, 'Bachillerato artístico', 'IES La Marina', 'Restaurante La Brisa', 'Ayudante de cocina','Vive en orfanato hasta 18 años', 'Compañeros del orfanato',  '',  'Verano en Cuba',             'Estudio de arte',       'Prácticas de cocina',            'Primer premio de pintura',          '',  '',  'Pº Sta. Catalina 8, Murcia','Arte contemporáneo',    'Pintura y dibujo','Rendirse ante el estrés', '','Exponer sus obras en una galería local',  'No culminar bachillerato', 'No sufrió ninguna enfermedad', 'Ansiedad', ''),
+(6, 'ESO completa',       'IES Montesol',       'Visitas a residencia ancianos','Voluntariado',  'Familia extensa unida',       'Amigos de barrio','',       'Viaje a Francia con familia', 'Biblioteca municipal',  'Equilibrar estudios y voluntariado','Premio local de escritura',     '',     '',    'C/ San Roque 19, Málaga','Lectura de poesía', 'Cuentacuentos', 'Sufrir rechazo social', '','Publicar un cuento infantil', '', '',  '', ''),
+(7, 'Bachillerato científico','IES Buenavista','Laboratorio Unitech',  'Practicante de laboratorio','Hijo único','Círculo de estudio', '',     'No ha viajado', 'Biblioteca universitaria','Estudiar y hacer voluntariado', 'Publicar artículo en revista',    'Fracaso en oposición',    '',           'C/ Naranjo 47, Valladolid','Astronomía', 'Ajedrez', '','', '',   'No terminar grado universitario','Neumonía', 'Estrés universitario', '');
 
 INSERT INTO adulthood (
     idLifeStory, adulthoodSentimentalCouple, adulthoodChildren, adulthoodStudies,
@@ -502,27 +535,27 @@ INSERT INTO adulthood (
     adulthoodWorkGroup, adulthoodImportantPerson,adulthoodTravels, adulthoodFavouritePlace, adulthoodRoutine,
     adulthoodPositiveExperiences, adulthoodNegativeExperiences, adulthoodResponsabilities, adulthoodAddress,
     adulthoodEconomicSituation, adulthoodProjects, adulthoodUncompletedProjects,
-    adulthoodIllness, adulthoodPersonalCrisis
+    adulthoodIllness, adulthoodPersonalCrisis, adulthoodMusic
 ) VALUES
-(2, 'Ana Ruiz', 'Solo tuvo un hijo, Óscar', 'Grado en Educación', 'Colegio El Olivar', 'Profesor de primaria', 'Su mujer y su hijo', 'Profesorado y padres', 'Equipo docente','', 'Italia y Marruecos', 'Casa familiar', 'Clases y vida familiar', 'Estudiar para las oposiciones', 'Crisis laboral en 2009','', 'C/ Olivo 12, Sevilla', 'Estable', '', '', 'Migraña crónica', ''),
-(3, 'Miguel Ortega', '2 hijas', 'Grado en Comercio', 'Supermercado Central', 'Jefa de sección', 'Su marido y sus hijas', 'Familia cercana', 'Equipo de ventas','', 'Francia', 'La cafetería de su amiga', 'Trabajo y compras', 'Ascenso a directora de zona', 'Problemas económicos en 2013', '', 'Plaza Los Pinos 5, Bilbao','Ajustada', 'Montar su tienda propia', '', 'Tensión arterial alta', 'No padece ningún problema'),
-(4, 'Carlos Pérez', 'Su hija Eva', 'Ingeniería Química',  'Refinería Río Ebro', 'Ingeniera de procesos','Pareja e hija', 'Compañeros de la facultad', 'Compañeros de la planta de producción','', 'Suecia y Alemania',  '',  'Suele realizar viajes a menudo, ayudando a su familia', 'Ascender dentro de la empresa', '', '','C/ Luna 23, Zaragoza', 'Bueno', 'Investigar biocombustibles', 'Proyecto detenido por falta de inversión','Asma', 'Estrés por presión laboral'),
-(5, 'Laura Díaz',    'Sus hijos Pilar y David', 'Bellas Artes', 'Galería de arte local', 'Pintora', 'Su marido, su madre y sus hijos', 'Los artistas de la ciudad','Artistas locales','', 'Viajó a Nueva York', 'La galería de arte en la que trabaja', 'Está toda la mañana en la galería de artes y luego pasa tiempo con la familia', 'Exposición en museo internacional', 'Crisis creativa en 2015', '', 'Pº Sta. Catalina 8, Murcia','Ajustada', 'Fundar su escuela de arte', 'No tiene nada que remarcar',  'No sufrió ninguna enfermedad remarcable', 'Insatisfacción personal'),
-(6, 'Borja Díaz',     'No tuvieron hijos', 'Filología Hispánica', 'Editorial Acacia','Correctora de estilo', 'Su pareja',  'Los amigos de su pareja y sus hijos jóvenes', 'Club de lectura','', 'Solo viajó por España','', 'Trabajo remoto y familia', 'Publicar un libro propio', 'Baja de la editorial en 2020', '', 'C/ San Roque 19, Málaga', 'Estable','', 'Organizar un taller literario', '', 'Bloqueo creativo'),
-(7, 'Sara López',       'Tuvo una hija llamada Victoria', 'Biología', 'Hospital Universitario', 'Investigador',  'Su pareja y su hija', 'Los científicos del laboratorio', 'Red de científicos','', 'Viajó por España',  '', '', 'Publicar artículo en Nature', 'Financiación denegada 2019', '', 'C/ Naranjo 47, Valladolid', 'Buena', '',  '', '', '');
+(2, 'Ana Ruiz', 'Solo tuvo un hijo, Óscar', 'Grado en Educación', 'Colegio El Olivar', 'Profesor de primaria', 'Su mujer y su hijo', 'Profesorado y padres', 'Equipo docente','', 'Italia y Marruecos', 'Casa familiar', 'Clases y vida familiar', 'Estudiar para las oposiciones', 'Crisis laboral en 2009','', 'C/ Olivo 12, Sevilla', 'Estable', '', '', 'Migraña crónica', '', ''),
+(3, 'Miguel Ortega', '2 hijas', 'Grado en Comercio', 'Supermercado Central', 'Jefa de sección', 'Su marido y sus hijas', 'Familia cercana', 'Equipo de ventas','', 'Francia', 'La cafetería de su amiga', 'Trabajo y compras', 'Ascenso a directora de zona', 'Problemas económicos en 2013', '', 'Plaza Los Pinos 5, Bilbao','Ajustada', 'Montar su tienda propia', '', 'Tensión arterial alta', 'No padece ningún problema', ''),
+(4, 'Carlos Pérez', 'Su hija Eva', 'Ingeniería Química',  'Refinería Río Ebro', 'Ingeniera de procesos','Pareja e hija', 'Compañeros de la facultad', 'Compañeros de la planta de producción','', 'Suecia y Alemania',  '',  'Suele realizar viajes a menudo, ayudando a su familia', 'Ascender dentro de la empresa', '', '','C/ Luna 23, Zaragoza', 'Bueno', 'Investigar biocombustibles', 'Proyecto detenido por falta de inversión','Asma', 'Estrés por presión laboral', ''),
+(5, 'Laura Díaz',    'Sus hijos Pilar y David', 'Bellas Artes', 'Galería de arte local', 'Pintora', 'Su marido, su madre y sus hijos', 'Los artistas de la ciudad','Artistas locales','', 'Viajó a Nueva York', 'La galería de arte en la que trabaja', 'Está toda la mañana en la galería de artes y luego pasa tiempo con la familia', 'Exposición en museo internacional', 'Crisis creativa en 2015', '', 'Pº Sta. Catalina 8, Murcia','Ajustada', 'Fundar su escuela de arte', 'No tiene nada que remarcar',  'No sufrió ninguna enfermedad remarcable', 'Insatisfacción personal', ''),
+(6, 'Borja Díaz',     'No tuvieron hijos', 'Filología Hispánica', 'Editorial Acacia','Correctora de estilo', 'Su pareja',  'Los amigos de su pareja y sus hijos jóvenes', 'Club de lectura','', 'Solo viajó por España','', 'Trabajo remoto y familia', 'Publicar un libro propio', 'Baja de la editorial en 2020', '', 'C/ San Roque 19, Málaga', 'Estable','', 'Organizar un taller literario', '', 'Bloqueo creativo', ''),
+(7, 'Sara López',       'Tuvo una hija llamada Victoria', 'Biología', 'Hospital Universitario', 'Investigador',  'Su pareja y su hija', 'Los científicos del laboratorio', 'Red de científicos','', 'Viajó por España',  '', '', 'Publicar artículo en Nature', 'Financiación denegada 2019', '', 'C/ Naranjo 47, Valladolid', 'Buena', '',  '', '', '', '');
 
 INSERT INTO maturity (
     idLifeStory, maturityGrandchildren, maturityWorkPlace, maturityWorkRol, maturityFamilyCore,
     maturityFriendsGroup, maturityWorkGroup, maturityImportantPerson,maturityTravels, maturityFavouritePlace,
     maturityRoutine, maturityPositiveExperiences, maturityNegativeExperiences, maturityResponsabilities, maturityRetirement,
-    maturityWills, maturityProjects, maturityUncompletedProjects, maturityIllness, maturityPersonalCrisis
+    maturityWills, maturityProjects, maturityUncompletedProjects, maturityIllness, maturityPersonalCrisis, maturityMusic
 ) VALUES
-(2, '2 nietos',        'Escuela Infantil La Paz', 'Director',        'Hijos, nietos y esposa', 'Colegas de educación',   'Equipo directivo','',          'Portugal y Marruecos',    'Casa rural en Sierra Morena', 'Visitas al centro de día',  'Poder conocer a su bisnieto',      'Pérdida de amigos de la infancia',     '', 'A los 65 años',    'Dejar becas para los niños',   '',     '',     '',''),
-(3, 'Sin nietos',      'Clínica San José',        'Administrativa',  'Hijas y madre anciana',     'Vecinas de comunidad',    'Equipo de administración', '','Grecia y Turquía',        'Apartamento en la playa',        'Lectura matutina',         'Recuperación de una operación grande',  'Aislamiento social progresivo',      '', 'A los 60 años',    'Quiere escribir sus memorias',       '',     '',     '',''),
-(4, '1 nieto',         'Refinería Río Ebro',       'Consultora',       'Esposa e hijo adulto',      'Amigos de facultad',      'Equipo de I+D',       '',    'Suecia y Alemania',       'Finca en el campo',            'Jardinería diaria',        'Proyecto de biocombustibles finalizado', 'Accidentes automovilísticos leves', '', 'A los 62 años',    '','',     '',     '',''),
-(5, '2 nietos',        'Museo de Bellas Artes',    'Director adjunto', 'Hija y nietos',            'Artistas locales senior', 'Equipo curatorial',   '',    'Nueva York y París',      'Chalet con estudio de arte',    'Pintar cada mañana',       'Tener exposición retrospectiva',         'Crisis económica global 2020',        '', 'A los 65 años',    'Crear fundación de arte',  '',     '',     '',''),
-(6, 'Sin nietos',      'Editorial Acacia',         'Editora jefa',    'Pareja',       'Club literario',          'Departamento editorial', '', 'Reino Unido y Argentina', 'Casa en Málaga',               'Escritura diaria',        'Publicar su primera novela',          'Problemas de visión por años de lectura', '', 'A los 65 años',    '',   '',     '',     '',''),
-(7, '1 nieto',         'Hospital Universitario',   'Investigador principal','Hija y nieto' ,          'Red de científicos','Equipo de investigación','','Japón y EE.UU.',          'Vivienda en Valladolid',         'Pasar tiempo en el laboratorio y luego ver a su nieto',      'Publicar artículo de alto impacto',     'Pérdida de colegas por jubilación',   '',  'A los 63 años',    'Donar equipo de laboratorio', '',     '',     '','');
+(2, '2 nietos',        'Escuela Infantil La Paz', 'Director',        'Hijos, nietos y esposa', 'Colegas de educación',   'Equipo directivo','',          'Portugal y Marruecos',    'Casa rural en Sierra Morena', 'Visitas al centro de día',  'Poder conocer a su bisnieto',      'Pérdida de amigos de la infancia',     '', 'A los 65 años',    'Dejar becas para los niños',   '',     '',     '','', ''),
+(3, 'Sin nietos',      'Clínica San José',        'Administrativa',  'Hijas y madre anciana',     'Vecinas de comunidad',    'Equipo de administración', '','Grecia y Turquía',        'Apartamento en la playa',        'Lectura matutina',         'Recuperación de una operación grande',  'Aislamiento social progresivo',      '', 'A los 60 años',    'Quiere escribir sus memorias',       '',     '',     '','', ''),
+(4, '1 nieto',         'Refinería Río Ebro',       'Consultora',       'Esposa e hijo adulto',      'Amigos de facultad',      'Equipo de I+D',       '',    'Suecia y Alemania',       'Finca en el campo',            'Jardinería diaria',        'Proyecto de biocombustibles finalizado', 'Accidentes automovilísticos leves', '', 'A los 62 años',    '','',     '',     '','',''),
+(5, '2 nietos',        'Museo de Bellas Artes',    'Director adjunto', 'Hija y nietos',            'Artistas locales senior', 'Equipo curatorial',   '',    'Nueva York y París',      'Chalet con estudio de arte',    'Pintar cada mañana',       'Tener exposición retrospectiva',         'Crisis económica global 2020',        '', 'A los 65 años',    'Crear fundación de arte',  '',     '',     '','', ''),
+(6, 'Sin nietos',      'Editorial Acacia',         'Editora jefa',    'Pareja',       'Club literario',          'Departamento editorial', '', 'Reino Unido y Argentina', 'Casa en Málaga',               'Escritura diaria',        'Publicar su primera novela',          'Problemas de visión por años de lectura', '', 'A los 65 años',    '',   '',     '',     '','',''),
+(7, '1 nieto',         'Hospital Universitario',   'Investigador principal','Hija y nieto' ,          'Red de científicos','Equipo de investigación','','Japón y EE.UU.',          'Vivienda en Valladolid',         'Pasar tiempo en el laboratorio y luego ver a su nieto',      'Publicar artículo de alto impacto',     'Pérdida de colegas por jubilación',   '',  'A los 63 años',    'Donar equipo de laboratorio', '',     '',     '','', '');
 
 INSERT INTO personality (
     idPaciente, nature, habits, likes, dislikes, calmMethods, disturbMethods,
@@ -623,3 +656,36 @@ INSERT INTO otherData (idSanitary, professionalNotes) VALUES
 (6, 'Actualmente en tratamiento por depresión. Alto riesgo de reingreso si falta adherencia.'),
 (7, 'Destaca por resiliencia, sugerir participación en grupos de apoyo para enfermedad crónica.');
 
+INSERT INTO pacientes (
+    idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+) VALUES (
+    3, 'Ruben', 'Ruebenez', 'Rubio', 'Prueba3', 
+    '1950-10-20', 74, 'Madrid', 'Española', 'M', 
+    'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
+    'Castellano', 'Cristiano'
+);
+
+INSERT INTO pacientes (
+    idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+) VALUES (
+    4, 'Sara', 'Del Cano', 'Barco', 'Prueba4', 
+    '1950-10-20', 74, 'Madrid', 'Española', 'F', 
+    'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
+    'Castellano', 'Cristiano'
+);
+
+INSERT INTO pacientes (
+    idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+) VALUES (
+    5, 'Pablo', 'Fernandez', 'Gonzalez', 'Prueba5', 
+    '1950-10-20', 74, 'Madrid', 'Española', 'M', 
+    'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
+    'Castellano', 'Cristiano'
+);
+
+INSERT INTO lifeStory (idPaciente) VALUES (8);
+INSERT INTO lifeStory (idPaciente) VALUES (9);
+INSERT INTO lifeStory (idPaciente) VALUES (10);
