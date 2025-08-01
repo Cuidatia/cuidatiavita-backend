@@ -1074,7 +1074,7 @@ class ModelPaciente():
                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
-            if idLifeStory:
+            if isinstance(idLifeStory, tuple):
                 idLifeStory = idLifeStory[0]
 
             print (idLifeStory)
@@ -1138,10 +1138,10 @@ class ModelPaciente():
         else:
             cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
             idLifeStory = cursor.fetchone()
-            if idLifeStory:
+            if isinstance(idLifeStory, tuple):
                 idLifeStory = idLifeStory[0]
             
-            return cls.updateChildhoodPaciente(mysql,idLifeStory[0],childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
+            return cls.updateChildhoodPaciente(mysql,idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                             childhoodFriendsGroup, childhoodImportantPerson, childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                             childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids, childhoodMusic)
         # except Exception as e:
