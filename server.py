@@ -454,9 +454,7 @@ def get_paciente_infancia():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Datos de infancia obtenidos', 'infancia':pacienteInfancia}), 200
     except Exception as e:
-        import traceback
-        print("ERROR getChildhoodPaciente:", traceback.format_exc())
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error':'Error al obtener los datos de infancia.'}), 400
     
 @app.route('/pacienteInfancia', methods=['POST'])
 @jwt_required()
@@ -471,9 +469,7 @@ def post_paciente_infancia():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
     except Exception as e:
-        import traceback
-        print("ERROR createChildhoodPaciente:", traceback.format_exc())
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error':'Error al guardar los datos de infancia.'}), 400
 
     # ------------------- PACIENTES | JUVENTUD ------------------- #
     

@@ -1169,7 +1169,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute(""" SELECT * FROM youth 
-                           INNER JOIN lifeStory ON lifeStory.id = youth.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente))
+                           INNER JOIN lifeStory ON lifeStory.id = youth.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente,))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -1193,9 +1193,11 @@ class ModelPaciente():
 
             cursor.execute("""
                             SELECT id FROM lifeStory WHERE idPaciente = %s
-                            """, (idPaciente))
+                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
+            if isinstance(idLifeStory, tuple):
+                idLifeStory = idLifeStory[0]
         
             cursor.execute("""
                            INSERT INTO youth (idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
@@ -1206,7 +1208,7 @@ class ModelPaciente():
                            """, (idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthImportantPerson,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
                                 youthNegativeExperiences,youthResponsabilities,youthAddress,youthLikes,youthHobbies,youthAfraids,youthSentimentalCouple,
-                                youthProjects,youthUncompletedProjects, youthIllness, youthPersonalCrisis, youthMusic))
+                                youthProjects,youthUncompletedProjects, youthIllness, youthPersonalCrisis, youthMusic,))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -1225,7 +1227,7 @@ class ModelPaciente():
         try:
             cursor.execute("""
                             SELECT id FROM lifeStory WHERE idPaciente = %s
-                            """, (idPaciente))
+                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
 
@@ -1236,7 +1238,7 @@ class ModelPaciente():
                            youthProjects = %s,youthUncompletedProjects = %s,youthIllness = %s,youthPersonalCrisis = %s, youthMusic=%s WHERE idLifeStory = %s
                            """, (youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,youthFriendsGroup,youthImportantPerson,youthTravels,youthFavouritePlace,youthRoutine,
                                 youthPositiveExperiences,youthNegativeExperiences,youthResponsabilities,youthAddress,youthLikes,youthHobbies,youthAfraids,youthSentimentalCouple,youthProjects, youthUncompletedProjects, youthIllness,
-                                youthPersonalCrisis,youthMusic,idLifeStory))
+                                youthPersonalCrisis,youthMusic,idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1263,8 +1265,10 @@ class ModelPaciente():
             else:
                 cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
+                if isinstance(idLifeStory, tuple):
+                    idLifeStory = idLifeStory[0]
                 
-                return cls.updateYouthPaciente(mysql,idLifeStory[0],youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
+                return cls.updateYouthPaciente(mysql,idLifeStory,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
                                 youthFriendsGroup,youthImportantPerson,youthTravels,youthFavouritePlace,youthRoutine,youthPositiveExperiences,
                                 youthNegativeExperiences,youthResponsabilities,youthAddress,youthLikes,youthHobbies,youthAfraids,youthSentimentalCouple,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis, youthMusic)
@@ -1276,7 +1280,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" DELETE FROM youth WHERE idLifeStory = %s """, (idLifeStory))
+            cursor.execute(""" DELETE FROM youth WHERE idLifeStory = %s """, (idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1291,7 +1295,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute (""" SELECT * FROM adulthood
-            INNER JOIN lifeStory ON lifeStory.id = adulthood.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente))
+            INNER JOIN lifeStory ON lifeStory.id = adulthood.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente,))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -1313,9 +1317,11 @@ class ModelPaciente():
         try:
             cursor.execute("""
                            SELECT id FROM lifeStory WHERE idPaciente = %s
-                           """, (idPaciente))
+                           """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
+            if isinstance(idLifeStory, tuple):
+                idLifeStory = idLifeStory[0]
             print (idLifeStory)
 
             cursor.execute("""
@@ -1327,7 +1333,7 @@ class ModelPaciente():
                            """, (idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodImportantPerson,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodResponsabilities,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
-                                adulthoodIllness, adulthoodPersonalCrisis, adulthoodMusic))
+                                adulthoodIllness, adulthoodPersonalCrisis, adulthoodMusic,))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -1346,7 +1352,7 @@ class ModelPaciente():
         try:
             cursor.execute("""
                             SELECT id FROM lifeStory WHERE idPaciente = %s
-                            """, (idPaciente))
+                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
 
@@ -1358,7 +1364,7 @@ class ModelPaciente():
                            """, (adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodImportantPerson,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodResponsabilities,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
-                                adulthoodIllness, adulthoodPersonalCrisis,adulthoodMusic,idLifeStory))
+                                adulthoodIllness, adulthoodPersonalCrisis,adulthoodMusic,idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1385,8 +1391,10 @@ class ModelPaciente():
             else:
                 cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
+                if isinstance(idLifeStory, tuple):
+                    idLifeStory = idLifeStory[0]
                 
-                return cls.updateAdulthoodPaciente(mysql,idLifeStory[0],adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
+                return cls.updateAdulthoodPaciente(mysql,idLifeStory,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
                                 adulthoodFriendsGroup,adulthoodWorkGroup,adulthoodImportantPerson,adulthoodTravels,adulthoodFavouritePlace,adulthoodRoutine,adulthoodPositiveExperiences,
                                 adulthoodNegativeExperiences,adulthoodResponsabilities,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis, adulthoodMusic)
@@ -1398,7 +1406,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" DELETE FROM adulthood WHERE idLifeStory = %s """, (idLifeStory))
+            cursor.execute(""" DELETE FROM adulthood WHERE idLifeStory = %s """, (idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1414,7 +1422,7 @@ class ModelPaciente():
         
         try:
             cursor.execute (""" SELECT * FROM maturity
-            INNER JOIN lifeStory ON lifeStory.id = maturity.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente))
+            INNER JOIN lifeStory ON lifeStory.id = maturity.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente,))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -1437,9 +1445,11 @@ class ModelPaciente():
         try:
             cursor.execute("""
                             SELECT id FROM lifeStory WHERE idPaciente = %s
-                            """, (idPaciente))
+                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
+            if isinstance(idLifeStory, tuple):
+                idLifeStory = idLifeStory[0]
 
             cursor.execute("""
                            INSERT INTO maturity (idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
@@ -1450,7 +1460,7 @@ class ModelPaciente():
                            """, (idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityImportantPerson,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityResponsabilities,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
-                                maturityIllness,maturityPersonalCrisis,maturityMusic))
+                                maturityIllness,maturityPersonalCrisis,maturityMusic,))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -1469,9 +1479,11 @@ class ModelPaciente():
         try:
             cursor.execute("""
                             SELECT id FROM lifeStory WHERE idPaciente = %s
-                            """, (idPaciente))
+                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
+            if isinstance(idLifeStory, tuple):
+                idLifeStory = idLifeStory[0]
 
             cursor.execute("""
                            UPDATE maturity SET maturityGrandchildren = %s, maturityWorkPlace = %s, maturityWorkRol = %s, maturityFamilyCore = %s, maturityFriendsGroup = %s,
@@ -1481,7 +1493,7 @@ class ModelPaciente():
                            """, (maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
                                 maturityWorkGroup,maturityImportantPerson,maturityTravels,maturityFavouritePlace,maturityRoutine,maturityPositiveExperiences,
                                 maturityNegativeExperiences,maturityResponsabilities,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
-                                maturityIllness,maturityPersonalCrisis,maturityMusic,idLifeStory))
+                                maturityIllness,maturityPersonalCrisis,maturityMusic,idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1508,8 +1520,10 @@ class ModelPaciente():
             else:
                 cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
+                if isinstance(idLifeStory, tuple):
+                    idLifeStory = idLifeStory[0]
                 
-                return cls.updateMaturityPaciente(mysql,idLifeStory[0],maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,
+                return cls.updateMaturityPaciente(mysql,idLifeStory,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,
                                 maturityFriendsGroup, maturityWorkGroup,maturityImportantPerson, maturityTravels, maturityFavouritePlace, maturityRoutine, 
                                 maturityPositiveExperiences, maturityNegativeExperiences,maturityResponsabilities, maturityRetirement, maturityWills, 
                                 maturityProjects, maturityUncompletedProjects, maturityIllness, maturityPersonalCrisis, maturityMusic)
@@ -1521,7 +1535,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" DELETE FROM maturity WHERE idLifeStory = %s """, (idLifeStory))
+            cursor.execute(""" DELETE FROM maturity WHERE idLifeStory = %s """, (idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
