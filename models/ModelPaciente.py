@@ -1046,7 +1046,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute(""" SELECT * FROM childhood 
-                           INNER JOIN lifeStory ON lifeStory.id = childhood.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente))
+                           INNER JOIN lifeStory ON lifeStory.id = childhood.idLifeStory WHERE lifeStory.idPaciente = %s """, (idPaciente,))
             row = cursor.fetchone()
             if row is None:
                 return None
@@ -1069,9 +1069,12 @@ class ModelPaciente():
         try:
             cursor.execute("""
                            SELECT id FROM lifestory WHERE idPaciente = %s
-                           """, (idPaciente))
+                           """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
+            if idLifeStory:
+                idLifeStory = idLifeStory[0]
+
             print (idLifeStory)
             
             cursor.execute("""
@@ -1130,6 +1133,8 @@ class ModelPaciente():
         else:
             cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
             idLifeStory = cursor.fetchone()
+            if idLifeStory:
+                idLifeStory = idLifeStory[0]
             
             return cls.updateChildhoodPaciente(mysql,idLifeStory[0],childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                             childhoodFriendsGroup, childhoodImportantPerson, childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,

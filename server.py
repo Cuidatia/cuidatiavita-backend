@@ -469,6 +469,7 @@ def post_paciente_infancia():
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error':'Error al guardar los datos de infancia.'}), 400
 
     # ------------------- PACIENTES | JUVENTUD ------------------- #
