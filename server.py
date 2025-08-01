@@ -893,6 +893,20 @@ def buscar_organizaciones():
     except Exception as e:
         return jsonify({'error': 'Error al buscar organizaciones'}), 400
     
+@app.route('/getOrganizacionName', methods=['GET'])
+@jwt_required()
+def get_organizacion_name():
+    organizacionId = request.args.get('id') 
+    try:
+        organizacion = ModelOrganizacion.getOrganizacion(mysql, organizacionId)
+        organizacionNombreCompleto = organizacion['nombre']
+        if organizacionNombreCompleto:
+            return jsonify({'message': 'Organizacion obtenida', 'organizacionNombreCompleto': organizacionNombreCompleto}), 200
+        else:
+            return jsonify({'error': 'Organizacion no encontrada'}), 404
+    except Exception as e:
+        return jsonify({'error': 'Error al obtener la organizacion'}), 500
+    
     
     # ------------------- ROLES ------------------- #
 
