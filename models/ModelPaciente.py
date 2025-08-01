@@ -1084,7 +1084,7 @@ class ModelPaciente():
                             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s)
                            """, (idLifeStory,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                                 childhoodFriendsGroup, childhoodImportantPerson, childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
-                                childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids,childhoodMusic))
+                                childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids,childhoodMusic,))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -1108,7 +1108,7 @@ class ModelPaciente():
                            childhoodAfraids = %s, childhoodMusic = %s WHERE idLifeStory = %s
                            """, (childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,childhoodFriendsGroup,childhoodImportantPerson,childhoodTravels,
                                  childhoodFavouritePlace, childhoodPositiveExperiences,childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, 
-                                 childhoodLikes, childhoodAfraids,childhoodMusic,idLifeStory))
+                                 childhoodLikes, childhoodAfraids,childhoodMusic,idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
@@ -1147,7 +1147,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" DELETE FROM childhood WHERE idLifeStory = %s """, (idLifeStory))
+            cursor.execute(""" DELETE FROM childhood WHERE idLifeStory = %s """, (idLifeStory,))
             conn.commit()
             return True
         except Exception as e:
