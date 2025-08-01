@@ -1053,8 +1053,10 @@ class ModelPaciente():
             childhood = Childhood(row[0],row[1],row[2],row[3],row[4],row[5],row[6],
                                   row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16])
             return childhood.to_dict()
-        except:
-            return jsonify({'error':'Error al obtener _childhood_ del paciente.'})
+        except Exception as e:
+            import traceback
+            print("ERROR getChildhoodPaciente:", traceback.format_exc())
+            return jsonify({'error': str(e)}), 400
         finally:
             cursor.close()
             conn.close() 
@@ -1089,8 +1091,9 @@ class ModelPaciente():
             usuario_id = cursor.lastrowid
             return usuario_id
         except Exception as e:
-            print (e)
-            raise e
+            import traceback
+            print("ERROR createChildhoodPaciente:", traceback.format_exc())
+            return jsonify({'error': str(e)}), 400
         finally:
             cursor.close()
             conn.close()
@@ -1112,7 +1115,9 @@ class ModelPaciente():
             conn.commit()
             return True
         except Exception as e:
-            return e
+            import traceback
+            print("ERROR updateChildhoodPaciente:", traceback.format_exc())
+            return jsonify({'error': str(e)}), 400
         finally:
             cursor.close()
             conn.close()
@@ -1151,7 +1156,9 @@ class ModelPaciente():
             conn.commit()
             return True
         except Exception as e:
-            return e
+            import traceback
+            print("ERROR deleteChildhoodPaciente:", traceback.format_exc())
+            return jsonify({'error': str(e)}), 400
         finally:
             cursor.close()
             conn.close()
