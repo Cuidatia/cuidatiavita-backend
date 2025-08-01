@@ -174,7 +174,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" SELECT * FROM lifestory WHERE idPaciente = %s """, (idPaciente))
+            cursor.execute(""" SELECT * FROM lifeStory WHERE idPaciente = %s """, (idPaciente))
             row = cursor.fetchone()
             lifeStory= LifeStory(row[0],row[1])
             return lifeStory.to_dict()
@@ -189,7 +189,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           INSERT INTO lifestory (idPaciente)
+                           INSERT INTO lifeStory (idPaciente)
                             VALUES (%s)
                            """, (idPaciente))
             conn.commit()
@@ -205,7 +205,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" DELETE FROM lifestory WHERE idPaciente = %s """, (idPaciente))
+            cursor.execute(""" DELETE FROM lifeStory WHERE idPaciente = %s """, (idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -1070,7 +1070,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           SELECT id FROM lifestory WHERE idPaciente = %s
+                           SELECT id FROM lifeStory WHERE idPaciente = %s
                            """, (idPaciente,))
             
             idLifeStory = cursor.fetchone()
@@ -1129,14 +1129,14 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         # try:
-        cursor.execute("""SELECT COUNT(id) FROM childhood WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+        cursor.execute("""SELECT COUNT(id) FROM childhood WHERE idLifeStory = (SELECT id FROM lifeStory WHERE idPaciente = %s)""", (idPaciente,))
         row = cursor.fetchone()
         if row[0] == 0:
             return cls.createChildhoodPaciente(mysql,idPaciente,childhoodStudies,childhoodSchool,childhoodMotivations,childhoodFamilyCore,
                             childhoodFriendsGroup, childhoodImportantPerson, childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,
                             childhoodNegativeExperiences, childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids, childhoodMusic)
         else:
-            cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+            cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
             idLifeStory = cursor.fetchone()
             if idLifeStory:
                 idLifeStory = idLifeStory[0]
@@ -1192,7 +1192,7 @@ class ModelPaciente():
         try:
 
             cursor.execute("""
-                            SELECT id FROM lifestory WHERE idPaciente = %s
+                            SELECT id FROM lifeStory WHERE idPaciente = %s
                             """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1224,7 +1224,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                            SELECT id FROM lifestory WHERE idPaciente = %s
+                            SELECT id FROM lifeStory WHERE idPaciente = %s
                             """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1253,7 +1253,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute("""SELECT COUNT(id) FROM youth WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            cursor.execute("""SELECT COUNT(id) FROM youth WHERE idLifeStory = (SELECT id FROM lifeStory WHERE idPaciente = %s)""", (idPaciente,))
             row = cursor.fetchone()
             if row[0] == 0:
                 return cls.createYouthPaciente(mysql,idPaciente,youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
@@ -1261,7 +1261,7 @@ class ModelPaciente():
                                 youthNegativeExperiences,youthResponsabilities,youthAddress,youthLikes,youthHobbies,youthAfraids,youthSentimentalCouple,youthProjects,
                                 youthUncompletedProjects, youthIllness, youthPersonalCrisis, youthMusic)
             else:
-                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
                 
                 return cls.updateYouthPaciente(mysql,idLifeStory[0],youthStudies,youthSchool,youthWorkPlace, youthWorkRol,youthFamilyCore,
@@ -1312,7 +1312,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           SELECT id FROM lifestory WHERE idPaciente = %s
+                           SELECT id FROM lifeStory WHERE idPaciente = %s
                            """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1345,7 +1345,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                            SELECT id FROM lifestory WHERE idPaciente = %s
+                            SELECT id FROM lifeStory WHERE idPaciente = %s
                             """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1375,7 +1375,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute("""SELECT COUNT(id) FROM adulthood WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            cursor.execute("""SELECT COUNT(id) FROM adulthood WHERE idLifeStory = (SELECT id FROM lifeStory WHERE idPaciente = %s)""", (idPaciente,))
             row = cursor.fetchone()
             if row[0] == 0:
                 return cls.createAdulthoodPaciente(mysql,idPaciente,adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
@@ -1383,7 +1383,7 @@ class ModelPaciente():
                                 adulthoodNegativeExperiences,adulthoodResponsabilities,adulthoodAddress,adulthoodEconomicSituation,adulthoodProjects,adulthoodUncompletedProjects,
                                 adulthoodIllness, adulthoodPersonalCrisis, adulthoodMusic)
             else:
-                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
                 
                 return cls.updateAdulthoodPaciente(mysql,idLifeStory[0],adulthoodSentimentalCouple,adulthoodChildren,adulthoodStudies,adulthoodWorkPlace, adulthoodWorkRol,adulthoodFamilyCore,
@@ -1436,7 +1436,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                            SELECT id FROM lifestory WHERE idPaciente = %s
+                            SELECT id FROM lifeStory WHERE idPaciente = %s
                             """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1468,7 +1468,7 @@ class ModelPaciente():
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                            SELECT id FROM lifestory WHERE idPaciente = %s
+                            SELECT id FROM lifeStory WHERE idPaciente = %s
                             """, (idPaciente))
             
             idLifeStory = cursor.fetchone()
@@ -1498,7 +1498,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute("""SELECT COUNT(id) FROM maturity WHERE idLifeStory = (SELECT id FROM lifestory WHERE idPaciente = %s)""", (idPaciente,))
+            cursor.execute("""SELECT COUNT(id) FROM maturity WHERE idLifeStory = (SELECT id FROM lifeStory WHERE idPaciente = %s)""", (idPaciente,))
             row = cursor.fetchone()
             if row[0] == 0:
                 return cls.createMaturityPaciente(mysql,idPaciente,maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,maturityFriendsGroup,
@@ -1506,7 +1506,7 @@ class ModelPaciente():
                                 maturityNegativeExperiences,maturityResponsabilities,maturityRetirement,maturityWills,maturityProjects,maturityUncompletedProjects,
                                 maturityIllness,maturityPersonalCrisis, maturityMusic)
             else:
-                cursor.execute("""SELECT id FROM lifestory WHERE idPaciente = %s""", (idPaciente,))
+                cursor.execute("""SELECT id FROM lifeStory WHERE idPaciente = %s""", (idPaciente,))
                 idLifeStory = cursor.fetchone()
                 
                 return cls.updateMaturityPaciente(mysql,idLifeStory[0],maturityGrandchildren,maturityWorkPlace,maturityWorkRol,maturityFamilyCore,
@@ -1600,7 +1600,7 @@ class ModelPaciente():
                 maturity = cls.getMaturityPaciente(mysql,row[0])
                 
                 
-                lifestory = {
+                lifeStory = {
                     "childhood": childhood,
                     "youth": youth,
                     "adulthood": adulthood,
@@ -1609,7 +1609,7 @@ class ModelPaciente():
                 
                 pacientes.append({
                     **paciente.to_dict(),
-                    "lifestory": lifestory
+                    "lifeStory": lifeStory
                 })
 
             return pacientes
@@ -1645,7 +1645,7 @@ class ModelPaciente():
                 maturity = cls.getMaturityPaciente(mysql,row[0])
                 
                 
-                lifestory = {
+                lifeStory = {
                     "childhood": childhood,
                     "youth": youth,
                     "adulthood": adulthood,
@@ -1654,7 +1654,7 @@ class ModelPaciente():
                 
                 pacientes.append({
                     **paciente.to_dict(),
-                    "lifestory": lifestory
+                    "lifeStory": lifeStory
                 })
 
             return pacientes
