@@ -1151,7 +1151,12 @@ def telegram_webhook():
 
             if text == "/start":
                 url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-                text = "¡Hola! Bienvenido al bot de Cuidatia Vita.\n Este bot notificará sobre los datos IoT del usuario, pero primero debes facilitar tu Chat ID a la persona a cargo de rellenar el formulario.\n Tu Chat ID es " + chat_id
+                text = (
+                    f"¡Hola! Bienvenido al bot de Cuidatia Vita.\n"
+                    f"Este bot notificará sobre los datos IoT del usuario, "
+                    f"pero primero debes facilitar tu Chat ID a la persona a cargo de rellenar el formulario.\n"
+                    f"Tu Chat ID es {chat_id}"
+                )
                 payload = {
                     "chat_id": chat_id,
                     "text": text
