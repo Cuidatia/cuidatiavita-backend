@@ -222,6 +222,7 @@ create table contactData (
     `contactAddress` varchar(100),
     `contactEmail` varchar(100),
     `contactTelecom` varchar(20),
+    `contactTelegram` varchar(20),
     `curatela` varchar(100),
     `deFactoGuardian` varchar(100),
     primary key (`id`),
@@ -420,8 +421,8 @@ INSERT INTO personality (
     idPaciente, nature, habits, likes, dislikes, calmMethods, disturbMethods, hobbies, technologyLevel, goals, favouriteSongs, clothes) VALUES (
     1, 'Tranquilo y reflexivo', 'Caminar diario, leer antes de dormir','Música clásica, comida mediterránea', 'Ruido, multitudes', 'Meditación, lectura',
     'Caos, desorganización', 'Escritura, jardinería','Alto, usa tecnología a diario', 'Inspirar a sus nietos','Clair de Lune, Bohemian Rhapsody', 'Informal elegante, colores neutros');
-INSERT INTO contactData (idPaciente, contactName, contactFirstSurname, contactSecondSurname,contactAddress, contactEmail, contactTelecom, curatela, deFactoGuardian) VALUES (
-    1, 'Laura', 'Gómez', 'Navarro', 'Calle Alcalá 123, Madrid','laura_gomez@example.com', '612345678', 'Ninguna', 'Hija mayor');
+INSERT INTO contactData (idPaciente, contactName, contactFirstSurname, contactSecondSurname,contactAddress, contactEmail, contactTelecom, contactTelegram, curatela, deFactoGuardian) VALUES (
+    1, 'Laura', 'Gómez', 'Navarro', 'Calle Alcalá 123, Madrid','laura_gomez@example.com', '612345678', '2016401498','Ninguna', 'Hija mayor');
 INSERT INTO mainSanitaryData (idPaciente, mainIllness, allergies, otherIllness) VALUES (
     1, 'Hipertensión', 'Alergia al polvo', 'Dolor lumbar crónico');
 INSERT INTO pharmacy (idSanitary, treatment, regularPharmacy, visitFrequency, paymentMethod) VALUES (
@@ -592,13 +593,13 @@ INSERT INTO personality (
     'E=mc² (instrumental), Shine On You Crazy Diamond', 'Blazer y camisa blanca'
 );
 
-INSERT INTO contactData (idPaciente, contactName, contactFirstSurname, contactSecondSurname,contactAddress, contactEmail, contactTelecom, curatela, deFactoGuardian) VALUES
-(2, 'Ana Ruiz', 'Ruiz', 'Sánchez', 'C/ Olivo 12, Sevilla',  'ana_ruiz@example.com', '600111222', 'Ninguna', 'Hijo mayor'),
-(3, 'María López', 'López', 'Martín', 'Av. Los Pinos 5, Bilbao', 'maria_lopez@correo.com', '600333444', 'Tutela compartida', 'Abuela materna'),
-(4, 'Juan González', 'González', 'Vidal', 'C/ Luna 23, Zaragoza', 'juan_gonzalez@empresa.com', '600555666', 'Ninguna', 'Hermana mayor'),
-(5, 'Pilar Soto', 'Soto', 'Ruiz', 'Pº Sta. Catalina 8, Murcia','pilar_soto@correo.org', '600777888', 'Tutela legal por orfandad','Hermana adoptiva'),
-(6, 'Óscar Gutiérrez','Gutiérrez','López', 'C/ San Roque 19, Málaga','oscar_gutierrez@correo.net', '600999000', 'Ninguna', 'Esposa'),
-(7, 'David Navarro', 'Navarro', 'Morales', 'C/ Naranjo 47, Valladolid','david_navarro@correo.edu', '601111222', 'Ninguna', 'Hija menor');
+INSERT INTO contactData (idPaciente, contactName, contactFirstSurname, contactSecondSurname,contactAddress, contactEmail, contactTelecom,contactTelegram, curatela, deFactoGuardian) VALUES
+(2, 'Ana Ruiz', 'Ruiz', 'Sánchez', 'C/ Olivo 12, Sevilla',  'ana_ruiz@example.com', '600111222', '2016401498','Ninguna', 'Hijo mayor'),
+(3, 'María López', 'López', 'Martín', 'Av. Los Pinos 5, Bilbao', 'maria_lopez@correo.com', '600333444', '2016401498','Tutela compartida', 'Abuela materna'),
+(4, 'Juan González', 'González', 'Vidal', 'C/ Luna 23, Zaragoza', 'juan_gonzalez@empresa.com', '600555666', '2016401498','Ninguna', 'Hermana mayor'),
+(5, 'Pilar Soto', 'Soto', 'Ruiz', 'Pº Sta. Catalina 8, Murcia','pilar_soto@correo.org', '600777888', '2016401498','Tutela legal por orfandad','Hermana adoptiva'),
+(6, 'Óscar Gutiérrez','Gutiérrez','López', 'C/ San Roque 19, Málaga','oscar_gutierrez@correo.net', '600999000', '2016401498','Ninguna', 'Esposa'),
+(7, 'David Navarro', 'Navarro', 'Morales', 'C/ Naranjo 47, Valladolid','david_navarro@correo.edu', '601111222', '2016401498','Ninguna', 'Hija menor');
 
 INSERT INTO mainSanitaryData (idPaciente, mainIllness, allergies, otherIllness) VALUES
 (2, 'Hipertensión',         'Polvo doméstico',       'Dolor de espalda crónico'),

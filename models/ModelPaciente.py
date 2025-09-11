@@ -363,7 +363,7 @@ class ModelPaciente():
             row = cursor.fetchone()
             if row is None:
                 return None
-            contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7], row[8], row[9])
+            contactData= ContactData(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7], row[8], row[9], row[10])
             return contactData.to_dict()
         except Exception as e:
             print(e)
@@ -372,14 +372,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def createContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
+    def createContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, contactTelegram, curatela, deFactoGuardian):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                           INSERT INTO contactData (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                           """, (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian))
+                           INSERT INTO contactData (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, contactTelegram, curatela, deFactoGuardian)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                           """, (idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,contactTelegram, curatela, deFactoGuardian))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -389,14 +389,14 @@ class ModelPaciente():
             cursor.close()
             conn.close()
     @classmethod
-    def updateContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
+    def updateContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,contactTelegram, curatela, deFactoGuardian):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            UPDATE contactData SET contactName = %s, contactFirstSurname = %s, contactSecondSurname = %s, contactAddress = %s, 
-                           contactEmail = %s, contactTelecom = %s, curatela = %s, deFactoGuardian = %s WHERE idPaciente = %s
-                           """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,curatela, deFactoGuardian, idPaciente))
+                           contactEmail = %s, contactTelecom = %s, contactTelegram = %s, curatela = %s, deFactoGuardian = %s WHERE idPaciente = %s
+                           """, (contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,contactTelegram,curatela, deFactoGuardian, idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -406,16 +406,16 @@ class ModelPaciente():
             conn.close()
             
     @classmethod
-    def upsertContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian):
+    def upsertContactDataPaciente(cls,mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, contactTelegram,curatela, deFactoGuardian):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""SELECT COUNT(id) FROM contactData WHERE idPaciente = %s""", (idPaciente,))
             row = cursor.fetchone()
             if row[0] == 0:
-                return cls.createContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+                return cls.createContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,contactTelegram, curatela, deFactoGuardian)
             else:
-                return cls.updateContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom, curatela, deFactoGuardian)
+                return cls.updateContactDataPaciente(mysql,idPaciente,contactName,contactFirstSurname,contactSecondSurname,contactAddress,contactEmail,contactTelecom,contactTelegram, curatela, deFactoGuardian)
         except Exception as e:
             return jsonify({"error": "Error al buscar los datos de contacto del paciente."}), 400
         finally:

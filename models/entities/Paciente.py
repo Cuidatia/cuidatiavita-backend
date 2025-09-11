@@ -308,7 +308,7 @@ class Personality():
      
 class ContactData():
      def __init__(self, id : int, idPaciente : int,
-                  contactName : str, contactFirstName : str, contactSecondSurname : str, contactAddress : str, contactEmail : str, contactTelecom : str, curatela : str, deFactoGuardian : str):
+                  contactName : str, contactFirstName : str, contactSecondSurname : str, contactAddress : str, contactEmail : str, contactTelecom : str,contactTelegram : str, curatela : str, deFactoGuardian : str):
           self.id = id
           self.idPaciente = idPaciente
           self.contactName = contactName
@@ -317,6 +317,7 @@ class ContactData():
           self.contactAddress = contactAddress
           self.contactEmail = contactEmail
           self.contactTelecom = contactTelecom
+          self.contactTelegram = contactTelegram
           self.curatela = curatela
           self.deFactoGuardian = deFactoGuardian
      def to_dict(self): 
@@ -329,6 +330,7 @@ class ContactData():
             'contactAddress' : self.contactAddress,
             'contactEmail' : self.contactEmail,
             'contactTelecom' : self.contactTelecom,
+            'contactTelegram' : self.contactTelegram,
             'curatela' : self.curatela,
             'deFactoGuardian' : self.deFactoGuardian
         }

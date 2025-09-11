@@ -11,6 +11,9 @@ import jwt as pyjwt
 import locale
 from datetime import timedelta, date, datetime
 import tempfile
+import smtplib
+from email.mime.text import MIMEText
+import requests
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -42,6 +45,10 @@ app.config['MAIL_PASSWORD'] =  os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
+
+# Configuración de la conexión a Telegram
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Configuración de CORS
 CORS(app)
@@ -434,7 +441,7 @@ def post_paciente_datoscontacto():
     contactdata = data.get('contactdata')
     
     try:
-        paciente = ModelPaciente.upsertContactDataPaciente(mysql, pacienteId, contactdata["contactName"], contactdata['contactFirstSurname'], contactdata['contactSecondSurname'], contactdata['contactAddress'], contactdata['contactEmail'], contactdata['contactTelecom'], contactdata['curatela'], contactdata['deFactoGuardian'])
+        paciente = ModelPaciente.upsertContactDataPaciente(mysql, pacienteId, contactdata["contactName"], contactdata['contactFirstSurname'], contactdata['contactSecondSurname'], contactdata['contactAddress'], contactdata['contactEmail'], contactdata['contactTelecom'], contactdata['contactTelegram'],contactdata['curatela'], contactdata['deFactoGuardian'])
         if not paciente:
             return jsonify({'error': 'No se ha encontrado el paciente'}), 404
         return jsonify({'message': 'Información guardada correctamente', 'paciente':paciente}), 200
@@ -950,19 +957,19 @@ def sendMailInvitacion():
         }
         token = pyjwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
         
-        # msg = Message(
-        #     'Invitación a Cuidatiavita',
-        #     recipients=[email],
-        #     sender=('Cuidatia Vita', MAIL_SENDER),
-        # )
+        msg = Message(
+             'Invitación a Cuidatiavita',
+             recipients=[email],
+             sender=('Cuidatia Vita', MAIL_SENDER),
+         )
         
-        # msg.html = f"""
-        #     <p>Hola,</p>
-        #     <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
-        #     <a href="{FRONTEND_API_URL}personal/create?m={email}&r={roles}&o={organizacion}">Aceptar invitación</a>
-        # """
+        msg.html = f"""
+             <p>Hola,</p>
+             <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
+             <a href="{FRONTEND_API_URL}personal/create?m={email}&r={roles}&o={organizacion}">Aceptar invitación</a>
+         """
         
-        # mail.send(msg)
+        mail.send(msg)
         return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}personal/create?token={token}"}), 200
     except Exception as e:
         return jsonify({'error': 'No se ha podido enviar el email'}), 400
@@ -988,19 +995,19 @@ def sendMailRecuperar():
     email = data.get('email')
     
     try:
-        # msg = Message(
-        #     'Recuperación de contraseña',
-        #     recipients=[email],
-        #     sender=('Cuidatia Vita', MAIL_SENDER),
-        # ) 
+        msg = Message(
+             'Recuperación de contraseña',
+             recipients=[email],
+             sender=('Cuidatia Vita', MAIL_SENDER),
+        ) 
         
-        # msg.html = f"""
-        #     <p>Hola,</p>
-        #     <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
-        #     <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
-        # """
+        msg.html = f"""
+            <p>Hola,</p>
+         <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
+             <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
+         """
         
-        # mail.send(msg) 
+        mail.send(msg) 
         payload = {
             'email' : email,
             'exp': datetime.today() + timedelta(hours=24)
@@ -1076,6 +1083,83 @@ def get_all_pacientes_entities():
         return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
     except:
         return jsonify({'error':'Error al obtener los pacientes.'}), 400
+
+@app.route('/api/sendEmail', methods=['POST'])
+def send_email():
+    try:
+        data = request.get_json()
+        to_email = data.get("to")
+        print("Correo a enviar:", to_email)
+        subject = data.get("subject", "Sin asunto")
+        text = data.get("text", "")
+        
+        msg = Message(
+            subject,
+            recipients=[to_email],
+            sender=("Cuidatia Vita", os.getenv("EMAIL_USER"))
+        )
+        
+        msg.body = text
+        msg.html = f"""
+            <p>{text}</p>
+        """
+
+        mail.send(msg)
+
+        return jsonify({"success": True, "message": "Correo enviado con éxito"})
+    except Exception as e:
+        print("Error enviando correo:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+@app.route('/api/sendTelegram', methods=['POST'])
+def send_telegram():
+    try:
+        data = request.get_json()
+        idPaciente = data.get("idPaciente")
+        message = data.get("text", "Mensaje de prueba")
+
+        if not idPaciente:
+            return jsonify({"success": False, "error": "idPaciente no proporcionado"}), 400
+        
+        contactData = ModelPaciente.getContactDataPaciente(mysql, idPaciente)
+        if not contactData or not contactData.get("contactTelegram"):
+            return jsonify({"success": False, "error": "No se encontró contactTelegram del paciente"}), 404
+        
+        chat_id = contactData["contactTelegram"]
+
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": chat_id,
+            "text": message
+        }
+
+        r = requests.post(url, json=payload)
+        r.raise_for_status()  # lanzará error si algo falla
+
+        return jsonify({"success": True, "message": "Mensaje enviado correctamente"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+@app.route('/api/telegramWebhook', methods=['POST'])
+def telegram_webhook():
+    try:
+        data = request.get_json()
+
+        if "message" in data:
+            chat_id = data["message"]["chat"]["id"]
+            text = data["message"].get("text", "")
+
+            if text == "/start":
+                url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+                payload = {
+                    "chat_id": chat_id,
+                    "text": "¡Hola! Bienvenido al bot de Cuidatia Vita."
+                }
+                requests.post(url, json=payload)
+
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
