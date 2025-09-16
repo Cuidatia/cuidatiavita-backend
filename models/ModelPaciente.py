@@ -440,14 +440,26 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" SELECT * FROM images WHERE idPaciente = %s """, (idPaciente))
-            row = cursor.fetchone()
-            if row is None:
+            cursor.execute(""" SELECT id, idPaciente, photoReferences, photoCategory FROM images WHERE idPaciente = %s """, (idPaciente))
+            rows = cursor.fetchall()
+            if rows is None:
                 return None
-            images= Images(row[0],row[1],row[2],row[3])
-            return images.to_dict()
-        except:
-            return jsonify({'error':'Error al obtener _images_ del paciente.'})
+            
+            categorias = {}
+            for row in rows:
+                img = Images(row[0], row[1], row[2], row[3]).to_dict()
+                cat = img["photoCategory"]
+                if cat not in categorias:
+                    categorias[cat] = []
+                categorias[cat].append({
+                    "src": img["photoReferences"],
+                    "id": img["id"]
+                })
+
+            return categorias
+        except Exception as e:
+            print("Error:", e)
+            return None
         finally:
             cursor.close()
             conn.close()

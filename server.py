@@ -14,6 +14,9 @@ import tempfile
 import smtplib
 from email.mime.text import MIMEText
 import requests
+import boto3
+from werkzeug.utils import secure_filename
+import uuid
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -45,6 +48,16 @@ app.config['MAIL_PASSWORD'] =  os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
+
+# Configuración de imágenes Amazon S3
+S3_BUCKET = "historiavidacuidatia"
+S3_REGION = "eu-west-1"
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id="AKIAWEM74DY7VI672DOQ",
+    aws_secret_access_key="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",
+    region_name="eu-west-1"
+)
 
 # Configuración de la conexión a Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -936,7 +949,54 @@ def get_roles():
 @app.route('/getImagenesPaciente', methods=['GET'])
 @jwt_required()
 def get_imagenes_paciente():
-    return jsonify({'message': 'Imagenes obtenidas'}), 200
+    idPaciente = request.args.get("id")
+    if not idPaciente:
+        return jsonify({"error": "Falta idPaciente"}), 400
+
+    data = ModelPaciente.getImagesPaciente(mysql, idPaciente)
+    if data is None:
+        return jsonify({"error": "No se pudieron obtener imágenes"}), 500
+
+    for cat, imgs in data.items():
+        for img in imgs:
+            signed_url = s3.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': S3_BUCKET, 'Key': img["src"]},
+                ExpiresIn=3600
+            )
+            img["src"] = signed_url
+
+    return jsonify({"imagenes": data}), 200
+
+@app.route('/uploadImagenPaciente', methods=['POST'])
+@jwt_required()
+def upload_imagen_paciente():
+    if 'file' not in request.files:
+        return jsonify({"error": "No se envió archivo"}), 400
+
+    file = request.files['file']
+    idPaciente = request.form.get("idPaciente")
+    categoria = request.form.get("categoria")
+
+    filename = secure_filename(file.filename)
+    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+
+    try:
+        s3.upload_fileobj(
+            file,
+            S3_BUCKET,
+            unique_filename,
+            ExtraArgs={"ContentType": file.content_type}
+        )
+
+        #url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{unique_filename}"
+
+        url = ModelPaciente.createImagesPaciente(mysql, idPaciente, unique_filename, categoria)
+
+        return jsonify({"message": "Imagen subida"}), 201
+    except Exception as e:
+        print("Error al subir:", e)
+        return jsonify({"error": "Falló subida"}), 500
     
      # ------------------- EMAILS ------------------- #
      
