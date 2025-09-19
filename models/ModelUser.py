@@ -168,51 +168,41 @@ class ModelUser():
             
             
     @classmethod
-    def createUser(cls,mysql, nombre, email, password, idOrganizacion, roles):
+    def createUser(cls, mysql, nombre, email, password, idOrganizacion, roles):
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4)).decode('utf-8')
+        
+        conn = mysql.connect()
+        cursor = conn.cursor()
         try:
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4)).decode('utf-8')
-            
-            conn = mysql.connect()
-            cursor = conn.cursor()
-            
-            try:
+            cursor.execute(
+                "INSERT INTO usuarios (nombre, email, password, idOrganizacion) VALUES (%s, %s, %s, %s)",
+                (nombre, email, hashed_password, idOrganizacion)
+            )
+            conn.commit()
+            usuario_id = cursor.lastrowid
+
+            for rol in roles:
                 cursor.execute(
-                    "INSERT INTO usuarios (nombre, email, password, idOrganizacion) VALUES(%s,%s,%s,%s)",
-                    (nombre,email,hashed_password,idOrganizacion)
+                    "INSERT INTO usuario_roles (idUsuario, idRol) VALUES (%s, %s)",
+                    (usuario_id, rol)
                 )
                 conn.commit()
-                usuario_id = cursor.lastrowid
-            except:
-                return jsonify({'message': 'Error al crear el usuario'}), 400
-            
-            try:
-                for rol in roles:        
-                    cursor.execute(
-                        "INSERT INTO usuario_roles (idUsuario, idRol) VALUES(%s,%s)",
-                        (usuario_id,rol)
-                    )
-                    conn.commit()
-            except:
-                return jsonify({'message': 'Error al asignar rol'}), 400
 
-            
             cursor.execute(
-                'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre ' + 
-                'FROM usuarios ' +
-                'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
-                'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
-                'WHERE usuarios.id = %s'
-                , (usuario_id)
+                """SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, roles.nombre 
+                FROM usuarios 
+                INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario 
+                INNER JOIN roles ON usuario_roles.idRol = roles.id 
+                WHERE usuarios.id = %s""",
+                (usuario_id,)
             )
-            
             row = cursor.fetchone()
-            
-            usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4])
-            
-            
+            usuario = Usuario(row[0], row[1], row[2], True, row[3], row[4])
             return usuario.to_dict()
+
         except Exception as e:
-            return jsonify({'error':e}), 400
+            print("Error en createUser:", e)
+            raise e
         finally:
             cursor.close()
             conn.close()

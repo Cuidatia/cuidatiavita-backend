@@ -17,6 +17,8 @@ import requests
 import boto3
 from werkzeug.utils import secure_filename
 import uuid
+import ssl
+from email.message import EmailMessage
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -115,9 +117,10 @@ def crear_usuario():
     rol = data.get('rol')   
     
     try:        
-        usuario = ModelUser.createUser(mysql, nombre, email, password, organizacion['id'], rol)
+        usuario = ModelUser.createUser(mysql, nombre, email, password, organizacion, rol)
         return jsonify({'message':'Usuario creado correctamente.', 'usuario':usuario}), 200
     except Exception as e:
+        print("Error en crear_usuario:", e)
         return jsonify({'error': 'No se ha podido crear el usuario.'}), 400
 
 @app.route('/getAllUsuarios', methods=['GET'])
@@ -1008,40 +1011,51 @@ def upload_imagen_paciente():
         return jsonify({"error": "Falló subida"}), 500
     
      # ------------------- EMAILS ------------------- #
-     
 @app.route('/sendMailInvitacion', methods=['POST'])
 @jwt_required()
 def sendMailInvitacion():
     data = request.get_json()
-    email = data.get('email')
+    smtp_server = "server.kinetica.es"  
+    smtp_port = 587
+    sender_email = "cuidatia@cuidatia.org"
+    sender_password = "28uvy7!5U"
+    receiver_email = data.get('email')
     organizacion = data.get('organizacion')
     roles = data.get('rol')
+
+    subject = "Invitación a Cuidatiavita"
+    body = f"""
+             Buenos días,
+
+             Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:
+
+             {FRONTEND_API_URL}personal/create?m={receiver_email}&r={roles}&o={organizacion}
+         """
+
+    message = EmailMessage()
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message["Subject"] = subject
+    message.set_content(body)
+
+    context = ssl.create_default_context()
     
     try:
-        payload = {
-            'email' : email,
-            'organizacion': organizacion,
-            'roles': roles,
-            'exp': datetime.today() + timedelta(hours=24)
-        }
-        token = pyjwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
-        
-        msg = Message(
-             'Invitación a Cuidatiavita',
-             recipients=[email],
-             sender=('Cuidatia Vita', MAIL_SENDER),
-         )
-        
-        msg.html = f"""
-             <p>Hola,</p>
-             <p>Únete a Cuidatia Vita. Haga click en el siguiente enlace para aceptar la invitación:</p>
-             <a href="{FRONTEND_API_URL}personal/create?m={email}&r={roles}&o={organizacion}">Aceptar invitación</a>
-         """
-        
-        mail.send(msg)
-        return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}personal/create?token={token}"}), 200
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.set_debuglevel(1)
+            server.ehlo()
+            server.starttls(context=context)
+            server.ehlo()
+            server.login(sender_email, sender_password)
+            server.send_message(message)
+            print("Correo enviado con éxito.")
+            return jsonify({"message": "Correo enviado con éxito"}), 200
+    except smtplib.SMTPAuthenticationError as e:
+        print("Fallo de autenticación:", e.smtp_error.decode())
+        return jsonify({"error": "Fallo de autenticación"}), 401
     except Exception as e:
-        return jsonify({'error': 'No se ha podido enviar el email'}), 400
+        print("Otro error:", e)
+        return jsonify({"error": str(e)}), 500
     
 @app.route('/api/decoded', methods=['POST'])
 def decoded_token():
@@ -1061,31 +1075,45 @@ def decoded_token():
 @app.route('/sendMailRecuperacion', methods=['POST'])
 def sendMailRecuperar():
     data = request.get_json()
-    email = data.get('email')
+    smtp_server = "server.kinetica.es"  
+    smtp_port = 587
+    sender_email = "cuidatia@cuidatia.org"
+    sender_password = "28uvy7!5U"
+    receiver_email = data.get('email')
+
+    subject = "Recuperación de contraseña"
+    body = f"""
+             Buenos días,
+
+             Ha solicitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:
+
+             {FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}
+         """
+
+    message = EmailMessage()
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message["Subject"] = subject
+    message.set_content(body)
+
+    context = ssl.create_default_context()
     
     try:
-        msg = Message(
-             'Recuperación de contraseña',
-             recipients=[email],
-             sender=('Cuidatia Vita', MAIL_SENDER),
-        ) 
-        
-        msg.html = f"""
-            <p>Hola,</p>
-         <p>Ha solcitado la recuperación de contraseña, pulse en el siguiente enlace para proceder:</p>
-             <a href="{FRONTEND_API_URL}recuperacion-contrasena/recuperar?m={email}">Click aquí</a>
-         """
-        
-        mail.send(msg) 
-        payload = {
-            'email' : email,
-            'exp': datetime.today() + timedelta(hours=24)
-        }
-        token = pyjwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
-        
-        return jsonify({'message': 'Email enviado correctamente', 'url': f"{FRONTEND_API_URL}recuperacion-contrasena/recuperar?token={token}"}), 200
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.set_debuglevel(1)
+            server.ehlo()
+            server.starttls(context=context)
+            server.ehlo()
+            server.login(sender_email, sender_password)
+            server.send_message(message)
+            print("Correo enviado con éxito.")
+            return jsonify({"message": "Correo enviado con éxito"}), 200
+    except smtplib.SMTPAuthenticationError as e:
+        print("Fallo de autenticación:", e.smtp_error.decode())
+        return jsonify({"error": "Fallo de autenticación"}), 401
     except Exception as e:
-        return jsonify({'error': 'No se ha podido enviar el email'}), 400
+        print("Otro error:", e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/exportarInforme', methods=['POST'])
 @jwt_required()
