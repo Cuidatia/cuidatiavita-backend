@@ -769,14 +769,23 @@ def post_otros():
 @app.route('/getPacientesReferencia', methods=['GET'])
 def get_pacientes_referencia():
     user = request.args.get('user')
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
     
     try:
-        pacientes = ModelPaciente.getPacientesReferencia(mysql, user)
+        page = int(page)
+        limit = int(limit)
+        offset = (page - 1) * limit        
+
+        totalPacientes = len(ModelPaciente.getPacientesReferencia(mysql, user))
+        pacientes = ModelPaciente.getPacientesReferenciaPagina(mysql, user, limit, offset)
         if not pacientes:
-            return jsonify({'message': 'No tiene asignado a ningún paciente'}), 200
-        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes}), 200
+            return jsonify({'message': 'No tiene asignado a ningún paciente'}), 404
+        return jsonify({'message': 'Pacientes obtenidos', 'pacientes':pacientes, 'totalPacientes': totalPacientes}), 200
     except Exception as e:
-        return jsonify({'error':'Error al obtener los pacientes.'}), 400
+        print("Error en get_pacientes_referencia:", e)
+        return jsonify({'error': str(e)}), 400
     
 @app.route('/getUsuariosReferencia', methods=['GET'])
 @jwt_required()

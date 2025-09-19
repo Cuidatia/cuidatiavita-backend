@@ -1563,21 +1563,49 @@ class ModelPaciente():
         
         try:
             cursor.execute("""
-                           SELECT * FROM pacientes 
-                           INNER JOIN paciente_personalReferencia ON pacientes.id = paciente_personalReferencia.idPaciente
-                           INNER JOIN usuarios ON usuarios.id = paciente_personalReferencia.idUsuario
-                           WHERE usuarios.id = %s
-                           """, (user))
+                            SELECT * FROM pacientes 
+                            INNER JOIN paciente_personalReferencia ON pacientes.id = paciente_personalReferencia.idPaciente
+                            INNER JOIN usuarios ON usuarios.id = paciente_personalReferencia.idUsuario
+                            WHERE usuarios.id = %s
+                        """, (user,))
             rows = cursor.fetchall()
             pacientes= []
             
             for row in rows:
-                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16], row[17])
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16], row[17], row[18])
                 pacientes.append(paciente.to_dict())
                 
             return pacientes
         except Exception as e:
-            return jsonify({'error':'Error al obtener los pacientes.'})
+                print("Error en getPacientesReferencia:", e)
+                return []  # devolver lista vacía en caso de error
+        finally:
+            cursor.close()
+            conn.close() 
+    @classmethod
+    def getPacientesReferenciaPagina(cls, mysql, user, limit, offset):
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                SELECT * FROM pacientes 
+                INNER JOIN paciente_personalReferencia ON pacientes.id = paciente_personalReferencia.idPaciente
+                INNER JOIN usuarios ON usuarios.id = paciente_personalReferencia.idUsuario
+                WHERE usuarios.id = %s
+                LIMIT %s OFFSET %s
+            """, (user, limit, offset))
+            rows = cursor.fetchall()
+            pacientes= []
+            
+            for row in rows:
+                paciente = Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16], row[17], row[18])
+                pacientes.append(paciente.to_dict())
+                
+            return pacientes
+        except Exception as e:
+            print("Error en getPacientesReferenciaPagina:", e)
+            return []
         finally:
             cursor.close()
             conn.close()   

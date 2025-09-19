@@ -18,11 +18,12 @@ class ModelUser():
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE usuarios.email = %s GROUP BY usuarios.id'
-                , (email)
+                , (email,)
             )
             row = cursor.fetchone()
             logger.warning(f"Datos recuperados:\n id = {row[0]} nombre = {row[1]} email = {row[2]} organizacion = {row[3]} rol = {row[4]} password = {row[5]}")
-            isValidPassword = bcrypt.checkpw(password.encode('utf-8'), row[5].encode('utf-8'))
+            stored_password = row[5]
+            isValidPassword = bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))
             logger.warning(f"Validación = {isValidPassword}")
             if isValidPassword:
                 logger.info("Inicio de sesión correcto")
@@ -169,7 +170,7 @@ class ModelUser():
     @classmethod
     def createUser(cls,mysql, nombre, email, password, idOrganizacion, roles):
         try:
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4))
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4)).decode('utf-8')
             
             conn = mysql.connect()
             cursor = conn.cursor()
@@ -279,7 +280,7 @@ class ModelUser():
     def updatePassword(cls,mysql,usuarioId, password):
         try:
             #password = '123456'
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4))
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(4)).decode('utf-8')
             
             conn = mysql.connect()
             cursor = conn.cursor()
