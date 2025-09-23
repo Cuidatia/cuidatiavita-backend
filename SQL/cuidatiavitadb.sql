@@ -374,8 +374,9 @@ insert into roles (`nombre`, `description`) values ('medico/enfermero', 'Persona
 insert into roles (`nombre`, `description`) values ('trabajador social', 'Añade, modifica y elimina pacientes de la organización; Añade, modifica y elimina los datos generales y los datos sanitarios correspondientes a las sección Trabajo Social de los pacientes de la organización;');
 insert into roles (`nombre`, `description`) values ('educador social/terapeuta ocupacional', 'Añade, modifica y elimina pacientes de la organización; Añade, modifica y elimina los datos generales y los datos sanitarios correspondientes a las sección Educación Social/Terapia Ocupacional de los pacientes de la organización;');
 insert into roles (`nombre`, `description`) values ('auxiliar', 'Visualiza los datos generales y los datos sanitarios correspondientes a las sección Cocina/Higiene de los pacientes de la organización;');
-insert into roles (`nombre`, `description`) values ('profesional de referencia', 'Acceso diecto a los pacientes de la organización que le han sido asignados');
-insert into roles (`nombre`, `description`) values ('familiar', 'Acceso diecto a los pacientes de la organización que le han sido asignados como familiar');
+insert into roles (`nombre`, `description`) values ('profesional de referencia', 'Acceso directo a los pacientes de la organización que le han sido asignados');
+insert into roles (`nombre`, `description`) values ('familiar', 'Acceso directo a los pacientes de la organización que le han sido asignados como familiar');
+insert into roles (`nombre`, `description`) values ('paciente', 'Acceso directo a los datos de su perfil como paciente de la organización y a los familiares que estén relacionados');
 
 insert into usuario_roles (`idUsuario`, `idRol`) values (1, 1); 
 insert into usuario_roles (`idUsuario`, `idRol`) values (2, 2);
