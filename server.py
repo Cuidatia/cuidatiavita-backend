@@ -19,6 +19,8 @@ from werkzeug.utils import secure_filename
 import uuid
 import ssl
 from email.message import EmailMessage
+from agora_token_builder import RtcTokenBuilder
+import time
 
 from models.ModelUser import ModelUser
 from models.ModelRoles import ModelRoles
@@ -35,6 +37,10 @@ load_dotenv()
 FRONTEND_API_URL = os.getenv('FRONTEND_API_URL')
 MAIL_SENDER = os.getenv('MAIL_SENDER')
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+
+#Para videollamadas
+APP_ID = "76229e5034a44a578d16284182629bc5"
+APP_CERTIFICATE = "849350830aed4637996f482fdbf300ca"
 
 # Configuración de la base de datos MySQL
 app.config['MYSQL_DATABASE_HOST'] = os.getenv('MYSQL_DB_HOST')
@@ -1263,6 +1269,27 @@ def telegram_webhook():
         return jsonify({"ok": True})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/tokenLlamadas", methods=["GET"])
+def token_llamadas():
+    channel_name = request.args.get("channel")
+    uid = int(request.args.get("uid", 0))
+
+    # El token expira en 1 hora
+    expire_time_in_seconds = 3600
+    current_timestamp = int(time.time())
+    privilege_expire_timestamp = current_timestamp + expire_time_in_seconds
+
+    token = RtcTokenBuilder.buildTokenWithUid(
+        APP_ID,
+        APP_CERTIFICATE,
+        channel_name,
+        uid,
+        "PUBLISHER",
+        privilege_expire_timestamp
+    )
+
+    return jsonify({"token": token})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)
