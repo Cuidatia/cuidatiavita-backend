@@ -8,7 +8,7 @@ class ModelPaciente():
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
-            cursor.execute(""" SELECT * FROM pacientes WHERE id = %s """, (idPaciente))
+            cursor.execute(""" SELECT * FROM pacientes WHERE id = %s """, (idPaciente,))
             row = cursor.fetchone()
             paciente= Paciente(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],
                                row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16],row[17],row[18])
@@ -95,16 +95,16 @@ class ModelPaciente():
     
     @classmethod
     def createPaciente(cls,mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith):
+                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            INSERT INTO pacientes (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                           nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                           nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                            """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                                 nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith))
+                                 nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram))
             conn.commit()
             usuario_id = cursor.lastrowid
             return usuario_id
@@ -115,16 +115,16 @@ class ModelPaciente():
             conn.close()
     @classmethod
     def updatePaciente(cls,mysql,idPaciente,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith):
+                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
             cursor.execute("""
                            UPDATE pacientes SET idOrganizacion = %s, name = %s, firstSurname = %s, secondSurname = %s, alias = %s,
                            birthDate = %s, age = %s, birthPlace = %s, nationality = %s, gender = %s, address = %s, maritalStatus = %s,
-                           sentimentalCouple = %s, language = %s, otherLanguages = %s, culturalHeritage = %s, faith =%s WHERE id = %s
+                           sentimentalCouple = %s, language = %s, otherLanguages = %s, culturalHeritage = %s, faith =%s, dataTelegram = %s WHERE id = %s
                            """, (idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,
-                                 gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith, idPaciente))
+                                 gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram, idPaciente))
             conn.commit()
             return True
         except Exception as e:
@@ -135,7 +135,7 @@ class ModelPaciente():
             
     @classmethod
     def upsertPaciente(cls,mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,paciente_id):
+                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram,paciente_id):
         conn = mysql.connect()
         cursor = conn.cursor()
         try:
@@ -146,7 +146,7 @@ class ModelPaciente():
                 print('Create',row)
                 # Create new paciente
             else:
-                cls.updatePaciente(mysql,paciente_id,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith)
+                cls.updatePaciente(mysql,paciente_id,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith,dataTelegram)
                 
             return jsonify({'okey': 'okey'}), 200
         except Exception as e:
@@ -1638,7 +1638,7 @@ class ModelPaciente():
             cursor.execute("""
                 SELECT pacientes.id, organizaciones.nombre, pacientes.name, pacientes.firstSurname, pacientes.secondSurname, pacientes.alias, pacientes.birthDate,
                 pacientes.age, pacientes.birthPlace, pacientes.nationality, pacientes.gender, pacientes.address, pacientes.maritalStatus, pacientes.sentimentalCouple,
-                pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.time_added_paciente
+                pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.dataTelegram
                 FROM pacientes
                 INNER JOIN organizaciones ON pacientes.idOrganizacion = organizaciones.id
             """)
@@ -1682,7 +1682,7 @@ class ModelPaciente():
             cursor.execute("""
                 SELECT pacientes.id, organizaciones.nombre, pacientes.name, pacientes.firstSurname, pacientes.secondSurname, pacientes.alias, pacientes.birthDate,
                     pacientes.age, pacientes.birthPlace, pacientes.nationality, pacientes.gender, pacientes.address, pacientes.maritalStatus, pacientes.sentimentalCouple,
-                    pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.time_added_paciente
+                    pacientes.language, pacientes.otherLanguages, pacientes.culturalHeritage, pacientes.faith, pacientes.dataTelegram
                 FROM pacientes
                 INNER JOIN organizaciones ON pacientes.idOrganizacion = organizaciones.id
                 ORDER BY pacientes.id ASC LIMIT %s OFFSET %s

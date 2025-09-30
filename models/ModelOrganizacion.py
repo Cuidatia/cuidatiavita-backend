@@ -93,9 +93,9 @@ class ModelOrganizacion():
                 total_usuarios[fila['gender']] = fila['cantidad']
                 
             if is_superadmin:
-                cursor.execute("""SELECT COUNT(*) AS count_usuarios FROM pacientes WHERE time_added_paciente >= NOW() - INTERVAL 30 DAY""")
+                cursor.execute("""SELECT COUNT(*) AS count_usuarios FROM pacientes """)
             else:
-                cursor.execute("""SELECT COUNT(*) AS count_usuarios FROM pacientes WHERE idOrganizacion = %s AND time_added_paciente >= NOW() - INTERVAL 30 DAY""", (id,))
+                cursor.execute("""SELECT COUNT(*) AS count_usuarios FROM pacientes WHERE idOrganizacion = %s """, (id,))
             count_usuarios = cursor.fetchone()
             
             if is_superadmin:

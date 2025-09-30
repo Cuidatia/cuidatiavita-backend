@@ -19,7 +19,7 @@ from werkzeug.utils import secure_filename
 import uuid
 import ssl
 from email.message import EmailMessage
-from agora_token_builder import RtcTokenBuilder
+import mysql.connector
 import time
 
 from models.ModelUser import ModelUser
@@ -230,9 +230,10 @@ def modificar_usuario():
     email = usuario['email']
     idOrganizacion = usuario['idOrganizacion']
     roles = usuario['roles']
+    idTelegram = usuario['idTelegram']
     
     try:
-        usuario = ModelUser.updateDataUser(mysql, usuarioId, nombre, email, idOrganizacion, roles)
+        usuario = ModelUser.updateDataUser(mysql, usuarioId, nombre, email, idOrganizacion, roles, idTelegram)
         
         return jsonify({'message': 'Usuario modificado correctamente', 'usuario':usuario}), 200
     except Exception as e:
@@ -371,13 +372,14 @@ def upsert_paciente():
     otherLanguages = data.get('otherLanguages')
     culturalHeritage = data.get('culturalHeritage')
     faith = data.get('faith')
+    dataTelegram = data.get('dataTelegram')
     imgPerfil = data.get('imgPerfil')
     idOrganizacion = data.get('idOrganizacion')
     paciente_id= data.get('id')
     
     try:
         pacienteUpsert = ModelPaciente.upsertPaciente(mysql,idOrganizacion,name,firstSurname,secondSurname,alias,birthDate,age,birthPlace,
-                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith, paciente_id)
+                       nationality,gender,address,maritalStatus,sentimentalCouple,language,otherLanguages,culturalHeritage,faith, dataTelegram, paciente_id)
     
         return jsonify({'message': 'Paciente actualizado correctamente.', 'ok': 'ok'}), 200
     except Exception as e:
@@ -393,7 +395,7 @@ def crear_paciente():
     
     try:
         pacienteId = ModelPaciente.createPaciente(mysql,idOrganizacion,nuevoPaciente['name'],nuevoPaciente['firstSurname'],nuevoPaciente['secondSurname'],nuevoPaciente['alias'],nuevoPaciente['birthDate'],nuevoPaciente['age'],nuevoPaciente['birthPlace'],
-                       nuevoPaciente['nationality'],nuevoPaciente['gender'],nuevoPaciente['address'],nuevoPaciente['maritalStatus'],nuevoPaciente['sentimentalCouple'],nuevoPaciente['language'],nuevoPaciente['otherLanguages'],nuevoPaciente['culturalHeritage'],nuevoPaciente['faith'])
+                       nuevoPaciente['nationality'],nuevoPaciente['gender'],nuevoPaciente['address'],nuevoPaciente['maritalStatus'],nuevoPaciente['sentimentalCouple'],nuevoPaciente['language'],nuevoPaciente['otherLanguages'],nuevoPaciente['culturalHeritage'],nuevoPaciente['faith'],nuevoPaciente['dataTelegram'])
         pacienteLifeStory = ModelPaciente.createLifeStoryPaciente(mysql,pacienteId)
         mainSanitaryData = ModelPaciente.createSanitaryDataPaciente(mysql,pacienteId, None, None, None)
         return jsonify({'message': 'Paciente creado correctamente.', 'paciente':pacienteId, 'lifestory':pacienteLifeStory}), 200
@@ -1270,26 +1272,47 @@ def telegram_webhook():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-@app.route("/tokenLlamadas", methods=["GET"])
-def token_llamadas():
-    channel_name = request.args.get("channel")
-    uid = int(request.args.get("uid", 0))
+@app.route("/api/crear-meeting", methods=["POST"])
+def crear_meeting():
+    data = request.get_json()
+    id_usuario = data.get("id_usuario")
 
-    # El token expira en 1 hora
-    expire_time_in_seconds = 3600
-    current_timestamp = int(time.time())
-    privilege_expire_timestamp = current_timestamp + expire_time_in_seconds
+    if not id_usuario:
+        return jsonify({"error": "Falta el id_usuario"}), 400
 
-    token = RtcTokenBuilder.buildTokenWithUid(
-        APP_ID,
-        APP_CERTIFICATE,
-        channel_name,
-        uid,
-        "PUBLISHER",
-        privilege_expire_timestamp
-    )
+    # Generar nombre único de sala
+    nombre_canal = f"room-{uuid.uuid4().hex[:8]}"
+    meet_url = f"https://meet.jit.si/{nombre_canal}"
 
-    return jsonify({"token": token})
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO usuario_meetings (nombre_canal, url, creado_por)
+            VALUES (%s, %s, %s)
+            """,
+            (nombre_canal, meet_url, id_usuario)
+        )
+        conn.commit()
+
+        meeting_id = cursor.lastrowid
+
+    except mysql.connector.Error as err:
+        return jsonify({"error": str(err)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return jsonify({
+        "id_meeting": meeting_id,
+        "nombre_canal": nombre_canal,
+        "meet_url": meet_url,
+        "creado_por": id_usuario
+    })
+    
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)

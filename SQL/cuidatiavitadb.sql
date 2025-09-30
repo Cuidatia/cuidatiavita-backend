@@ -16,6 +16,7 @@ create table usuarios(
     `email` varchar(50) NOT NULL,
     `password` varchar(255) NOT NULL,
     `idOrganizacion` int not null,
+    `idTelegram` varchar(20),
     primary key(`id`),
     constraint FK_UsuarioOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`) 
 		on delete cascade
@@ -61,7 +62,7 @@ create table pacientes (
     `otherLanguages` varchar(50),
     `culturalHeritage` varchar(255),
     `faith` varchar(100),
-    `time_added_paciente` TIMESTAMP DEFAULT current_timestamp,
+    `dataTelegram` varchar(20),
     primary key (`id`),
     constraint FK_PacienteOrganizacion foreign key (`idOrganizacion`) references organizaciones(`id`)
 		on delete cascade
@@ -343,30 +344,38 @@ create table paciente_personalReferencia(
     constraint FK_PersonalPacienteUsuario foreign key (`idUsuario`) references usuarios(`id`)
 );
 
+CREATE TABLE usuario_meetings (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  nombre_canal VARCHAR(100) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  creado_por INT NOT NULL,
+  momento_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Cuidatia Vita','C/Clara Campoamor','Almendralejo','Badajoz','06002','924 66 75 78');
 insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba','Av. de la Universidad','Caceres','Caceres','10003','927 25 71 95');
 insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 2','Av. de la Universidad','Caceres','Caceres','10004','927 25 71 95');
 insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 3','Av. de la Universidad','Caceres','Caceres','10005','927 25 71 95');
 insert into organizaciones (`nombre`,`direccion`,`localidad`,`provincia`,`codigo_postal`,`telefono`) values ('Organización Prueba 4','Av. de la Universidad','Caceres','Caceres','10006','927 25 71 95');
 
-insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Super Administrador', 'superadmin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 1);
-insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 2);
-insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin2@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 3);
-insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin3@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 4);
-insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`) values ('Administrador', 'admin4@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 5);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Juan Alberto Torró Gómez', 'user1@prueba.es','123456',2);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Paula Guilbert Arnau', 'user2@prueba.es','123456',2);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Dejan Ishult Trigueros', 'user3@prueba.es','123456',2);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Jaime Lima Mata', 'user4@prueba.es','123456',2);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Elena Nito Del Bosque', 'user5@prueba.es','123456',2);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Miguel Sanchez Perez', 'user34@prueba.es','123456',3);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Pedro Sanchez Perez', 'user35@prueba.es','123456',3);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Bell Liahm', 'user44@prueba.es','123456',4);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Ruben Diaz', 'user45@prueba.es','123456',4);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Lucas Martin Jimenez', 'user54@prueba.es','123456',5);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Sofia Soares Jota', 'user55@prueba.es','123456',5);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Becky Kitagawa', 'user36@prueba.es','123456',3);
-insert into usuarios (nombre, email, password, idOrganizacion) values ('Almada San Roque', 'user56@prueba.es','123456',5);
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`, `idTelegram`) values ('Super Administrador', 'superadmin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 1, '2016401498');
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`, `idTelegram`) values ('Administrador', 'admin@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 2, '2016401498');
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`, `idTelegram`) values ('Administrador', 'admin2@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 3, '2016401498');
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`, `idTelegram`) values ('Administrador', 'admin3@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 4, '2016401498');
+insert into usuarios (`nombre`, `email`, `password`, `idOrganizacion`, `idTelegram`) values ('Administrador', 'admin4@prueba.es', '$2b$04$dqs/eS//BaJToUN9Fzg8SuvnxVEZ7yrpH5hHTV4ZPFIV0eBbFQ0Tq', 5, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Juan Alberto Torró Gómez', 'user1@prueba.es','123456',2, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Paula Guilbert Arnau', 'user2@prueba.es','123456',2, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Dejan Ishult Trigueros', 'user3@prueba.es','123456',2, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Jaime Lima Mata', 'user4@prueba.es','123456',2, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Elena Nito Del Bosque', 'user5@prueba.es','123456',2, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Miguel Sanchez Perez', 'user34@prueba.es','123456',3, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Pedro Sanchez Perez', 'user35@prueba.es','123456',3, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Bell Liahm', 'user44@prueba.es','123456',4, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Ruben Diaz', 'user45@prueba.es','123456',4, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Lucas Martin Jimenez', 'user54@prueba.es','123456',5, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Sofia Soares Jota', 'user55@prueba.es','123456',5, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Becky Kitagawa', 'user36@prueba.es','123456',3, '2016401498');
+insert into usuarios (nombre, email, password, idOrganizacion, idTelegram) values ('Almada San Roque', 'user56@prueba.es','123456',5, '2016401498');
 
 insert into roles (`nombre`) values ('superadmin');
 insert into roles (`nombre`, `description`) values ('administrador', 'Administrador de la organización; Visualiza todos los datos de la organización;  Añade, modifica y elimina usuarios de la organización; Añade, modifica y elimina pacientes de la organización; Accede a todos los datos de los pacientes de la organización;');
@@ -397,8 +406,8 @@ insert into usuario_roles (`idUsuario`, `idRol`) values (16, 5);
 insert into usuario_roles (`idUsuario`, `idRol`) values (17, 6);
 insert into usuario_roles (`idUsuario`, `idRol`) values (18, 7);
 
-INSERT INTO pacientes (idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith) VALUES (
-    2, 'Carlos', 'Martínez', 'Ruiz', 'Prueba', '1955-07-12', 70, 'Madrid','Española', 'M', 'Calle Mayor 45, Madrid', 'C','', 'Español', 'Inglés, Francés','Mediterránea', 'Católica'
+INSERT INTO pacientes (idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram) VALUES (
+    2, 'Carlos', 'Martínez', 'Ruiz', 'Prueba', '1955-07-12', 70, 'Madrid','Española', 'M', 'Calle Mayor 45, Madrid', 'C','', 'Español', 'Inglés, Francés','Mediterránea', 'Católica', '2016401498'
 );
 INSERT INTO lifeStory (idPaciente) VALUES (1);
 INSERT INTO childhood (idLifeStory, childhoodStudies, childhoodSchool, childhoodMotivations, childhoodFamilyCore,childhoodFriendsGroup, childhoodImportantPerson,childhoodTravels, childhoodFavouritePlace, childhoodPositiveExperiences,childhoodNegativeExperiences,childhoodResponsabilities, childhoodAddress, childhoodLikes, childhoodAfraids) VALUES (
@@ -441,62 +450,62 @@ INSERT INTO otherData (idSanitary, professionalNotes) VALUES (
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Jacinto', 'Llopis', 'Hierro', 'Prueba', 
     '1945-02-25', 80, 'Valencia', 'Española', 'M', 
     'Calle de Amor Bueno 93, Navarra, 86379', 'C','', 'Español', 'Italiano, Abjasio', 
-    'Valenciano', 'Cristiano'
+    'Valenciano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Noelia', 'Lobo', 'Cortés', 'Prueba', 
     '1947-07-09', 78, 'Badajoz', 'Española', 'F', 
     'Acceso Rebeca Núñez 840 Puerta 1 , Ávila, 95931', 'V','', 'Español', 'Ninguno', 
-    'Castellana', 'Crsitiana'
+    'Castellana', 'Crsitiana', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Rita', 'Guerrero', 'Cabrero', 'Prueba', 
     '1940-11-10', 84, 'Lleida', 'Española', 'F', 
     'Acceso de Hugo Lasa 3, Cáceres, 64835', 'C', '','Español', 'Inglés, Catalán, Francés', 
-    'Catalana', 'Atea'
+    'Catalana', 'Atea', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus,sentimentalCouple, language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus,sentimentalCouple, language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Julio', 'Batalla', 'Galván', 'Prueba', 
     '1954-08-07', 71, 'Castellón', 'Española', 'M', 
     'Vial de Juan Manuel Chaparro 98 Piso 9 , Palencia, 53287', 'C','', 'Español', 'Inglés, Catalán', 
-    'Valenciano', 'Cristiano'
+    'Valenciano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus,sentimentalCouple, language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus,sentimentalCouple, language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Mónica', 'Roca', 'Bartolomé', 'Prueba', 
     '1951-10-10', 73, 'Pontevedra', 'Española', 'F', 
     'Via Isabel Lasa 51 Piso 2 , Álava, 82814', 'C','', 'Español', 'Ninguno', 
-    'Gallega', 'Cristiana'
+    'Gallega', 'Cristiana', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     2, 'Raúl', 'Cuéllar', 'Barco', 'Prueba', 
     '1950-10-20', 74, 'Madrid', 'Española', 'M', 
     'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
-    'Castellano', 'Cristiano'
+    'Castellano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO lifeStory (idPaciente) VALUES (2);
@@ -660,32 +669,32 @@ INSERT INTO otherData (idSanitary, professionalNotes) VALUES
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     3, 'Ruben', 'Ruebenez', 'Rubio', 'Prueba3', 
     '1950-10-20', 74, 'Madrid', 'Española', 'M', 
     'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
-    'Castellano', 'Cristiano'
+    'Castellano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     4, 'Sara', 'Del Cano', 'Barco', 'Prueba4', 
     '1950-10-20', 74, 'Madrid', 'Española', 'F', 
     'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
-    'Castellano', 'Cristiano'
+    'Castellano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO pacientes (
     idOrganizacion, name, firstSurname, secondSurname, alias, birthDate, age, birthPlace,
-    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith
+    nationality, gender, address, maritalStatus, sentimentalCouple,language, otherLanguages, culturalHeritage, faith, dataTelegram
 ) VALUES (
     5, 'Pablo', 'Fernandez', 'Gonzalez', 'Prueba5', 
     '1950-10-20', 74, 'Madrid', 'Española', 'M', 
     'Cañada de Jose Barco 29, Toledo, 18227', 'C','', 'Español', 'Inglés, Portugués, Francés', 
-    'Castellano', 'Cristiano'
+    'Castellano', 'Cristiano', '2016401498'
 );
 
 INSERT INTO lifeStory (idPaciente) VALUES (8);

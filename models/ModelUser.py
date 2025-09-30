@@ -13,7 +13,7 @@ class ModelUser():
             con = mysql.connect()
             cursor = con.cursor()
             cursor.execute(
-                'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.password ' + 
+                'SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles,usuarios.idTelegram, usuarios.password ' + 
                 'FROM usuarios ' +
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
@@ -21,13 +21,13 @@ class ModelUser():
                 , (email,)
             )
             row = cursor.fetchone()
-            logger.warning(f"Datos recuperados:\n id = {row[0]} nombre = {row[1]} email = {row[2]} organizacion = {row[3]} rol = {row[4]} password = {row[5]}")
-            stored_password = row[5]
+            logger.warning(f"Datos recuperados:\n id = {row[0]} nombre = {row[1]} email = {row[2]} organizacion = {row[3]} rol = {row[4]} idTelegram = {row[5]} password = {row[6]}")
+            stored_password = row[6]
             isValidPassword = bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))
             logger.warning(f"Validación = {isValidPassword}")
             if isValidPassword:
                 logger.info("Inicio de sesión correcto")
-                usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4])
+                usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4],row[5])
                 return usuario.to_dict()
             else:
                 logger.warning("Email o contraseña incorrectos")
@@ -46,7 +46,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, GROUP_CONCAT(roles.nombre) AS roles, usuarios.idTelegram FROM usuarios "+
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE idOrganizacion = ' + org +
@@ -56,7 +56,7 @@ class ModelUser():
             users= []
             
             for usuario in usuarios:
-                user = Usuario(usuario[0],usuario[1],usuario[2],True,org,usuario[3])
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,org,usuario[3],usuario[4])
                 users.append(user.to_dict())
                 
             return users
@@ -73,7 +73,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,GROUP_CONCAT(roles.nombre) AS roles, usuarios.idTelegram FROM usuarios "+
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 ' GROUP BY usuarios.id')
@@ -82,7 +82,7 @@ class ModelUser():
             users= []
             
             for usuario in usuarios:
-                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4])
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4],usuario[5])
                 users.append(user.to_dict())
                 
             return users
@@ -99,7 +99,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios 
+            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.idTelegram FROM usuarios 
                 INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
                 INNER JOIN roles ON usuario_roles.idRol = roles.id
                  GROUP BY usuarios.id ORDER BY id ASC LIMIT %s OFFSET %s""", (limit, offset))
@@ -108,7 +108,7 @@ class ModelUser():
             users= []
             
             for usuario in usuarios:
-                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4])
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,usuario[3],usuario[4], usuario[5])
                 users.append(user.to_dict())
                 
             return users
@@ -124,7 +124,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email,  GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios 
+            cursor.execute(""" SELECT usuarios.id, usuarios.nombre, usuarios.email,  GROUP_CONCAT(roles.nombre) AS roles, usuarios.idTelegram  FROM usuarios 
                 INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario
                 INNER JOIN roles ON usuario_roles.idRol = roles.id
                 WHERE idOrganizacion = %s GROUP BY usuarios.id ORDER BY id ASC LIMIT %s OFFSET %s""", (org, limit, offset))
@@ -133,7 +133,7 @@ class ModelUser():
             users= []
             
             for usuario in usuarios:
-                user = Usuario(usuario[0],usuario[1],usuario[2],True,org,usuario[3])
+                user = Usuario(usuario[0],usuario[1],usuario[2],True,org,usuario[3], usuario[4])
                 users.append(user.to_dict())
                 
             return users
@@ -149,7 +149,7 @@ class ModelUser():
             conn = mysql.connect()
             cursor = conn.cursor()
             
-            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, GROUP_CONCAT(roles.nombre) AS roles  FROM usuarios "+
+            cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.idOrganizacion, GROUP_CONCAT(roles.nombre) AS roles, usuarios.idTelegram  FROM usuarios "+
                 'INNER JOIN usuario_roles ON usuarios.id = usuario_roles.idUsuario ' +
                 'INNER JOIN roles ON usuario_roles.idRol = roles.id ' +
                 'WHERE usuarios.id = ' + usuarioId +
@@ -157,7 +157,7 @@ class ModelUser():
             
             row = cursor.fetchone()
             if row != None:
-                usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4])
+                usuario = Usuario(row[0],row[1],row[2],True,row[3],row[4], row[5])
                 return usuario.to_dict()
             
         except Exception as e:
@@ -228,15 +228,15 @@ class ModelUser():
             conn.close()
             
     @classmethod
-    def updateDataUser(cls,mysql,usuarioId, nombre, email, idOrganizacion, roles):
+    def updateDataUser(cls,mysql,usuarioId, nombre, email, idOrganizacion, roles, idTelegram):
         try:
                         
             conn = mysql.connect()
             cursor = conn.cursor()
             
             cursor.execute(
-                "UPDATE usuarios SET nombre = %s, email = %s WHERE id = %s",
-                (nombre, email, usuarioId)
+                "UPDATE usuarios SET nombre = %s, email = %s, idTelegram = %s WHERE id = %s",
+                (nombre, email, usuarioId, idTelegram)
             )
 
             # 1. Elimina roles actuales del usuario
@@ -257,7 +257,7 @@ class ModelUser():
             
             #Añadir aqui el update de la tabla usuario_roles
             
-            usuario = Usuario(usuarioId,nombre,email,True,idOrganizacion,roles)
+            usuario = Usuario(usuarioId,nombre,email,True,idOrganizacion,roles, idTelegram)
             
             return usuario.to_dict()
         except Exception as e:
