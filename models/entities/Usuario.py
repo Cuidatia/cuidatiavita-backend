@@ -2,7 +2,7 @@ from flask import jsonify
 import bcrypt
 
 class Usuario():
-    def __init__(self, id, nombre, email, password, idOrganizacion, roles, idTelegram):
+    def __init__(self, id, nombre, email, password, idOrganizacion, roles, idTelegram=None):
         self.id = id
         self.nombre = nombre
         self.email = email

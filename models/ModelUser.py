@@ -236,7 +236,7 @@ class ModelUser():
             
             cursor.execute(
                 "UPDATE usuarios SET nombre = %s, email = %s, idTelegram = %s WHERE id = %s",
-                (nombre, email, usuarioId, idTelegram)
+                (nombre, email, idTelegram, usuarioId)
             )
 
             # 1. Elimina roles actuales del usuario
