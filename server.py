@@ -207,7 +207,7 @@ def get_personal_name():
     except Exception as e:
         return jsonify({'error': 'Error al obtener el paciente'}), 500
 
-@app.route('/eliminarUsuario', methods=['POST'])
+@app.route('/eliminarUsuario', methods=['DELETE'])
 @jwt_required()
 def eliminar_usuario():
     data = request.get_json()
@@ -402,7 +402,7 @@ def crear_paciente():
     except Exception as e:
         return jsonify({'error':'Error al añadir el paciente.'}), 400
 
-@app.route('/eliminarPaciente', methods=['POST'])
+@app.route('/eliminarPaciente', methods=['DELETE'])
 @jwt_required()
 def eliminar_pacientes():
     data = request.get_json()
@@ -886,7 +886,7 @@ def crear_organizacion():
         print(e)
         return jsonify({'error': 'No se ha podido crear la organizacion.'}), 400
 
-@app.route('/eliminarOrganizacion', methods=['POST'])
+@app.route('/eliminarOrganizacion', methods=['DELETE'])
 @jwt_required()
 def eliminar_organizacion():
     data = request.get_json()
